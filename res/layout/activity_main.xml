@@ -17,7 +17,9 @@
             android:layout_gravity="left"
             android:layout_weight="1"
             android:ems="10"
-            android:inputType="textUri" >
+            android:hint="@string/url_field_hint"
+            android:inputType="textUri"
+            android:textSize="12sp" >
 
             <requestFocus />
         </EditText>
@@ -27,15 +29,19 @@
             style="?android:attr/buttonStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/go_button_label" />
+            android:minHeight="30dp"
+            android:text="@string/go_button_label"
+            android:textSize="12sp" />
 
     </LinearLayout>
 
 	<android.support.v4.view.ViewPager
-		xmlns:android="http://schemas.android.com/apk/res/android"
-		xmlns:tools="http://schemas.android.com/tools" android:id="@+id/pager"
-		android:layout_width="match_parent" android:layout_height="match_parent"
-		tools:context=".MainActivity">
+	    xmlns:android="http://schemas.android.com/apk/res/android"
+	    xmlns:tools="http://schemas.android.com/tools"
+	    android:id="@+id/pager"
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent"
+	    tools:context=".MainActivity" >
 
 		<!-- This title strip will display the currently visible page title, as 
 			well as the page titles for adjacent pages. -->
