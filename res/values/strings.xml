@@ -3,5 +3,6 @@
 
     <string name="app_name">Sloop</string>
     <string name="menu_settings">Settings</string>
+    <string name="go_button_label">Go</string>
 
 </resources>
