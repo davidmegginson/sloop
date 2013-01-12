@@ -9,9 +9,9 @@ import android.support.v4.app.FragmentPagerAdapter;
  * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
  * one of the sections/tabs/pages.
  */
-public class SectionsPagerAdapter extends FragmentPagerAdapter {
+public class DataRecordPagerAdapter extends FragmentPagerAdapter {
 
-	public SectionsPagerAdapter(FragmentManager fm) {
+	public DataRecordPagerAdapter(FragmentManager fm) {
 		super(fm);
 	}
 
@@ -20,9 +20,9 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
 		// getItem is called to instantiate the fragment for the given page.
 		// Return a DummySectionFragment (defined as a static inner class
 		// below) with the page number as its lone argument.
-		Fragment fragment = new DummySectionFragment();
+		Fragment fragment = new DataRecordFragment();
 		Bundle args = new Bundle();
-		args.putInt(DummySectionFragment.ARG_SECTION_NUMBER, position + 1);
+		args.putInt(DataRecordFragment.ARG_SECTION_NUMBER, position + 1);
 		fragment.setArguments(args);
 		return fragment;
 	}

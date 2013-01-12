@@ -15,7 +15,7 @@ public class MainActivity extends FragmentActivity {
 	 * intensive, it may be best to switch to a
 	 * {@link android.support.v4.app.FragmentStatePagerAdapter}.
 	 */
-	SectionsPagerAdapter mSectionsPagerAdapter;
+	DataRecordPagerAdapter mDataRecordPagerAdapter;
 
 	/**
 	 * The {@link ViewPager} that will host the section contents.
@@ -29,12 +29,12 @@ public class MainActivity extends FragmentActivity {
 
 		// Create the adapter that will return a fragment for each of the three
 		// primary sections of the app.
-		mSectionsPagerAdapter = new SectionsPagerAdapter(
+		mDataRecordPagerAdapter = new DataRecordPagerAdapter(
 				getSupportFragmentManager());
 
 		// Set up the ViewPager with the sections adapter.
 		mViewPager = (ViewPager) findViewById(R.id.pager);
-		mViewPager.setAdapter(mSectionsPagerAdapter);
+		mViewPager.setAdapter(mDataRecordPagerAdapter);
 
 	}
 
