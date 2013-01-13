@@ -1,5 +1,7 @@
 package com.megginson.sloop.app;
 
+import java.io.IOException;
+
 import com.megginson.sloop.R;
 import com.megginson.sloop.model.DataCollection;
 import com.megginson.sloop.model.DummyDataCollectionFactory;
@@ -27,12 +29,19 @@ public class MainActivity extends FragmentActivity {
 	ViewPager mViewPager;
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	protected void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
 		// Create a DataCollection and wrap it in a pager adapter.
-		DataCollection dataCollection = DummyDataCollectionFactory.createDataCollection();
+		// DataCollection dataCollection = DummyDataCollectionFactory.createDataCollection();
+		DataCollection dataCollection;
+		try {
+			dataCollection = DummyDataCollectionFactory.readDataCollection(getAssets(), "pwgsc_pre-qualified_supplier_data.csv");
+		} catch (IOException e) {
+			System.err.println(e.getMessage());
+			return;
+		}
 		mDataRecordPagerAdapter = new DataCollectionPagerAdapter(
 				getSupportFragmentManager(), dataCollection);
 
