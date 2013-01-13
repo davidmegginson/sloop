@@ -22,20 +22,21 @@ import com.megginson.sloop.model.DataRecord;
  */
 public class DataRecordFragment extends Fragment {
 
-	private DataRecord mDataRecord;
-	
-	public DataRecordFragment(DataRecord dataRecord) {
-		mDataRecord = dataRecord;
+	public DataRecordFragment() {
+		super();
 	}
-
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 
 		LinearLayout layout = new LinearLayout(getActivity());
 		layout.setOrientation(LinearLayout.VERTICAL);
+		
+		int position = getArguments().getInt("position");
+		DataRecord dataRecord = MainActivity.dataCollection.get(position);
 
-		for (DataEntry entry : mDataRecord) {
+		for (DataEntry entry : dataRecord) {
 			addLabel(layout, entry.getKey());
 			addValue(layout, entry.getValue());	
 		}

@@ -1,6 +1,7 @@
 package com.megginson.sloop.app;
 
 
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -21,7 +22,10 @@ public class DataCollectionPagerAdapter extends FragmentStatePagerAdapter {
 
 	@Override
 	public Fragment getItem(int position) {
-		Fragment fragment = new DataRecordFragment(dataCollection.get(position));
+		Fragment fragment = new DataRecordFragment();
+		Bundle args = new Bundle();
+		args.putInt("position", position);
+		fragment.setArguments(args);
 		return fragment;
 	}
 

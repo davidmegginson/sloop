@@ -8,23 +8,22 @@ import com.megginson.sloop.model.DummyDataCollectionFactory;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 
 public class MainActivity extends FragmentActivity {
+	
+	// FIXME temporary kludge - need a collection manager
+	public static DataCollection dataCollection;
 
 	/**
-	 * The {@link android.support.v4.view.PagerAdapter} that will provide
-	 * fragments for each of the sections. We use a
-	 * {@link android.support.v4.app.FragmentPagerAdapter} derivative, which
-	 * will keep every loaded fragment in memory. If this becomes too memory
-	 * intensive, it may be best to switch to a
-	 * {@link android.support.v4.app.FragmentStatePagerAdapter}.
+	 * The {@link PagerAdapter} for the current data collection.
 	 */
-	DataCollectionPagerAdapter mDataRecordPagerAdapter;
+	DataCollectionPagerAdapter dataCollectionPagerAdapter;
 
 	/**
-	 * The {@link ViewPager} that will host the section contents.
+	 * The {@link ViewPager} that will host the data collection.
 	 */
 	ViewPager mViewPager;
 
@@ -34,20 +33,18 @@ public class MainActivity extends FragmentActivity {
 		setContentView(R.layout.activity_main);
 
 		// Create a DataCollection and wrap it in a pager adapter.
-		// DataCollection dataCollection = DummyDataCollectionFactory.createDataCollection();
-		DataCollection dataCollection;
 		try {
 			dataCollection = DummyDataCollectionFactory.readDataCollection(getAssets(), "pwgsc_pre-qualified_supplier_data.csv");
 		} catch (IOException e) {
 			System.err.println(e.getMessage());
 			return;
 		}
-		mDataRecordPagerAdapter = new DataCollectionPagerAdapter(
+		dataCollectionPagerAdapter = new DataCollectionPagerAdapter(
 				getSupportFragmentManager(), dataCollection);
 
 		// Set up the ViewPager with the data collection adapter.
 		mViewPager = (ViewPager) findViewById(R.id.pager);
-		mViewPager.setAdapter(mDataRecordPagerAdapter);
+		mViewPager.setAdapter(dataCollectionPagerAdapter);
 
 	}
 
