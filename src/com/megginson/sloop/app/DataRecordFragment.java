@@ -50,6 +50,7 @@ public class DataRecordFragment extends Fragment {
 	private TextView addLabel (ViewGroup container, String text) {
 		TextView textView = new TextView(getActivity());
 		textView.setText(text);
+		textView.setTextIsSelectable(true);
 		textView.setTypeface(null, Typeface.BOLD);
 		container.addView(textView);
 		return textView;
@@ -58,6 +59,7 @@ public class DataRecordFragment extends Fragment {
 	private TextView addValue (ViewGroup container, String text) {
 		TextView textView = new TextView(getActivity());
 		textView.setText(text);
+		textView.setTextIsSelectable(true);
 		container.addView(textView);
 		return textView;
 	}

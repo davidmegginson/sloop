@@ -13,9 +13,9 @@ import android.support.v4.view.ViewPager;
 import android.view.Menu;
 
 public class MainActivity extends FragmentActivity {
-	
+
 	// FIXME temporary kludge - need a collection manager
-	public static DataCollection dataCollection;
+	public static DataCollection dataCollection = null;
 
 	/**
 	 * The {@link PagerAdapter} for the current data collection.
@@ -28,16 +28,19 @@ public class MainActivity extends FragmentActivity {
 	ViewPager mViewPager;
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState){
+	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
 		// Create a DataCollection and wrap it in a pager adapter.
-		try {
-			dataCollection = DummyDataCollectionFactory.readDataCollection(getAssets(), "pwgsc_pre-qualified_supplier_data.csv");
-		} catch (IOException e) {
-			System.err.println(e.getMessage());
-			return;
+		if (dataCollection == null) {
+			try {
+				dataCollection = DummyDataCollectionFactory.readDataCollection(
+						getAssets(), "pwgsc_pre-qualified_supplier_data.csv");
+			} catch (IOException e) {
+				System.err.println(e.getMessage());
+				return;
+			}
 		}
 		dataCollectionPagerAdapter = new DataCollectionPagerAdapter(
 				getSupportFragmentManager(), dataCollection);
