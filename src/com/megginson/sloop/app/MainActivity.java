@@ -1,9 +1,6 @@
 package com.megginson.sloop.app;
 
 import com.megginson.sloop.R;
-import com.megginson.sloop.R.id;
-import com.megginson.sloop.R.layout;
-import com.megginson.sloop.R.menu;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
