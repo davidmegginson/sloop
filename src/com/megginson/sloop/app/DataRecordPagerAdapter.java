@@ -1,15 +1,17 @@
-package com.megginson.sloop;
+package com.megginson.sloop.app;
+
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 
 /**
  * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
  * one of the sections/tabs/pages.
  */
-public class DataRecordPagerAdapter extends FragmentPagerAdapter {
+public class DataRecordPagerAdapter extends FragmentStatePagerAdapter {
 
 	public DataRecordPagerAdapter(FragmentManager fm) {
 		super(fm);
@@ -37,5 +39,6 @@ public class DataRecordPagerAdapter extends FragmentPagerAdapter {
 	public CharSequence getPageTitle(int position) {
 		return "Section #" + (position + 1);
 	}
+	
 }
 

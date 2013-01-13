@@ -1,4 +1,4 @@
-package com.megginson.sloop;
+package com.megginson.sloop.app;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
