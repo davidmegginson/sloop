@@ -1,5 +1,6 @@
 package com.megginson.sloop.app;
 
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -9,18 +10,22 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.megginson.sloop.model.DataEntry;
+import com.megginson.sloop.model.DataRecord;
+
 /**
- * A dummy fragment representing a section of the app, but that simply
- * displays dummy text.
+ * A view fragment wrapping a data record
+ * 
+ * @author David Megginson
+ * @see DataRecord
+ * @see DataCollectionPagerAdapter
  */
 public class DataRecordFragment extends Fragment {
-	/**
-	 * The fragment argument representing the section number for this
-	 * fragment.
-	 */
-	public static final String ARG_SECTION_NUMBER = "section_number";
 
-	public DataRecordFragment() {
+	private DataRecord mDataRecord;
+	
+	public DataRecordFragment(DataRecord dataRecord) {
+		mDataRecord = dataRecord;
 	}
 
 	@Override
@@ -29,8 +34,10 @@ public class DataRecordFragment extends Fragment {
 
 		LinearLayout layout = new LinearLayout(getActivity());
 		layout.setOrientation(LinearLayout.VERTICAL);
-		for (int x = 1; x <= 40; x++) {
-			addText(layout, "Section " + getArguments().getInt(ARG_SECTION_NUMBER) + ", Line #" + x);
+
+		for (DataEntry entry : mDataRecord) {
+			addLabel(layout, entry.getKey());
+			addValue(layout, entry.getValue());	
 		}
 		
 		ScrollView scrollView = new ScrollView(getActivity());
@@ -39,7 +46,15 @@ public class DataRecordFragment extends Fragment {
 		return scrollView;
 	}
 	
-	private TextView addText (ViewGroup container, String text) {
+	private TextView addLabel (ViewGroup container, String text) {
+		TextView textView = new TextView(getActivity());
+		textView.setText(text);
+		textView.setTypeface(null, Typeface.BOLD);
+		container.addView(textView);
+		return textView;
+	}
+
+	private TextView addValue (ViewGroup container, String text) {
 		TextView textView = new TextView(getActivity());
 		textView.setText(text);
 		container.addView(textView);

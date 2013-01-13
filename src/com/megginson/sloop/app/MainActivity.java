@@ -1,6 +1,8 @@
 package com.megginson.sloop.app;
 
 import com.megginson.sloop.R;
+import com.megginson.sloop.model.DataCollection;
+import com.megginson.sloop.model.DummyDataCollectionFactory;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -17,7 +19,7 @@ public class MainActivity extends FragmentActivity {
 	 * intensive, it may be best to switch to a
 	 * {@link android.support.v4.app.FragmentStatePagerAdapter}.
 	 */
-	DataRecordPagerAdapter mDataRecordPagerAdapter;
+	DataCollectionPagerAdapter mDataRecordPagerAdapter;
 
 	/**
 	 * The {@link ViewPager} that will host the section contents.
@@ -29,12 +31,12 @@ public class MainActivity extends FragmentActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		// Create the adapter that will return a fragment for each of the three
-		// primary sections of the app.
-		mDataRecordPagerAdapter = new DataRecordPagerAdapter(
-				getSupportFragmentManager());
+		// Create a DataCollection and wrap it in a pager adapter.
+		DataCollection dataCollection = DummyDataCollectionFactory.createDataCollection();
+		mDataRecordPagerAdapter = new DataCollectionPagerAdapter(
+				getSupportFragmentManager(), dataCollection);
 
-		// Set up the ViewPager with the sections adapter.
+		// Set up the ViewPager with the data collection adapter.
 		mViewPager = (ViewPager) findViewById(R.id.pager);
 		mViewPager.setAdapter(mDataRecordPagerAdapter);
 
