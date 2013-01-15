@@ -1,4 +1,4 @@
-package com.megginson.sloop.app;
+package com.megginson.sloop.ui;
 
 import android.graphics.Typeface;
 import android.os.Bundle;
