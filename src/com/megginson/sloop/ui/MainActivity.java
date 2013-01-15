@@ -15,9 +15,6 @@ import com.megginson.sloop.model.DataCollection;
 
 public class MainActivity extends FragmentActivity {
 
-	// FIXME temporary kludge - need a collection manager
-	public static DataCollection dataCollection = null;
-	
 	public static String SAMPLE_FILE = "pwgsc_pre-qualified_supplier_data.csv";
 
 	/**
@@ -36,19 +33,19 @@ public class MainActivity extends FragmentActivity {
 		setContentView(R.layout.activity_main);
 
 		// Create a DataCollection and wrap it in a pager adapter.
-		if (dataCollection == null) {
+		DataCollection dataCollection = null;
+		try {
+			SloopApp app = SloopApp.getInstance();
+			InputStream input = getAssets().open(
+					"pwgsc_pre-qualified_supplier_data.csv");
 			try {
-				SloopApp app = SloopApp.getInstance();
-				InputStream input = getAssets().open("pwgsc_pre-qualified_supplier_data.csv");
-				try {
-					dataCollection = app.getDataCollectionManager().getCollection(SAMPLE_FILE, input);
-				} finally {
-					input.close();
-				}
-			} catch (IOException e) {
-				System.err.println(e.getMessage());
-				return;
+				dataCollection = app.getDataCollection(SAMPLE_FILE, input);
+			} finally {
+				input.close();
 			}
+		} catch (IOException e) {
+			System.err.println(e.getMessage());
+			return;
 		}
 		dataCollectionPagerAdapter = new DataCollectionPagerAdapter(
 				getSupportFragmentManager(), dataCollection);
@@ -56,7 +53,6 @@ public class MainActivity extends FragmentActivity {
 		// Set up the ViewPager with the data collection adapter.
 		mViewPager = (ViewPager) findViewById(R.id.pager);
 		mViewPager.setAdapter(dataCollectionPagerAdapter);
-
 	}
 
 	@Override

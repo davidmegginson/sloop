@@ -1,5 +1,9 @@
 package com.megginson.sloop.app;
 
+import java.io.IOException;
+import java.io.InputStream;
+
+import com.megginson.sloop.model.DataCollection;
 import com.megginson.sloop.model.DataCollectionManager;
 
 /**
@@ -13,6 +17,8 @@ import com.megginson.sloop.model.DataCollectionManager;
 public class SloopApp {
 
 	private DataCollectionManager dataCollectionManager = new DataCollectionManager();
+
+	private DataCollection currentDataCollection = null;
 
 	/**
 	 * Private constructor to force a singleton.
@@ -32,7 +38,64 @@ public class SloopApp {
 	public DataCollectionManager getDataCollectionManager() {
 		return dataCollectionManager;
 	}
-	
+
+	/**
+	 * Get the currently-active data collection.
+	 * 
+	 * @return The currently-active data collection, or null if none has been
+	 *         loaded yet.
+	 * @see #getDataCollection(String)
+	 * @see #getDataCollection(String, InputStream)
+	 */
+	public DataCollection getCurrentDataCollection() {
+		return currentDataCollection;
+	}
+
+	/**
+	 * Get a data collection and set it as the current one for the app.
+	 * 
+	 * Invokes {@link DataCollectionManager#getCollection(String)} to load the
+	 * collection, then sets it as the current collection returned by
+	 * {@link #getCurrentDataCollection()}.
+	 * 
+	 * @param url
+	 *            The URL of the data collection.
+	 * @return The newly-loaded data collection.
+	 * @throws IOException
+	 *             If there is an error loading the collection.
+	 */
+	public DataCollection getDataCollection(String url) throws IOException {
+		DataCollection dataCollection = getDataCollectionManager()
+				.getCollection(url);
+		currentDataCollection = dataCollection;
+		return dataCollection;
+	}
+
+	/**
+	 * Get a data collection and set it as the current one for the app.
+	 * 
+	 * This method essentially lets the caller fake loading a file from a URL.
+	 * 
+	 * Invokes {@link DataCollectionManager#getCollection(String)} to load the
+	 * collection, then sets it as the current collection returned by
+	 * {@link #getCurrentDataCollection()}.
+	 * 
+	 * @param url
+	 *            The URL of the data collection (not used for loading).
+	 * @param input
+	 *            The input stream containing the actual data collection.
+	 * @return The newly-loaded data collection.
+	 * @throws IOException
+	 *             If there is an error loading the collection.
+	 */
+	public DataCollection getDataCollection(String url, InputStream input)
+			throws IOException {
+		DataCollection dataCollection = getDataCollectionManager()
+				.getCollection(url, input);
+		currentDataCollection = dataCollection;
+		return dataCollection;
+	}
+
 	//
 	// Static singleton access
 	//
