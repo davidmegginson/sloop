@@ -1,10 +1,7 @@
 package com.megginson.sloop.ui;
 
 import java.io.IOException;
-
-import com.megginson.sloop.R;
-import com.megginson.sloop.model.DataCollection;
-import com.megginson.sloop.model.DummyDataCollectionFactory;
+import java.io.InputStream;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -12,10 +9,16 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 
+import com.megginson.sloop.R;
+import com.megginson.sloop.app.SloopApp;
+import com.megginson.sloop.model.DataCollection;
+
 public class MainActivity extends FragmentActivity {
 
 	// FIXME temporary kludge - need a collection manager
 	public static DataCollection dataCollection = null;
+	
+	public static String SAMPLE_FILE = "pwgsc_pre-qualified_supplier_data.csv";
 
 	/**
 	 * The {@link PagerAdapter} for the current data collection.
@@ -35,8 +38,13 @@ public class MainActivity extends FragmentActivity {
 		// Create a DataCollection and wrap it in a pager adapter.
 		if (dataCollection == null) {
 			try {
-				dataCollection = DummyDataCollectionFactory.readDataCollection(
-						getAssets(), "pwgsc_pre-qualified_supplier_data.csv");
+				SloopApp app = SloopApp.getInstance();
+				InputStream input = getAssets().open("pwgsc_pre-qualified_supplier_data.csv");
+				try {
+					dataCollection = app.getDataCollectionManager().getCollection(SAMPLE_FILE, input);
+				} finally {
+					input.close();
+				}
 			} catch (IOException e) {
 				System.err.println(e.getMessage());
 				return;

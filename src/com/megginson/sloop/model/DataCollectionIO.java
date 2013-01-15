@@ -10,7 +10,7 @@ import au.com.bytecode.opencsv.CSVReader;
  * 
  * @author David Megginson
  */
-public class DataCollectionFactory {
+public class DataCollectionIO {
 	
 	public static DataCollection readCSV (Reader input) throws IOException {
 		DataCollection dataCollection = new DataCollection();
