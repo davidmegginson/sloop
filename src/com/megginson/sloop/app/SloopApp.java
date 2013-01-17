@@ -3,6 +3,8 @@ package com.megginson.sloop.app;
 import java.io.IOException;
 import java.io.InputStream;
 
+import android.app.Application;
+
 import com.megginson.sloop.model.DataCollection;
 import com.megginson.sloop.model.DataCollectionManager;
 
@@ -14,7 +16,7 @@ import com.megginson.sloop.model.DataCollectionManager;
  * 
  * @author David Megginson
  */
-public class SloopApp {
+public class SloopApp extends Application {
 
 	private DataCollectionManager dataCollectionManager = new DataCollectionManager();
 
@@ -23,7 +25,7 @@ public class SloopApp {
 	/**
 	 * Private constructor to force a singleton.
 	 */
-	private SloopApp() {
+	public SloopApp() {
 		super();
 	}
 
