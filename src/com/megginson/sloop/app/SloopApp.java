@@ -22,12 +22,18 @@ public class SloopApp extends Application {
 
 	private DataCollection currentDataCollection = null;
 
-	/**
-	 * Private constructor to force a singleton.
-	 */
 	public SloopApp() {
 		super();
 	}
+	
+	@Override
+	public void onCreate() {
+		super.onCreate();
+		// save as a singleton
+		app = this;
+	}
+
+
 
 	/**
 	 * Get the manager for loading data collections.
@@ -102,18 +108,6 @@ public class SloopApp extends Application {
 	// Static singleton access
 	//
 
-	private static SloopApp app = null;
-
-	/**
-	 * Return a singleton instance of the Sloop app.
-	 * 
-	 * @return The Sloop app (created if needed).
-	 */
-	public static SloopApp getInstance() {
-		if (app == null) {
-			app = new SloopApp();
-		}
-		return app;
-	}
+	public static SloopApp app;
 
 }

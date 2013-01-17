@@ -31,12 +31,11 @@ public class DataRecordFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 
-		SloopApp app = SloopApp.getInstance();
 		LinearLayout layout = new LinearLayout(getActivity());
 		layout.setOrientation(LinearLayout.VERTICAL);
 		
 		int position = getArguments().getInt("position");
-		DataRecord dataRecord = app.getCurrentDataCollection().get(position);
+		DataRecord dataRecord = SloopApp.app.getCurrentDataCollection().get(position);
 
 		for (DataEntry entry : dataRecord) {
 			addLabel(layout, entry.getKey());

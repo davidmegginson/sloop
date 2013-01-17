@@ -35,11 +35,10 @@ public class MainActivity extends FragmentActivity {
 		// Create a DataCollection and wrap it in a pager adapter.
 		DataCollection dataCollection = null;
 		try {
-			SloopApp app = SloopApp.getInstance();
 			InputStream input = getAssets().open(
 					"pwgsc_pre-qualified_supplier_data.csv");
 			try {
-				dataCollection = app.getDataCollection(SAMPLE_FILE, input);
+				dataCollection = SloopApp.app.getDataCollection(SAMPLE_FILE, input);
 			} finally {
 				input.close();
 			}
