@@ -24,6 +24,8 @@ public class DataCollectionLoader extends AsyncTaskLoader<DataCollection> {
 	 */
 	private String url = null;
 
+	private InputStream input = null;
+
 	/**
 	 * Last data collection loaded.
 	 */
@@ -36,7 +38,8 @@ public class DataCollectionLoader extends AsyncTaskLoader<DataCollection> {
 	/**
 	 * Get the URL for the next load.
 	 * 
-	 * @return the URL for the next load, as a string, or null if none has been set.
+	 * @return the URL for the next load, as a string, or null if none has been
+	 *         set.
 	 */
 	public String getURL() {
 		return url;
@@ -45,7 +48,8 @@ public class DataCollectionLoader extends AsyncTaskLoader<DataCollection> {
 	/**
 	 * Set the URL for the next load.
 	 * 
-	 * @param url the URL for the next load, as a string.
+	 * @param url
+	 *            the URL for the next load, as a string.
 	 */
 	public void setURL(String url) {
 		if (url != this.url) {
@@ -54,18 +58,30 @@ public class DataCollectionLoader extends AsyncTaskLoader<DataCollection> {
 		}
 	}
 
+	public InputStream getInput() {
+		return input;
+	}
+
+	public void setInput(InputStream input) {
+		this.input = input;
+	}
+
 	@Override
 	public DataCollection loadInBackground() {
 		if (this.dataCollection == null) {
 			DataCollection dataCollection = null;
 			try {
-				InputStream input = new URL(url).openStream();
+				if (url != null) {
+					input = new URL(url).openStream();
+				}
 				try {
 					dataCollection = DataCollectionIO
 							.readCSV(new InputStreamReader(input, Charset
 									.forName("utf8")));
 				} finally {
-					input.close();
+					if (url != null) {
+						input.close();
+					}
 				}
 			} catch (IOException e) {
 				System.err.println(e.getMessage());

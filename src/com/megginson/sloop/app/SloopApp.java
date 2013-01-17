@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import android.app.Application;
+import android.content.Loader;
+import android.content.Loader.OnLoadCompleteListener;
 
 import com.megginson.sloop.model.DataCollection;
 import com.megginson.sloop.model.DataCollectionManager;
@@ -17,13 +19,28 @@ import com.megginson.sloop.model.DataCollectionManager;
  * @author David Megginson
  */
 public class SloopApp extends Application {
-
+	
 	private DataCollectionManager dataCollectionManager = new DataCollectionManager();
 
 	private DataCollection currentDataCollection = null;
 
 	public SloopApp() {
 		super();
+	}
+	
+	public void loadDataCollection (String url, final OnLoadCompleteListener<DataCollection> destination) {
+		DataCollectionLoader loader = new DataCollectionLoader(getApplicationContext());
+		OnLoadCompleteListener<DataCollection> listener = new OnLoadCompleteListener<DataCollection>() {
+			@Override
+			public void onLoadComplete(Loader<DataCollection> loader,
+					DataCollection dataCollection) {
+				destination.onLoadComplete(loader,  dataCollection);
+				loader.unregisterListener(this);
+			}
+		};
+		loader.registerListener(0, listener);
+		loader.setURL(url);
+		loader.startLoading();
 	}
 	
 	@Override
