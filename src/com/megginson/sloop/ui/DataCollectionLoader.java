@@ -23,13 +23,8 @@ public class DataCollectionLoader extends AsyncTaskLoader<DataCollection> {
 	 * URL of the data collection to be loaded.
 	 */
 	private String mUrl = null;
-
-	/**
-	 * Input stream of the data collection to be loaded.
-	 * 
-	 * If not null, overrides the URL.
-	 */
-	private InputStream mInput = null;
+	
+	private String mResourceName = null;
 
 	/**
 	 * Last data collection loaded.
@@ -62,27 +57,15 @@ public class DataCollectionLoader extends AsyncTaskLoader<DataCollection> {
 			mUrl = url;
 		}
 	}
-
-	/**
-	 * Get the input stream for the next load.
-	 * 
-	 * @return the {@link InputStream}, or null if none has been set.
-	 */
-	public InputStream getInput() {
-		return mInput;
+	
+	public String getResourceName() {
+		return mResourceName;
 	}
-
-	/**
-	 * Set the input stream for the next load.
-	 * 
-	 * If set, will be used instead of the URL.
-	 * 
-	 * @param input the {@link InputStream} for the next load, or null to remove.
-	 */
-	public void setInput(InputStream input) {
-		if (input != mInput) {
-			mInput = input;
+	
+	public void setResourceName(String resourceName) {
+		if (resourceName != mResourceName) {
 			mDataCollection = null;
+			mResourceName = resourceName;
 		}
 	}
 
@@ -103,17 +86,18 @@ public class DataCollectionLoader extends AsyncTaskLoader<DataCollection> {
 		if (mDataCollection == null) {
 			DataCollection dataCollection = null;
 			try {
-				if (mUrl != null) {
-					mInput = new URL(mUrl).openStream();
+				InputStream input = null;
+				if (mResourceName != null) {
+					input = getContext().getAssets().open(mResourceName);
+				} else {
+					input = new URL(mUrl).openStream();
 				}
 				try {
 					dataCollection = DataCollectionIO
-							.readCSV(new InputStreamReader(mInput, Charset
+							.readCSV(new InputStreamReader(input, Charset
 									.forName("utf8")));
 				} finally {
-					if (mUrl != null) {
-						mInput.close();
-					}
+						input.close();
 				}
 			} catch (IOException e) {
 				System.err.println(e.getMessage());

@@ -1,8 +1,5 @@
 package com.megginson.sloop.ui;
 
-import java.io.IOException;
-import java.io.InputStream;
-
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Loader;
 import android.os.Bundle;
@@ -42,7 +39,9 @@ public class MainActivity extends FragmentActivity implements
 		mPagerAdapter = new DataCollectionPagerAdapter(
 				getSupportFragmentManager());
 		
-		getLoaderManager().initLoader(0, null, this);
+		Bundle args = new Bundle();
+		args.putString("resourceName", "pwgsc_pre-qualified_supplier_data.csv");
+		getLoaderManager().initLoader(0, args, this);
 		setProgressBarIndeterminateVisibility(true);
 
 		// Set up the ViewPager with the data collection adapter.
@@ -74,21 +73,14 @@ public class MainActivity extends FragmentActivity implements
 		// XXX do we have to do anything with args?
 		DataCollectionLoader loader = new DataCollectionLoader(
 				getApplicationContext());
-		try {
-			// FIXME never closed
-			InputStream input = getAssets().open(
-					"pwgsc_pre-qualified_supplier_data.csv");
-			loader.setInput(input);
-		} catch (IOException e) {
-			System.err.println(e.getMessage());
-		}
+		loader.setURL(args.getString("url"));
+		loader.setResourceName(args.getString("resourceName"));
 		return loader;
 	}
 
 	@Override
 	public void onLoadFinished(Loader<DataCollection> loader,
 			DataCollection dataCollection) {
-		System.err.println("Finished loading");
 		mPagerAdapter.setDataCollection(dataCollection);
 		MainActivity.this.setProgressBarIndeterminateVisibility(false);
 	}
