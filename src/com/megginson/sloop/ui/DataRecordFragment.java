@@ -22,16 +22,8 @@ import com.megginson.sloop.model.DataRecord;
  */
 public class DataRecordFragment extends Fragment {
 	
-	private DataRecord mDataRecord = null;
-
 	public DataRecordFragment() {
 		super();
-	}
-	
-	// FIXME NullPointerException on orientation change
-	// this probably needs to be serializable
-	public void setDataRecord (DataRecord dataRecord) {
-		mDataRecord = dataRecord;
 	}
 	
 	@Override
@@ -41,7 +33,9 @@ public class DataRecordFragment extends Fragment {
 		LinearLayout layout = new LinearLayout(getActivity());
 		layout.setOrientation(LinearLayout.VERTICAL);
 		
-		for (DataEntry entry : mDataRecord) {
+		DataRecord dataRecord = getArguments().getParcelable("dataRecord");
+		
+		for (DataEntry entry : dataRecord) {
 			addLabel(layout, entry.getKey());
 			addValue(layout, entry.getValue());	
 		}

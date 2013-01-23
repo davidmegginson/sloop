@@ -30,7 +30,9 @@ public class DataCollectionPagerAdapter extends FragmentStatePagerAdapter {
 	@Override
 	public Fragment getItem(int position) {
 		DataRecordFragment fragment = new DataRecordFragment();
-		fragment.setDataRecord(mDataCollection.get(position));
+		Bundle args = new Bundle();
+		args.putParcelable("dataRecord", mDataCollection.get(position));
+		fragment.setArguments(args);
 		return fragment;
 	}
 
