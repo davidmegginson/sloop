@@ -28,6 +28,8 @@ public class DataRecordFragment extends Fragment {
 		super();
 	}
 	
+	// FIXME NullPointerException on orientation change
+	// this probably needs to be serializable
 	public void setDataRecord (DataRecord dataRecord) {
 		mDataRecord = dataRecord;
 	}

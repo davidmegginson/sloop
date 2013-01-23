@@ -3,7 +3,10 @@ package com.megginson.sloop.model;
 import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+
+import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 /**
  * A data record, consisting of name/value pairs.
@@ -11,13 +14,14 @@ import java.util.Map;
  * TODO This is initially just a naive implementation wrapping an ArrayList. It
  * will evolve into something more memory-efficient later.
  * 
- * TODO should this be a {@link Map}?
+ * Implements the {@link Parcelable} interface so that it can be saved in an
+ * Android {@link Bundle}.
  * 
  * @author David Megginson
  * @see DataCollection
  * @see DataEntry
  */
-public class DataRecord extends AbstractList<DataEntry> {
+public class DataRecord extends AbstractList<DataEntry> implements Parcelable {
 
 	private List<DataEntry> dataEntries = new ArrayList<DataEntry>();
 
@@ -53,5 +57,37 @@ public class DataRecord extends AbstractList<DataEntry> {
 	public DataEntry remove(int location) {
 		return dataEntries.remove(location);
 	}
+
+	@Override
+	public int describeContents() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void writeToParcel(Parcel dest, int flags) {
+		dest.writeInt(dataEntries.size());
+		for (DataEntry dataEntry : dataEntries) {
+			dest.writeParcelable(dataEntry, 0);
+		}
+	}
+
+	public final static Parcelable.Creator<DataRecord> CREATOR = new Parcelable.Creator<DataRecord>() {
+
+		@Override
+		public DataRecord createFromParcel(Parcel source) {
+			DataRecord dataRecord = new DataRecord();
+			int size = source.readInt();
+			for (int i = 0; i < size; i++) {
+				dataRecord.add((DataEntry) source.readParcelable(null));
+			}
+			return dataRecord;
+		}
+
+		@Override
+		public DataRecord[] newArray(int size) {
+			return new DataRecord[size];
+		}
+	};
 
 }
