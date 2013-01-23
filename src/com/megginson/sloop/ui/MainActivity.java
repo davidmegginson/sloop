@@ -39,11 +39,6 @@ public class MainActivity extends FragmentActivity implements
 		mPagerAdapter = new DataCollectionPagerAdapter(
 				getSupportFragmentManager());
 
-		Bundle args = new Bundle();
-		args.putString("resourceName", "pwgsc_pre-qualified_supplier_data.csv");
-		getLoaderManager().initLoader(0, args, this);
-		setProgressBarIndeterminateVisibility(true);
-
 		// Set up the ViewPager with the data collection adapter.
 		mViewPager = (ViewPager) findViewById(R.id.pager);
 		mViewPager.setAdapter(mPagerAdapter);
