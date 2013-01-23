@@ -33,8 +33,14 @@ public class MainActivity extends FragmentActivity implements
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
 		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+
 		setContentView(R.layout.activity_main);
+
+		// Not necessary for 4.2, but for 4.0, this has to be called after the
+		// content view has been set, or else we start with the spinner active.
+		setProgressBarIndeterminateVisibility(false);
 
 		mPagerAdapter = new DataCollectionPagerAdapter(
 				getSupportFragmentManager());
