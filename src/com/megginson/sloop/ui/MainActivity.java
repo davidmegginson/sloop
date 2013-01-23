@@ -13,7 +13,6 @@ import android.view.Menu;
 
 import com.megginson.sloop.R;
 import com.megginson.sloop.app.DataCollectionLoader;
-import com.megginson.sloop.app.SloopApp;
 import com.megginson.sloop.model.DataCollection;
 
 public class MainActivity extends FragmentActivity implements LoaderCallbacks<DataCollection> {
@@ -23,7 +22,7 @@ public class MainActivity extends FragmentActivity implements LoaderCallbacks<Da
 	/**
 	 * The {@link PagerAdapter} for the current data collection.
 	 */
-	DataCollectionPagerAdapter mDataCollectionPagerAdapter;
+	DataCollectionPagerAdapter mPagerAdapter;
 
 	/**
 	 * The {@link ViewPager} that will host the data collection.
@@ -34,27 +33,15 @@ public class MainActivity extends FragmentActivity implements LoaderCallbacks<Da
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		
+		mPagerAdapter = new DataCollectionPagerAdapter(
+				getSupportFragmentManager());
 
-		// Create a DataCollection and wrap it in a pager adapter.
-		DataCollection dataCollection = null;
-		try {
-			InputStream input = getAssets().open(
-					"pwgsc_pre-qualified_supplier_data.csv");
-			try {
-				dataCollection = SloopApp.app.getDataCollection(SAMPLE_FILE, input);
-			} finally {
-				input.close();
-			}
-		} catch (IOException e) {
-			System.err.println(e.getMessage());
-			return;
-		}
-		mDataCollectionPagerAdapter = new DataCollectionPagerAdapter(
-				getSupportFragmentManager(), dataCollection);
+		getLoaderManager().initLoader(0, null, this);
 
 		// Set up the ViewPager with the data collection adapter.
 		mViewPager = (ViewPager) findViewById(R.id.pager);
-		mViewPager.setAdapter(mDataCollectionPagerAdapter);
+		mViewPager.setAdapter(mPagerAdapter);
 	}
 
 	@Override
@@ -69,12 +56,20 @@ public class MainActivity extends FragmentActivity implements LoaderCallbacks<Da
 		// only one loader for now, so ignore id
 		// XXX do we have to do anything with args?
 		DataCollectionLoader loader = new DataCollectionLoader(getApplicationContext());
+		try {
+			// FIXME never closed
+			InputStream input = getAssets().open(
+					"pwgsc_pre-qualified_supplier_data.csv");
+			loader.setInput(input);
+		} catch (IOException e) {
+			System.err.println(e.getMessage());
+		}
 		return loader;
 	}
 
 	@Override
 	public void onLoadFinished(Loader<DataCollection> loader, DataCollection dataCollection) {
-		// TODO update the viewpager with the new data
+		mPagerAdapter.setDataCollection(dataCollection);
 	}
 
 	@Override

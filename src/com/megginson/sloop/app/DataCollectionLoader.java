@@ -25,7 +25,7 @@ public class DataCollectionLoader extends AsyncTaskLoader<DataCollection> {
 	private String url = null;
 
 	private InputStream input = null;
-
+	
 	/**
 	 * Last data collection loaded.
 	 */
@@ -64,6 +64,20 @@ public class DataCollectionLoader extends AsyncTaskLoader<DataCollection> {
 
 	public void setInput(InputStream input) {
 		this.input = input;
+	}
+	
+	
+
+	@Override
+	protected void onStartLoading() {
+		// TODO Auto-generated method stub
+		if (dataCollection != null) {
+			deliverResult(dataCollection);
+		}
+		if (takeContentChanged() || dataCollection == null) {
+			forceLoad();
+		}
+		super.onStartLoading();
 	}
 
 	@Override

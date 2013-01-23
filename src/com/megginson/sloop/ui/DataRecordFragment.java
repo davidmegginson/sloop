@@ -10,7 +10,6 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.megginson.sloop.app.SloopApp;
 import com.megginson.sloop.model.DataEntry;
 import com.megginson.sloop.model.DataRecord;
 
@@ -22,9 +21,15 @@ import com.megginson.sloop.model.DataRecord;
  * @see DataCollectionPagerAdapter
  */
 public class DataRecordFragment extends Fragment {
+	
+	private DataRecord mDataRecord = null;
 
 	public DataRecordFragment() {
 		super();
+	}
+	
+	public void setDataRecord (DataRecord dataRecord) {
+		mDataRecord = dataRecord;
 	}
 	
 	@Override
@@ -34,10 +39,7 @@ public class DataRecordFragment extends Fragment {
 		LinearLayout layout = new LinearLayout(getActivity());
 		layout.setOrientation(LinearLayout.VERTICAL);
 		
-		int position = getArguments().getInt("position");
-		DataRecord dataRecord = SloopApp.app.getCurrentDataCollection().get(position);
-
-		for (DataEntry entry : dataRecord) {
+		for (DataEntry entry : mDataRecord) {
 			addLabel(layout, entry.getKey());
 			addValue(layout, entry.getValue());	
 		}
