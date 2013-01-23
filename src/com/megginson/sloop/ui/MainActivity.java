@@ -10,7 +10,10 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
+import android.view.View;
 import android.view.Window;
+import android.widget.Button;
+import android.widget.EditText;
 
 import com.megginson.sloop.R;
 import com.megginson.sloop.model.DataCollection;
@@ -45,6 +48,16 @@ public class MainActivity extends FragmentActivity implements
 		// Set up the ViewPager with the data collection adapter.
 		mViewPager = (ViewPager) findViewById(R.id.pager);
 		mViewPager.setAdapter(mPagerAdapter);
+		
+		Button goButton = (Button)findViewById(R.id.goButton);
+		goButton.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				String url = ((EditText)findViewById(R.id.urlField)).getText().toString();
+				System.err.println("Load URL " + url);
+			}
+		});
 	}
 
 	@Override
