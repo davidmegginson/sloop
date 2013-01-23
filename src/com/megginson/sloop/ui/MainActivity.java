@@ -29,7 +29,7 @@ public class MainActivity extends FragmentActivity implements
 	 * The {@link ViewPager} that will host the data collection.
 	 */
 	private ViewPager mViewPager;
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -38,7 +38,7 @@ public class MainActivity extends FragmentActivity implements
 
 		mPagerAdapter = new DataCollectionPagerAdapter(
 				getSupportFragmentManager());
-		
+
 		Bundle args = new Bundle();
 		args.putString("resourceName", "pwgsc_pre-qualified_supplier_data.csv");
 		getLoaderManager().initLoader(0, args, this);
@@ -47,14 +47,22 @@ public class MainActivity extends FragmentActivity implements
 		// Set up the ViewPager with the data collection adapter.
 		mViewPager = (ViewPager) findViewById(R.id.pager);
 		mViewPager.setAdapter(mPagerAdapter);
-		
-		Button goButton = (Button)findViewById(R.id.goButton);
+
+		Button goButton = (Button) findViewById(R.id.goButton);
 		goButton.setOnClickListener(new View.OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
-				String url = ((EditText)findViewById(R.id.urlField)).getText().toString();
-				System.err.println("Load URL " + url);
+				String url = ((EditText) findViewById(R.id.urlField)).getText()
+						.toString();
+				if (url != null && url.length() > 0) {
+					Bundle args = new Bundle();
+					args.putString("url", url);
+					getLoaderManager()
+							.restartLoader(0, args, MainActivity.this);
+					setProgressBarIndeterminateVisibility(true);
+					System.err.println("Loading URL " + url);
+				}
 			}
 		});
 	}
@@ -68,7 +76,6 @@ public class MainActivity extends FragmentActivity implements
 
 	@Override
 	public Loader<DataCollection> onCreateLoader(int id, Bundle args) {
-		System.err.println("onCreateLoader()");
 		// only one loader for now, so ignore id
 		// XXX do we have to do anything with args?
 		DataCollectionLoader loader = new DataCollectionLoader(

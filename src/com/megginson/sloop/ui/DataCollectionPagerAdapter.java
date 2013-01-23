@@ -46,4 +46,10 @@ public class DataCollectionPagerAdapter extends FragmentStatePagerAdapter {
 		return "Record #" + (position + 1);
 	}
 
+	@Override
+	public int getItemPosition(Object object) {
+		// force a reset after notifyChanged
+		return POSITION_NONE;
+	}
+
 }
