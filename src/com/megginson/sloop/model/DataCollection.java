@@ -5,11 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A collection of data records (i.e. a file).
- * 
- * TODO This is a naive implementation that simply wraps an ArrayList. It will
- * evolve into something more efficient for large data files, using arrays and
- * indices.
+ * A collection of data records (i.e. internal representation of a CSV file).
  * 
  * @author David Megginson
  * @see DataRecord
@@ -17,31 +13,31 @@ import java.util.List;
  */
 public class DataCollection extends AbstractList<DataRecord> {
 
-	private List<DataRecord> dataRecords = new ArrayList<DataRecord>();
+	private List<DataRecord> mDataRecords = new ArrayList<DataRecord>();
 
 	@Override
 	public DataRecord get(int location) {
-		return dataRecords.get(location);
+		return mDataRecords.get(location);
 	}
 
 	@Override
 	public int size() {
-		return dataRecords.size();
+		return mDataRecords.size();
 	}
 
 	@Override
 	public DataRecord set(int location, DataRecord dataRecord) {
-		return dataRecords.set(location, dataRecord);
+		return mDataRecords.set(location, dataRecord);
 	}
 
 	@Override
 	public void add(int location, DataRecord dataRecord) {
-		dataRecords.add(location, dataRecord);
+		mDataRecords.add(location, dataRecord);
 	}
 
 	@Override
 	public DataRecord remove(int location) {
-		return dataRecords.remove(location);
+		return mDataRecords.remove(location);
 	}
 
 }

@@ -1,4 +1,4 @@
-package com.megginson.sloop.app;
+package com.megginson.sloop.ui;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,14 +22,19 @@ public class DataCollectionLoader extends AsyncTaskLoader<DataCollection> {
 	/**
 	 * URL of the data collection to be loaded.
 	 */
-	private String url = null;
+	private String mUrl = null;
 
-	private InputStream input = null;
-	
+	/**
+	 * Input stream of the data collection to be loaded.
+	 * 
+	 * If not null, overrides the URL.
+	 */
+	private InputStream mInput = null;
+
 	/**
 	 * Last data collection loaded.
 	 */
-	private DataCollection dataCollection = null;
+	private DataCollection mDataCollection = null;
 
 	public DataCollectionLoader(Context context) {
 		super(context);
@@ -42,7 +47,7 @@ public class DataCollectionLoader extends AsyncTaskLoader<DataCollection> {
 	 *         set.
 	 */
 	public String getURL() {
-		return url;
+		return mUrl;
 	}
 
 	/**
@@ -52,29 +57,42 @@ public class DataCollectionLoader extends AsyncTaskLoader<DataCollection> {
 	 *            the URL for the next load, as a string.
 	 */
 	public void setURL(String url) {
-		if (url != this.url) {
-			dataCollection = null;
-			this.url = url;
+		if (url != mUrl) {
+			mDataCollection = null;
+			mUrl = url;
 		}
 	}
 
+	/**
+	 * Get the input stream for the next load.
+	 * 
+	 * @return the {@link InputStream}, or null if none has been set.
+	 */
 	public InputStream getInput() {
-		return input;
+		return mInput;
 	}
 
+	/**
+	 * Set the input stream for the next load.
+	 * 
+	 * If set, will be used instead of the URL.
+	 * 
+	 * @param input the {@link InputStream} for the next load, or null to remove.
+	 */
 	public void setInput(InputStream input) {
-		this.input = input;
+		if (input != mInput) {
+			mInput = input;
+			mDataCollection = null;
+		}
 	}
-	
-	
 
 	@Override
 	protected void onStartLoading() {
 		// TODO Auto-generated method stub
-		if (dataCollection != null) {
-			deliverResult(dataCollection);
+		if (mDataCollection != null) {
+			deliverResult(mDataCollection);
 		}
-		if (takeContentChanged() || dataCollection == null) {
+		if (takeContentChanged() || mDataCollection == null) {
 			forceLoad();
 		}
 		super.onStartLoading();
@@ -82,27 +100,27 @@ public class DataCollectionLoader extends AsyncTaskLoader<DataCollection> {
 
 	@Override
 	public DataCollection loadInBackground() {
-		if (this.dataCollection == null) {
+		if (mDataCollection == null) {
 			DataCollection dataCollection = null;
 			try {
-				if (url != null) {
-					input = new URL(url).openStream();
+				if (mUrl != null) {
+					mInput = new URL(mUrl).openStream();
 				}
 				try {
 					dataCollection = DataCollectionIO
-							.readCSV(new InputStreamReader(input, Charset
+							.readCSV(new InputStreamReader(mInput, Charset
 									.forName("utf8")));
 				} finally {
-					if (url != null) {
-						input.close();
+					if (mUrl != null) {
+						mInput.close();
 					}
 				}
 			} catch (IOException e) {
 				System.err.println(e.getMessage());
 			}
-			this.dataCollection = dataCollection;
+			mDataCollection = dataCollection;
 		}
-		return this.dataCollection;
+		return mDataCollection;
 	}
 
 }

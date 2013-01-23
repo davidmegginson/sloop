@@ -11,9 +11,6 @@ import android.os.Parcelable;
 /**
  * A data record, consisting of name/value pairs.
  * 
- * TODO This is initially just a naive implementation wrapping an ArrayList. It
- * will evolve into something more memory-efficient later.
- * 
  * Implements the {@link Parcelable} interface so that it can be saved in an
  * Android {@link Bundle}.
  * 
@@ -23,39 +20,47 @@ import android.os.Parcelable;
  */
 public class DataRecord extends AbstractList<DataEntry> implements Parcelable {
 
-	private List<DataEntry> dataEntries = new ArrayList<DataEntry>();
+	private List<DataEntry> mDataEntries = new ArrayList<DataEntry>();
 
 	public DataRecord() {
 		super();
 	}
 
+	/**
+	 * Convenience function to create and add a new entry.
+	 * 
+	 * Equivalent to add(new DataEntry(name, value)).
+	 * 
+	 * @param name The name/label of the {@link DataEntry}.
+	 * @param value The string value of the {@link DataEntry}.
+	 */
 	public void addEntry(String name, String value) {
 		add(new DataEntry(name, value));
 	}
 
 	@Override
 	public DataEntry get(int location) {
-		return dataEntries.get(location);
+		return mDataEntries.get(location);
 	}
 
 	@Override
 	public int size() {
-		return dataEntries.size();
+		return mDataEntries.size();
 	}
 
 	@Override
 	public DataEntry set(int location, DataEntry entry) {
-		return dataEntries.set(location, entry);
+		return mDataEntries.set(location, entry);
 	}
 
 	@Override
 	public void add(int location, DataEntry entry) {
-		dataEntries.add(location, entry);
+		mDataEntries.add(location, entry);
 	}
 
 	@Override
 	public DataEntry remove(int location) {
-		return dataEntries.remove(location);
+		return mDataEntries.remove(location);
 	}
 
 	@Override
@@ -66,8 +71,8 @@ public class DataRecord extends AbstractList<DataEntry> implements Parcelable {
 
 	@Override
 	public void writeToParcel(Parcel dest, int flags) {
-		dest.writeInt(dataEntries.size());
-		for (DataEntry dataEntry : dataEntries) {
+		dest.writeInt(mDataEntries.size());
+		for (DataEntry dataEntry : mDataEntries) {
 			dest.writeParcelable(dataEntry, 0);
 		}
 	}

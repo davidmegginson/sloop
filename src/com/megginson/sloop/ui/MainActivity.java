@@ -10,34 +10,37 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
+import android.view.Window;
 
 import com.megginson.sloop.R;
-import com.megginson.sloop.app.DataCollectionLoader;
 import com.megginson.sloop.model.DataCollection;
 
-public class MainActivity extends FragmentActivity implements LoaderCallbacks<DataCollection> {
+public class MainActivity extends FragmentActivity implements
+		LoaderCallbacks<DataCollection> {
 
 	public static String SAMPLE_FILE = "pwgsc_pre-qualified_supplier_data.csv";
 
 	/**
 	 * The {@link PagerAdapter} for the current data collection.
 	 */
-	DataCollectionPagerAdapter mPagerAdapter;
+	private DataCollectionPagerAdapter mPagerAdapter;
 
 	/**
 	 * The {@link ViewPager} that will host the data collection.
 	 */
-	ViewPager mViewPager;
-
+	private ViewPager mViewPager;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		setContentView(R.layout.activity_main);
-		
+
 		mPagerAdapter = new DataCollectionPagerAdapter(
 				getSupportFragmentManager());
-
+		
 		getLoaderManager().initLoader(0, null, this);
+		setProgressBarIndeterminateVisibility(true);
 
 		// Set up the ViewPager with the data collection adapter.
 		mViewPager = (ViewPager) findViewById(R.id.pager);
@@ -53,9 +56,11 @@ public class MainActivity extends FragmentActivity implements LoaderCallbacks<Da
 
 	@Override
 	public Loader<DataCollection> onCreateLoader(int id, Bundle args) {
+		System.err.println("onCreateLoader()");
 		// only one loader for now, so ignore id
 		// XXX do we have to do anything with args?
-		DataCollectionLoader loader = new DataCollectionLoader(getApplicationContext());
+		DataCollectionLoader loader = new DataCollectionLoader(
+				getApplicationContext());
 		try {
 			// FIXME never closed
 			InputStream input = getAssets().open(
@@ -68,8 +73,11 @@ public class MainActivity extends FragmentActivity implements LoaderCallbacks<Da
 	}
 
 	@Override
-	public void onLoadFinished(Loader<DataCollection> loader, DataCollection dataCollection) {
+	public void onLoadFinished(Loader<DataCollection> loader,
+			DataCollection dataCollection) {
+		System.err.println("Finished loading");
 		mPagerAdapter.setDataCollection(dataCollection);
+		MainActivity.this.setProgressBarIndeterminateVisibility(false);
 	}
 
 	@Override

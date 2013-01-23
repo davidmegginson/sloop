@@ -21,27 +21,27 @@ import android.os.Parcelable;
  */
 public class DataEntry implements Map.Entry<String, String>, Parcelable {
 
-	private String key;
-	private String value;
+	private String mKey;
+	private String mValue;
 
 	public DataEntry(String key, String value) {
-		this.key = key;
+		mKey = key;
 		setValue(value);
 	}
 
 	@Override
 	public String getKey() {
-		return key;
+		return mKey;
 	}
 
 	@Override
 	public String getValue() {
-		return value;
+		return mValue;
 	}
 
 	@Override
 	public String setValue(String value) {
-		this.value = value;
+		mValue = value;
 		return value;
 	}
 
@@ -52,8 +52,8 @@ public class DataEntry implements Map.Entry<String, String>, Parcelable {
 
 	@Override
 	public void writeToParcel(Parcel dest, int flags) {
-		dest.writeString(key);
-		dest.writeString(value);
+		dest.writeString(mKey);
+		dest.writeString(mValue);
 	}
 
 	public final static Parcelable.Creator<DataEntry> CREATOR = new Parcelable.Creator<DataEntry>() {
