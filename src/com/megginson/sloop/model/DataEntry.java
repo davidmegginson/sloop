@@ -9,9 +9,6 @@ import android.os.Parcelable;
 /**
  * A single name=value pair in a data record.
  * 
- * TODO This is initially a naive implementation. It will evolve into something
- * more efficient, probably involving indexes into arrays.
- * 
  * This implements the {@link Parcelable} interface, so that it can be passed
  * around in an Android {@link Bundle}.
  * 
@@ -54,6 +51,33 @@ public class DataEntry implements Map.Entry<String, String>, Parcelable {
 	public void writeToParcel(Parcel dest, int flags) {
 		dest.writeString(mKey);
 		dest.writeString(mValue);
+	}
+
+	@Override
+	protected Object clone() throws CloneNotSupportedException {
+		return new DataEntry(getKey(), getValue());
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (o == this) {
+			return true;
+		} else if (o instanceof DataEntry) {
+			return getKey().equals(((DataEntry) o).getKey())
+					&& getValue().equals(((DataEntry) o).getValue());
+		} else {
+			return false;
+		}
+	}
+
+	@Override
+	public int hashCode() {
+		return getKey().hashCode() + getValue().hashCode();
+	}
+
+	@Override
+	public String toString() {
+		return "{" + getKey() + "=" + getValue() + "}";
 	}
 
 	public final static Parcelable.Creator<DataEntry> CREATOR = new Parcelable.Creator<DataEntry>() {
