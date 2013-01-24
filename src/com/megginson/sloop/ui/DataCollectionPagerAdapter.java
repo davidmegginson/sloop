@@ -11,7 +11,7 @@ import com.megginson.sloop.model.DataCollection;
  * Pager adapter for a data collection.
  */
 public class DataCollectionPagerAdapter extends FragmentStatePagerAdapter {
-
+	
 	private DataCollection mDataCollection = new DataCollection();
 
 	public DataCollectionPagerAdapter(FragmentManager fm) {
@@ -23,8 +23,10 @@ public class DataCollectionPagerAdapter extends FragmentStatePagerAdapter {
 	}
 
 	public void setDataCollection(DataCollection dataCollection) {
-		mDataCollection = dataCollection;
-		notifyDataSetChanged();
+		if (dataCollection != null) {
+			mDataCollection = dataCollection;
+			notifyDataSetChanged();
+		}
 	}
 
 	@Override
