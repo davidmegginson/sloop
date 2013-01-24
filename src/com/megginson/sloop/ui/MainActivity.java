@@ -89,7 +89,6 @@ public class MainActivity extends FragmentActivity implements
 	@Override
 	public Loader<DataCollection> onCreateLoader(int id, Bundle args) {
 		// only one loader for now, so ignore id
-		// XXX do we have to do anything with args?
 		DataCollectionLoader loader = new DataCollectionLoader(
 				getApplicationContext());
 		loader.setURL(args.getString("url"));
@@ -109,8 +108,8 @@ public class MainActivity extends FragmentActivity implements
 	}
 
 	@Override
-	public void onLoaderReset(Loader<DataCollection> dataCollection) {
-		// TODO clear old data from the viewpager
+	public void onLoaderReset(Loader<DataCollection> loader) {
+		mPagerAdapter.setDataCollection(null);
 	}
 
 	private void loadData(String url) {
