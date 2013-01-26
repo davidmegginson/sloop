@@ -15,6 +15,30 @@ public class DataCollection extends AbstractList<DataRecord> {
 
 	private List<DataRecord> mDataRecords = new ArrayList<DataRecord>();
 
+	/**
+	 * Default constructor.
+	 * 
+	 * Creates an empty collection.
+	 */
+	public DataCollection() {
+		super();
+	}
+
+	/**
+	 * Copy constructor.
+	 * 
+	 * Makes a deep copy.
+	 * 
+	 * @param dataCollection
+	 *            The data collection to copy.
+	 */
+	public DataCollection(DataCollection dataCollection) {
+		super();
+		for (DataRecord dataRecord : dataCollection) {
+			add(new DataRecord(dataRecord));
+		}
+	}
+
 	@Override
 	public DataRecord get(int location) {
 		return mDataRecords.get(location);
