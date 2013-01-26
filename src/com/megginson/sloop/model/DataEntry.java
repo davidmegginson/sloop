@@ -20,6 +20,11 @@ public class DataEntry implements Map.Entry<String, String>, Parcelable {
 
 	private String mKey;
 	private String mValue;
+	
+	public DataEntry(DataEntry dataEntry) {
+		mKey = dataEntry.getKey();
+		setValue(dataEntry.getValue());
+	}
 
 	public DataEntry(String key, String value) {
 		mKey = key;
@@ -38,8 +43,9 @@ public class DataEntry implements Map.Entry<String, String>, Parcelable {
 
 	@Override
 	public String setValue(String value) {
+		String oldValue = mValue;
 		mValue = value;
-		return value;
+		return oldValue;
 	}
 
 	@Override
@@ -54,8 +60,8 @@ public class DataEntry implements Map.Entry<String, String>, Parcelable {
 	}
 
 	@Override
-	protected Object clone() throws CloneNotSupportedException {
-		return new DataEntry(getKey(), getValue());
+	protected Object clone() {
+		return new DataEntry(this);
 	}
 
 	@Override

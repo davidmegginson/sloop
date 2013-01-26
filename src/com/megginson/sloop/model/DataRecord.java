@@ -22,8 +22,28 @@ public class DataRecord extends AbstractList<DataEntry> implements Parcelable {
 
 	private List<DataEntry> mDataEntries = new ArrayList<DataEntry>();
 
+	
+	/**
+	 * Default constructor.
+	 * 
+	 * Creates an empty record.
+	 */
 	public DataRecord() {
 		super();
+	}
+
+	/**
+	 * Copy constructor.
+	 * 
+	 * Performs a deep copy of the record provided.
+	 * 
+	 * @param dataRecord
+	 *            The data record to copy.
+	 */
+	public DataRecord(DataRecord dataRecord) {
+		for (DataEntry dataEntry : dataRecord) {
+			mDataEntries.add(new DataEntry(dataEntry));
+		}
 	}
 
 	/**
@@ -31,8 +51,10 @@ public class DataRecord extends AbstractList<DataEntry> implements Parcelable {
 	 * 
 	 * Equivalent to add(new DataEntry(name, value)).
 	 * 
-	 * @param name The name/label of the {@link DataEntry}.
-	 * @param value The string value of the {@link DataEntry}.
+	 * @param name
+	 *            The name/label of the {@link DataEntry}.
+	 * @param value
+	 *            The string value of the {@link DataEntry}.
 	 */
 	public void addEntry(String name, String value) {
 		add(new DataEntry(name, value));
@@ -84,7 +106,7 @@ public class DataRecord extends AbstractList<DataEntry> implements Parcelable {
 			DataRecord dataRecord = new DataRecord();
 			int size = source.readInt();
 			for (int i = 0; i < size; i++) {
-				dataRecord.add((DataEntry) source.readParcelable(null));
+				dataRecord.add((DataEntry) source.readParcelable(DataEntry.class.getClassLoader()));
 			}
 			return dataRecord;
 		}
