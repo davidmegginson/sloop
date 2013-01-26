@@ -21,10 +21,26 @@ import android.widget.TextView;
 import com.megginson.sloop.R;
 import com.megginson.sloop.model.DataCollection;
 
+/**
+ * Sloop's main UI activity (browse a data set).
+ * 
+ * @author David Megginson
+ */
 public class MainActivity extends FragmentActivity implements
 		LoaderCallbacks<DataCollection> {
 
-	public static String SAMPLE_FILE = "pwgsc_pre-qualified_supplier_data.csv";
+	//
+	// Saveable state
+	//
+
+	/**
+	 * The URL of the current data set.
+	 */
+	private String mUrl = null;
+
+	//
+	// UI components.
+	//
 
 	/**
 	 * The {@link PagerAdapter} for the current data collection.
@@ -36,9 +52,14 @@ public class MainActivity extends FragmentActivity implements
 	 */
 	private ViewPager mViewPager;
 
+	/**
+	 * The text field holding the selected URL.
+	 */
 	private EditText mUrlField;
 
-	private Button mGoButton;
+	//
+	// Activity lifecycle methods.
+	//
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +80,7 @@ public class MainActivity extends FragmentActivity implements
 		mViewPager = (ViewPager) findViewById(R.id.pager);
 		mViewPager.setAdapter(mPagerAdapter);
 
+		// Handle the enter key in the URL field
 		mUrlField = (EditText) findViewById(R.id.urlField);
 		mUrlField
 				.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -70,13 +92,28 @@ public class MainActivity extends FragmentActivity implements
 					}
 				});
 
-		mGoButton = (Button) findViewById(R.id.goButton);
-		mGoButton.setOnClickListener(new View.OnClickListener() {
+		// Handle button clicks
+		Button goButton = (Button) findViewById(R.id.goButton);
+		goButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				loadData(mUrlField.getText().toString());
 			}
 		});
+
+		// Finally, store any saved state
+		if (savedInstanceState != null) {
+			mUrl = savedInstanceState.getString("url");
+			if (mUrl != null && mUrl.length() > 0) {
+				loadData(mUrl);
+			}
+		}
+	}
+
+	@Override
+	public void onSaveInstanceState(Bundle savedInstanceState) {
+		super.onSaveInstanceState(savedInstanceState);
+		savedInstanceState.putString("url", mUrl);
 	}
 
 	@Override
@@ -86,13 +123,20 @@ public class MainActivity extends FragmentActivity implements
 		return true;
 	}
 
+	//
+	// Loader callbacks
+	//
 	@Override
 	public Loader<DataCollection> onCreateLoader(int id, Bundle args) {
+		System.err.println("Create loader: "
+				+ (args == null ? "[empty]" : args.getString("url")));
 		// only one loader for now, so ignore id
 		DataCollectionLoader loader = new DataCollectionLoader(
 				getApplicationContext());
-		loader.setURL(args.getString("url"));
-		loader.setResourceName(args.getString("resourceName"));
+		if (args != null) {
+			loader.setURL(args.getString("url"));
+			loader.setResourceName(args.getString("resourceName"));
+		}
 		return loader;
 	}
 
@@ -112,8 +156,21 @@ public class MainActivity extends FragmentActivity implements
 		mPagerAdapter.setDataCollection(null);
 	}
 
+	//
+	// Internal utility methods
+	//
+
+	/**
+	 * Load data from a new URL.
+	 * 
+	 * @param url
+	 *            the URL, or null (which will display an error).
+	 */
 	private void loadData(String url) {
+		System.err.println("Load data: " + url);
 		if (url != null && url.length() > 0) {
+			mUrl = url;
+			mUrlField.setText(url);
 			Bundle args = new Bundle();
 			args.putString("url", url);
 			getLoaderManager().restartLoader(0, args, MainActivity.this);
@@ -124,11 +181,20 @@ public class MainActivity extends FragmentActivity implements
 		}
 	}
 
+	/**
+	 * Hide the soft keyboard.
+	 */
 	private void hideKeyboard() {
 		InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 		imm.hideSoftInputFromWindow(mViewPager.getWindowToken(), 0);
 	}
 
+	/**
+	 * Report an error message.
+	 * 
+	 * @param message
+	 *            The error message as a string.
+	 */
 	private void showError(String message) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
 		builder.setMessage(message);
