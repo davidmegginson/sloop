@@ -99,9 +99,9 @@ public class MainActivity extends FragmentActivity implements
 		super.onSaveInstanceState(savedInstanceState);
 		savedInstanceState.putString("url", mUrl);
 	}
-	
+
 	@Override
-	public void onNewIntent (Intent intent) {
+	public void onNewIntent(Intent intent) {
 		handleIntent(intent);
 	}
 
@@ -175,12 +175,25 @@ public class MainActivity extends FragmentActivity implements
 	/**
 	 * Handle any special intents.
 	 * 
-	 * @param intent The intent passed to the activity.
+	 * @param intent
+	 *            The intent passed to the activity.
 	 */
 	private void handleIntent(Intent intent) {
 		if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
 			String query = intent.getStringExtra(SearchManager.QUERY);
-			System.err.println("Search query: " + query);
+			doSearch(query);
+		}
+	}
+
+	private void doSearch(String query) {
+		DataCollection dataCollection = mPagerAdapter.getDataCollection();
+		if (dataCollection != null) {
+			int position = dataCollection.search(query, 0);
+			if (position >= -1) {
+				mViewPager.setCurrentItem(position);
+			} else {
+				showError("No results found for " + query);
+			}
 		}
 	}
 
