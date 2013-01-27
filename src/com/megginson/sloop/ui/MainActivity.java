@@ -11,11 +11,13 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.KeyEvent;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.SearchView;
 import android.widget.TextView;
 
 import com.megginson.sloop.R;
@@ -43,6 +45,11 @@ public class MainActivity extends FragmentActivity implements
 	//
 
 	/**
+	 * The options menu for this activity.
+	 */
+	private Menu mOptionsMenu;
+	
+	/**
 	 * The {@link PagerAdapter} for the current data collection.
 	 */
 	private DataCollectionPagerAdapter mPagerAdapter;
@@ -51,7 +58,7 @@ public class MainActivity extends FragmentActivity implements
 	 * The {@link ViewPager} that will host the data collection.
 	 */
 	private ViewPager mViewPager;
-
+	
 	/**
 	 * The text field holding the selected URL.
 	 */
@@ -75,7 +82,7 @@ public class MainActivity extends FragmentActivity implements
 
 		// Set up the field where the user enters a URL.
 		setupUrlField();
-		
+
 		// Set up the main display area
 		setupPager();
 
@@ -97,8 +104,22 @@ public class MainActivity extends FragmentActivity implements
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
+		super.onCreateOptionsMenu(menu);
 		getMenuInflater().inflate(R.menu.activity_main, menu);
+		this.mOptionsMenu = menu;
 		return true;
+	}
+
+	@Override
+	public boolean onKeyUp(int keyCode, KeyEvent event) {
+		// Toggle the search menu item when the user presses the search button
+		if (keyCode == KeyEvent.KEYCODE_SEARCH) {
+			SearchView searchView = (SearchView)findViewById(R.id.menu_search);
+			searchView.setIconified(!searchView.isIconified());
+			return true;
+		} else {
+			return super.onKeyUp(keyCode, event);
+		}
 	}
 
 	//
@@ -138,7 +159,7 @@ public class MainActivity extends FragmentActivity implements
 	//
 	// Internal utility methods
 	//
-	
+
 	/**
 	 * Set up the URL text field and its clear button.
 	 */
@@ -167,10 +188,10 @@ public class MainActivity extends FragmentActivity implements
 				}
 			}
 		});
-		
-		Button clearButton = (Button)findViewById(R.id.clearURL);
+
+		Button clearButton = (Button) findViewById(R.id.clearURL);
 		clearButton.setOnClickListener(new Button.OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 				mUrlField.setText(null);
