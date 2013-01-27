@@ -5,6 +5,7 @@ import android.app.SearchManager;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.Loader;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -81,19 +82,27 @@ public class MainActivity extends FragmentActivity implements
 		// Set up the main display area
 		setupPager();
 
-		// Finally, restore any saved state
+		// Restore any saved state
 		if (savedInstanceState != null) {
 			mUrl = savedInstanceState.getString("url");
 			if (mUrl != null && mUrl.length() > 0) {
 				loadData(mUrl);
 			}
 		}
+
+		// Finally, handle any intents
+		handleIntent(getIntent());
 	}
 
 	@Override
 	public void onSaveInstanceState(Bundle savedInstanceState) {
 		super.onSaveInstanceState(savedInstanceState);
 		savedInstanceState.putString("url", mUrl);
+	}
+	
+	@Override
+	public void onNewIntent (Intent intent) {
+		handleIntent(intent);
 	}
 
 	@Override
@@ -105,7 +114,8 @@ public class MainActivity extends FragmentActivity implements
 
 		// Register this activity to handle searches
 		SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-		SearchView searchView = (SearchView)menu.findItem(R.id.menu_search).getActionView();
+		SearchView searchView = (SearchView) menu.findItem(R.id.menu_search)
+				.getActionView();
 		searchView.setSearchableInfo(searchManager
 				.getSearchableInfo(getComponentName()));
 
@@ -161,6 +171,18 @@ public class MainActivity extends FragmentActivity implements
 	//
 	// Internal utility methods
 	//
+
+	/**
+	 * Handle any special intents.
+	 * 
+	 * @param intent The intent passed to the activity.
+	 */
+	private void handleIntent(Intent intent) {
+		if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+			String query = intent.getStringExtra(SearchManager.QUERY);
+			System.err.println("Search query: " + query);
+		}
+	}
 
 	/**
 	 * Set up the URL text field and its clear button.
