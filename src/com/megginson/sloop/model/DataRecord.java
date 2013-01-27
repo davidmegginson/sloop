@@ -22,7 +22,6 @@ public class DataRecord extends AbstractList<DataEntry> implements Parcelable {
 
 	private List<DataEntry> mDataEntries = new ArrayList<DataEntry>();
 
-	
 	/**
 	 * Default constructor.
 	 * 
@@ -43,6 +42,26 @@ public class DataRecord extends AbstractList<DataEntry> implements Parcelable {
 	public DataRecord(DataRecord dataRecord) {
 		for (DataEntry dataEntry : dataRecord) {
 			mDataEntries.add(new DataEntry(dataEntry));
+		}
+	}
+
+	/**
+	 * Convenience constructor to build the record from arrays.
+	 * 
+	 * The record will be the same length as the headers array.
+	 * 
+	 * @param headers
+	 *            An array of strings representing the headers.
+	 * @param values
+	 *            An array of strings representing the values.
+	 */
+	public DataRecord(String headers[], String values[]) {
+		for (int i = 0; i < headers.length; i++) {
+			if (i < values.length) {
+				addEntry(headers[i], values[i]);
+			} else {
+				addEntry(headers[i], null);
+			}
 		}
 	}
 
@@ -106,7 +125,8 @@ public class DataRecord extends AbstractList<DataEntry> implements Parcelable {
 			DataRecord dataRecord = new DataRecord();
 			int size = source.readInt();
 			for (int i = 0; i < size; i++) {
-				dataRecord.add((DataEntry) source.readParcelable(DataEntry.class.getClassLoader()));
+				dataRecord.add((DataEntry) source
+						.readParcelable(DataEntry.class.getClassLoader()));
 			}
 			return dataRecord;
 		}

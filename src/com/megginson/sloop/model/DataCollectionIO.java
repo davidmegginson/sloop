@@ -13,18 +13,14 @@ import au.com.bytecode.opencsv.CSVReader;
 public class DataCollectionIO {
 	
 	public static DataCollection readCSV (Reader input) throws IOException {
-		DataCollection dataCollection = new DataCollection();
-		
 		CSVReader csvReader = new CSVReader(input);
 		String [] entries;
 		
 		String [] headers = csvReader.readNext();
+		DataCollection dataCollection = new DataCollection(headers);
+		
 		while ((entries = csvReader.readNext()) != null) {
-			DataRecord dataRecord = new DataRecord();
-			for (int i =0; i < headers.length && i < entries.length; i++) {
-				dataRecord.addEntry(headers[i], entries[i]);
-			}
-			dataCollection.add(dataRecord);
+			dataCollection.addRecord(entries);
 		}
 		
 		csvReader.close();
