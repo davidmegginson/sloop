@@ -56,6 +56,28 @@ public class DataCollection extends AbstractList<DataRecord> {
 		mRecords.add(record.clone());
 	}
 
+	/**
+	 * Very simple search function.
+	 * 
+	 * @param pattern
+	 *            A substring to search for (case-sensitive for now).
+	 * @param startingPosition
+	 *            The record for starting the search.
+	 * @return The number of the first record containing the pattern, or -1 if
+	 *         none was found.
+	 */
+	public int search(String pattern, int startingPosition) {
+		for (int i = startingPosition; i < mRecords.size(); i++) {
+			String record[] = mRecords.get(i);
+			for (String value : record) {
+				if (value.contains(pattern)) {
+					return i;
+				}
+			}
+		}
+		return -1;
+	}
+
 	public String[] getRecord(int position) {
 		return mRecords.get(position);
 	}
