@@ -1,6 +1,7 @@
 package com.megginson.sloop.ui;
 
 import android.app.AlertDialog;
+import android.app.SearchManager;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -11,7 +12,6 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.KeyEvent;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
@@ -45,11 +45,6 @@ public class MainActivity extends FragmentActivity implements
 	//
 
 	/**
-	 * The options menu for this activity.
-	 */
-	private Menu mOptionsMenu;
-	
-	/**
 	 * The {@link PagerAdapter} for the current data collection.
 	 */
 	private DataCollectionPagerAdapter mPagerAdapter;
@@ -58,7 +53,7 @@ public class MainActivity extends FragmentActivity implements
 	 * The {@link ViewPager} that will host the data collection.
 	 */
 	private ViewPager mViewPager;
-	
+
 	/**
 	 * The text field holding the selected URL.
 	 */
@@ -103,10 +98,17 @@ public class MainActivity extends FragmentActivity implements
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
 		super.onCreateOptionsMenu(menu);
+
+		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.activity_main, menu);
-		this.mOptionsMenu = menu;
+
+		// Register this activity to handle searches
+		SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+		SearchView searchView = (SearchView)menu.findItem(R.id.menu_search).getActionView();
+		searchView.setSearchableInfo(searchManager
+				.getSearchableInfo(getComponentName()));
+
 		return true;
 	}
 
@@ -114,7 +116,7 @@ public class MainActivity extends FragmentActivity implements
 	public boolean onKeyUp(int keyCode, KeyEvent event) {
 		// Toggle the search menu item when the user presses the search button
 		if (keyCode == KeyEvent.KEYCODE_SEARCH) {
-			SearchView searchView = (SearchView)findViewById(R.id.menu_search);
+			SearchView searchView = (SearchView) findViewById(R.id.menu_search);
 			searchView.setIconified(!searchView.isIconified());
 			return true;
 		} else {
