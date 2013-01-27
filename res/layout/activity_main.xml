@@ -3,35 +3,37 @@
     android:id="@+id/main_browser"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:visibility="visible" >
 
     <LinearLayout
         android:id="@+id/addressBar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+        android:focusable="true"
+        android:focusableInTouchMode="true" >
 
         <EditText
             android:id="@+id/urlField"
-            android:layout_width="0dp"
+            android:layout_width="0dip"
             android:layout_height="fill_parent"
             android:layout_gravity="left"
-            android:layout_weight="1"
+            android:layout_weight="2"
             android:ems="10"
             android:hint="@string/url_field_hint"
-            android:inputType="textUri"
-            android:textSize="12sp" >
-
-            <requestFocus />
+            android:inputType="textUri" >
         </EditText>
 
         <Button
-            android:id="@+id/goButton"
+            android:id="@+id/clearURL"
             style="?android:attr/buttonStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:minHeight="30dp"
-            android:text="@string/go_button_label"
-            android:textSize="12sp" />
+            android:layout_margin="@dimen/empty"
+            android:background="@android:color/transparent"
+            android:text="x"
+            android:visibility="gone" />
+
     </LinearLayout>
 
     <android.support.v4.view.ViewPager
@@ -40,6 +42,8 @@
         android:id="@+id/pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         tools:context=".MainActivity" >
 
         <!--

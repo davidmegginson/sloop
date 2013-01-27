@@ -80,28 +80,9 @@ public class MainActivity extends FragmentActivity implements
 		mViewPager = (ViewPager) findViewById(R.id.pager);
 		mViewPager.setAdapter(mPagerAdapter);
 
-		// Handle the enter key in the URL field
-		mUrlField = (EditText) findViewById(R.id.urlField);
-		mUrlField
-				.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-					@Override
-					public boolean onEditorAction(TextView v, int actionId,
-							KeyEvent event) {
-						loadData(v.getText().toString());
-						return true;
-					}
-				});
+		setupUrlField();
 
-		// Handle button clicks
-		Button goButton = (Button) findViewById(R.id.goButton);
-		goButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				loadData(mUrlField.getText().toString());
-			}
-		});
-
-		// Finally, store any saved state
+		// Finally, restore any saved state
 		if (savedInstanceState != null) {
 			mUrl = savedInstanceState.getString("url");
 			if (mUrl != null && mUrl.length() > 0) {
@@ -126,6 +107,7 @@ public class MainActivity extends FragmentActivity implements
 	//
 	// Loader callbacks
 	//
+
 	@Override
 	public Loader<DataCollection> onCreateLoader(int id, Bundle args) {
 		System.err.println("Create loader: "
@@ -159,6 +141,46 @@ public class MainActivity extends FragmentActivity implements
 	//
 	// Internal utility methods
 	//
+
+	/**
+	 * Set up the URL text field and its clear button.
+	 */
+	private void setupUrlField() {
+		// Handle the enter key in the URL field
+		mUrlField = (EditText) findViewById(R.id.urlField);
+		mUrlField
+				.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+					@Override
+					public boolean onEditorAction(TextView v, int actionId,
+							KeyEvent event) {
+						v.clearFocus();
+						loadData(v.getText().toString());
+						return true;
+					}
+				});
+		mUrlField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+
+			@Override
+			public void onFocusChange(View v, boolean hasFocus) {
+				Button clearUrlButton = (Button) findViewById(R.id.clearURL);
+				if (hasFocus) {
+					clearUrlButton.setVisibility(View.VISIBLE);
+				} else {
+					clearUrlButton.setVisibility(View.GONE);
+				}
+			}
+		});
+		
+		Button clearButton = (Button)findViewById(R.id.clearURL);
+		clearButton.setOnClickListener(new Button.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				mUrlField.setText(null);
+			}
+		});
+
+	}
 
 	/**
 	 * Load data from a new URL.
