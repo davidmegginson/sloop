@@ -73,14 +73,11 @@ public class MainActivity extends FragmentActivity implements
 		// content view has been set, or else we start with the spinner active.
 		setProgressBarIndeterminateVisibility(false);
 
-		mPagerAdapter = new DataCollectionPagerAdapter(
-				getSupportFragmentManager());
-
-		// Set up the ViewPager with the data collection adapter.
-		mViewPager = (ViewPager) findViewById(R.id.pager);
-		mViewPager.setAdapter(mPagerAdapter);
-
+		// Set up the field where the user enters a URL.
 		setupUrlField();
+		
+		// Set up the main display area
+		setupPager();
 
 		// Finally, restore any saved state
 		if (savedInstanceState != null) {
@@ -141,7 +138,7 @@ public class MainActivity extends FragmentActivity implements
 	//
 	// Internal utility methods
 	//
-
+	
 	/**
 	 * Set up the URL text field and its clear button.
 	 */
@@ -180,6 +177,18 @@ public class MainActivity extends FragmentActivity implements
 			}
 		});
 
+	}
+
+	/**
+	 * Set up the main ViewPager.
+	 */
+	private void setupPager() {
+		mPagerAdapter = new DataCollectionPagerAdapter(
+				getSupportFragmentManager());
+
+		// Set up the ViewPager with the data collection adapter.
+		mViewPager = (ViewPager) findViewById(R.id.pager);
+		mViewPager.setAdapter(mPagerAdapter);
 	}
 
 	/**

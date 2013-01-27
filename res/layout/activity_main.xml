@@ -21,7 +21,9 @@
             android:layout_weight="2"
             android:ems="10"
             android:hint="@string/url_field_hint"
-            android:inputType="textUri" >
+            android:inputType="textUri"
+            android:textSize="@dimen/address_bar_text_size" >
+
         </EditText>
 
         <Button
