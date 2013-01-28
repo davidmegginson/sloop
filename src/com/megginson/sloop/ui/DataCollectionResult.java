@@ -22,9 +22,9 @@ import com.megginson.sloop.model.DataCollection;
 class DataCollectionResult {
 
 	private DataCollection mDataCollection;
-
-	private String mErrorMessage = null;
-
+	
+	private Throwable mThrowable;
+	
 	/**
 	 * Create the result of a successful load.
 	 * 
@@ -33,7 +33,7 @@ class DataCollectionResult {
 	 */
 	DataCollectionResult(DataCollection dataCollection) {
 		mDataCollection = dataCollection;
-		mErrorMessage = null;
+		mThrowable = null;
 	}
 
 	/**
@@ -42,8 +42,8 @@ class DataCollectionResult {
 	 * @param errorMessage
 	 *            The error message.
 	 */
-	DataCollectionResult(String errorMessage) {
-		mErrorMessage = errorMessage;
+	DataCollectionResult(Throwable throwable) {
+		mThrowable = throwable;
 		mDataCollection = null;
 	}
 
@@ -54,7 +54,7 @@ class DataCollectionResult {
 	 *         there is an error message.
 	 */
 	boolean hasError() {
-		return mErrorMessage != null;
+		return mThrowable != null;
 	}
 
 	/**
@@ -73,8 +73,8 @@ class DataCollectionResult {
 	 * @return An error message if the load was unsuccessful; null otherwise.
 	 * @see #hasError()
 	 */
-	String getErrorMessage() {
-		return mErrorMessage;
+	Throwable getThrowable() {
+		return mThrowable;
 	}
 
 }

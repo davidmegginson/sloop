@@ -155,7 +155,7 @@ public class MainActivity extends FragmentActivity implements
 			DataCollectionResult result) {
 		MainActivity.this.setProgressBarIndeterminateVisibility(false);
 		if (result.hasError()) {
-			showError(result.getErrorMessage());
+			showError(result.getThrowable().getMessage());
 		} else {
 			mPagerAdapter.setDataCollection(result.getDataCollection());
 		}

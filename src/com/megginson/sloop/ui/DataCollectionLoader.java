@@ -116,8 +116,8 @@ public class DataCollectionLoader extends AsyncTaskLoader<DataCollectionResult> 
 				} finally {
 					input.close();
 				}
-			} catch (Throwable e) {
-				return new DataCollectionResult(e.getMessage());
+			} catch (Throwable t) {
+				return new DataCollectionResult(t);
 			}
 			mDataCollection = dataCollection;
 
