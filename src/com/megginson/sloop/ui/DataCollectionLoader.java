@@ -3,8 +3,13 @@ package com.megginson.sloop.ui;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URL;
 import java.nio.charset.Charset;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
 
 import android.content.AsyncTaskLoader;
 import android.content.Context;
@@ -17,19 +22,19 @@ import com.megginson.sloop.model.DataCollectionIO;
  * 
  * @author David Megginson
  */
-public class DataCollectionLoader extends AsyncTaskLoader<DataCollection> {
-	
+public class DataCollectionLoader extends AsyncTaskLoader<DataCollectionResult> {
+
 	// Poor-man's cache
-	
+
 	private static String sLastUrl = null;
-	
+
 	private static DataCollection sLastDataCollection = null;
 
 	/**
 	 * URL of the data collection to be loaded.
 	 */
 	private String mUrl = null;
-	
+
 	private String mResourceName = null;
 
 	/**
@@ -63,11 +68,11 @@ public class DataCollectionLoader extends AsyncTaskLoader<DataCollection> {
 			mUrl = url;
 		}
 	}
-	
+
 	public String getResourceName() {
 		return mResourceName;
 	}
-	
+
 	public void setResourceName(String resourceName) {
 		if (resourceName != mResourceName) {
 			mDataCollection = null;
@@ -79,7 +84,7 @@ public class DataCollectionLoader extends AsyncTaskLoader<DataCollection> {
 	protected void onStartLoading() {
 		// TODO Auto-generated method stub
 		if (mDataCollection != null) {
-			deliverResult(mDataCollection);
+			deliverResult(new DataCollectionResult(mDataCollection));
 		}
 		if (takeContentChanged() || mDataCollection == null) {
 			forceLoad();
@@ -88,7 +93,7 @@ public class DataCollectionLoader extends AsyncTaskLoader<DataCollection> {
 	}
 
 	@Override
-	public DataCollection loadInBackground() {
+	public DataCollectionResult loadInBackground() {
 		if (mDataCollection == null) {
 			DataCollection dataCollection = null;
 			try {
@@ -98,27 +103,41 @@ public class DataCollectionLoader extends AsyncTaskLoader<DataCollection> {
 				} else {
 					// FIXME poor excuse for caching
 					if (mUrl.equals(sLastUrl)) {
-						return sLastDataCollection;
+						return new DataCollectionResult(sLastDataCollection);
 					}
-					input = new URL(mUrl).openStream();
+					input = openURL(mUrl);
 				}
 				try {
-					dataCollection = DataCollectionIO
-							.readCSV(new InputStreamReader(input, Charset
-									.forName("utf8")));
+					if (input != null) {
+						dataCollection = DataCollectionIO
+								.readCSV(new InputStreamReader(input, Charset
+										.forName("utf8")));
+					}
 				} finally {
-						input.close();
+					input.close();
 				}
-			} catch (IOException e) {
-				System.err.println(e.getMessage());
+			} catch (Throwable e) {
+				return new DataCollectionResult(e.getMessage());
 			}
 			mDataCollection = dataCollection;
-			
+
 			// FIXME poor excuse for caching
 			sLastDataCollection = mDataCollection;
 			sLastUrl = mUrl;
 		}
-		return mDataCollection;
+		return new DataCollectionResult(mDataCollection);
+	}
+
+	private InputStream openURL(String url) throws IOException {
+		HttpClient client = new DefaultHttpClient();
+		HttpGet request = new HttpGet(url);
+		HttpResponse response = client.execute(request);
+		HttpEntity entity = response.getEntity();
+		if (entity != null) {
+			return entity.getContent();
+		} else {
+			return null;
+		}
 	}
 
 }

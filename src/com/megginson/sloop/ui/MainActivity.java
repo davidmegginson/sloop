@@ -30,7 +30,7 @@ import com.megginson.sloop.model.DataCollection;
  * @author David Megginson
  */
 public class MainActivity extends FragmentActivity implements
-		LoaderCallbacks<DataCollection> {
+		LoaderCallbacks<DataCollectionResult> {
 
 	//
 	// Saveable state
@@ -139,9 +139,7 @@ public class MainActivity extends FragmentActivity implements
 	//
 
 	@Override
-	public Loader<DataCollection> onCreateLoader(int id, Bundle args) {
-		System.err.println("Create loader: "
-				+ (args == null ? "[empty]" : args.getString("url")));
+	public Loader<DataCollectionResult> onCreateLoader(int id, Bundle args) {
 		// only one loader for now, so ignore id
 		DataCollectionLoader loader = new DataCollectionLoader(
 				getApplicationContext());
@@ -153,18 +151,18 @@ public class MainActivity extends FragmentActivity implements
 	}
 
 	@Override
-	public void onLoadFinished(Loader<DataCollection> loader,
-			DataCollection dataCollection) {
+	public void onLoadFinished(Loader<DataCollectionResult> loader,
+			DataCollectionResult result) {
 		MainActivity.this.setProgressBarIndeterminateVisibility(false);
-		if (dataCollection == null) {
-			showError("Error loading data");
+		if (result.hasError()) {
+			showError(result.getErrorMessage());
 		} else {
-			mPagerAdapter.setDataCollection(dataCollection);
+			mPagerAdapter.setDataCollection(result.getDataCollection());
 		}
 	}
 
 	@Override
-	public void onLoaderReset(Loader<DataCollection> loader) {
+	public void onLoaderReset(Loader<DataCollectionResult> loader) {
 		mPagerAdapter.setDataCollection(null);
 	}
 
@@ -264,7 +262,6 @@ public class MainActivity extends FragmentActivity implements
 	 *            the URL, or null (which will display an error).
 	 */
 	private void loadData(String url) {
-		System.err.println("Load data: " + url);
 		if (url != null && url.length() > 0) {
 			mUrl = url;
 			mUrlField.setText(url);
