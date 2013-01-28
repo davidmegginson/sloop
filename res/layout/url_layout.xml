@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal" >
+
+    <EditText
+        android:id="@+id/url_field"
+        android:layout_width="0dip"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:drawableLeft="@android:drawable/ic_input_add"
+        android:ems="10"
+        android:hint="@string/url_field_hint"
+        android:inputType="textUri"
+        android:lines="1"
+        android:textSize="@dimen/address_bar_text_size" >
+
+        <requestFocus />
+    </EditText>
+
+    <Button
+        android:id="@+id/clear_button"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:background="@android:drawable/ic_delete" />
+
+</LinearLayout>

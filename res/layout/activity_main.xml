@@ -6,35 +6,28 @@
     android:orientation="vertical"
     android:visibility="visible" >
 
-    <LinearLayout
+    <FrameLayout
         android:id="@+id/addressBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
 
         <EditText
             android:id="@+id/urlField"
-            android:layout_width="0dip"
-            android:layout_height="fill_parent"
-            android:layout_gravity="left"
-            android:layout_weight="2"
-            android:ems="10"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
             android:hint="@string/url_field_hint"
             android:inputType="textUri"
-            android:textSize="@dimen/address_bar_text_size" >
-
-        </EditText>
+            android:singleLine="true"
+            android:textSize="@dimen/address_bar_text_size" />
 
         <Button
             android:id="@+id/clearURL"
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/empty"
-            android:background="@android:color/transparent"
-            android:text="x"
-            android:visibility="gone" />
-
-    </LinearLayout>
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="right|center_vertical"
+            android:layout_marginRight="10dp"
+            android:background="@android:drawable/ic_delete" />
+    </FrameLayout>
 
     <android.support.v4.view.ViewPager
         xmlns:android="http://schemas.android.com/apk/res/android"

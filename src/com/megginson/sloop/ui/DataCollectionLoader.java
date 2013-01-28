@@ -18,6 +18,12 @@ import com.megginson.sloop.model.DataCollectionIO;
  * @author David Megginson
  */
 public class DataCollectionLoader extends AsyncTaskLoader<DataCollection> {
+	
+	// Poor-man's cache
+	
+	private static String sLastUrl = null;
+	
+	private static DataCollection sLastDataCollection = null;
 
 	/**
 	 * URL of the data collection to be loaded.
@@ -90,6 +96,10 @@ public class DataCollectionLoader extends AsyncTaskLoader<DataCollection> {
 				if (mResourceName != null) {
 					input = getContext().getAssets().open(mResourceName);
 				} else {
+					// FIXME poor excuse for caching
+					if (mUrl.equals(sLastUrl)) {
+						return sLastDataCollection;
+					}
 					input = new URL(mUrl).openStream();
 				}
 				try {
@@ -103,6 +113,10 @@ public class DataCollectionLoader extends AsyncTaskLoader<DataCollection> {
 				System.err.println(e.getMessage());
 			}
 			mDataCollection = dataCollection;
+			
+			// FIXME poor excuse for caching
+			sLastDataCollection = mDataCollection;
+			sLastUrl = mUrl;
 		}
 		return mDataCollection;
 	}

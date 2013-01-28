@@ -185,14 +185,22 @@ public class MainActivity extends FragmentActivity implements
 		}
 	}
 
+	/**
+	 * Search for a substring inside a record field.
+	 * 
+	 * Advances the view pager to the first result.
+	 * 
+	 * @param query
+	 *            the string query (currently case-sensitive).
+	 */
 	private void doSearch(String query) {
 		DataCollection dataCollection = mPagerAdapter.getDataCollection();
 		if (dataCollection != null) {
 			int position = dataCollection.search(query, 0);
-			if (position >= -1) {
-				mViewPager.setCurrentItem(position);
-			} else {
+			if (position == -1) {
 				showError("No results found for " + query);
+			} else {
+				mViewPager.setCurrentItem(position);
 			}
 		}
 	}
