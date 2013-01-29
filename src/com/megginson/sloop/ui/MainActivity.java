@@ -13,6 +13,7 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.KeyEvent;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
@@ -21,6 +22,7 @@ import android.widget.EditText;
 import android.widget.SearchView;
 import android.widget.TextView;
 
+import com.megginson.sloop.BookmarksActivity;
 import com.megginson.sloop.R;
 import com.megginson.sloop.model.DataCollection;
 
@@ -120,6 +122,21 @@ public class MainActivity extends FragmentActivity implements
 				.getSearchableInfo(getComponentName()));
 
 		return true;
+	}
+
+	@Override
+	public boolean onMenuItemSelected(int featureId, MenuItem item) {
+
+		switch (item.getItemId()) {
+
+		case R.id.menu_bookmarks:
+			startActivity(new Intent(this, BookmarksActivity.class));
+			return true;
+
+		default:
+			return super.onMenuItemSelected(featureId, item);
+
+		}
 	}
 
 	@Override

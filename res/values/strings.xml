@@ -6,7 +6,8 @@
     <string name="go_button_label">Go</string>
     <string name="url_field_hint">Web address</string>
     <string name="menu_search">Search</string>
-    <string name="menu_url">Browse</string>
+    <string name="menu_bookmarks">Bookmarks</string>
     <string name="hint_search">Search text</string>
+    <string name="title_activity_bookmarks">Bookmarks</string>
 
 </resources>
