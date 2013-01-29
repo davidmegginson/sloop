@@ -1,19 +1,25 @@
-package com.megginson.sloop;
+package com.megginson.sloop.ui;
 
+import android.app.ListActivity;
 import android.os.Bundle;
-import android.app.Activity;
+import android.support.v4.app.NavUtils;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.support.v4.app.NavUtils;
+import android.widget.ArrayAdapter;
 
-public class BookmarksActivity extends Activity {
+import com.megginson.sloop.R;
+
+public class BookmarksActivity extends ListActivity {
+
+	private String mEntries[] = { "Entry 1", "Entry 2", "Entry 3" };
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_bookmarks);
 		// Show the Up button in the action bar.
 		getActionBar().setDisplayHomeAsUpEnabled(true);
+		
+		setListAdapter(new ArrayAdapter<String>(this, R.layout.list_item, mEntries));
 	}
 
 	@Override

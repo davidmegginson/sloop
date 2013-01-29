@@ -34,13 +34,14 @@
                 android:resource="@xml/searchable" />
         </activity>
         <activity
-            android:name="com.megginson.sloop.BookmarksActivity"
+            android:name="com.megginson.sloop.ui.BookmarksActivity"
             android:label="@string/title_activity_bookmarks"
             android:parentActivityName="com.megginson.sloop.ui.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.megginson.sloop.ui.MainActivity" />
         </activity>
+
     </application>
 
 </manifest>

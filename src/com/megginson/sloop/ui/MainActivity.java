@@ -22,7 +22,6 @@ import android.widget.EditText;
 import android.widget.SearchView;
 import android.widget.TextView;
 
-import com.megginson.sloop.BookmarksActivity;
 import com.megginson.sloop.R;
 import com.megginson.sloop.model.DataCollection;
 
