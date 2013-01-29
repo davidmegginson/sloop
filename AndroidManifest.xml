@@ -41,7 +41,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.megginson.sloop.activities.MainActivity" />
         </activity>
-
+        <activity
+            android:name="com.megginson.sloop.activities.BookmarkEditActivity"
+            android:label="@string/title_activity_bookmark_edit" >
+        </activity>
     </application>
 
 </manifest>

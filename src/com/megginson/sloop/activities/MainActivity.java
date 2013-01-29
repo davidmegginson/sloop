@@ -128,11 +128,20 @@ public class MainActivity extends FragmentActivity implements
 
 	@Override
 	public boolean onMenuItemSelected(int featureId, MenuItem item) {
+		
+		Intent intent;
 
 		switch (item.getItemId()) {
 
-		case R.id.menu_bookmarks:
-			startActivity(new Intent(this, BookmarkListActivity.class));
+		case R.id.menu_bookmark_list:
+			intent = new Intent(this, BookmarkListActivity.class);
+			startActivity(intent);
+			return true;
+			
+		case R.id.menu_bookmark_create:
+			intent = new Intent(this, BookmarkEditActivity.class);
+			intent.putExtra("url", mUrl);
+			startActivity(intent);
 			return true;
 
 		default:

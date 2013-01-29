@@ -7,7 +7,14 @@
     <string name="url_field_hint">Web address</string>
     <string name="menu_search">Search</string>
     <string name="menu_bookmarks">Bookmarks</string>
+    <string name="menu_bookmark_this">Bookmark this dataset</string>
+    <string name="menu_bookmark_create">Create a new bookmark</string>
     <string name="hint_search">Search text</string>
     <string name="title_activity_bookmarks">Bookmarks</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_bookmark_edit">Edit bookmark</string>
+    <string name="bookmark_url_label">Bookmark URL</string>
+    <string name="save_bookmark">Save bookmark</string>
+    <string name="label_bookmark_title">Bookmark title</string>
 
 </resources>

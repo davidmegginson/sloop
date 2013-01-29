@@ -16,13 +16,7 @@ public class Bookmark {
 	}
 
 	public Bookmark(String url) {
-		setUrl(url);
-		setTitle(url);
-	}
-
-	public Bookmark(Bookmark bookmark) {
-		setUrl(bookmark.getUrl());
-		setTitle(bookmark.getTitle());
+		this(url, null);
 	}
 
 	public Bookmark(String url, String title) {
@@ -30,12 +24,21 @@ public class Bookmark {
 		setTitle(title);
 	}
 
+	public Bookmark(Bookmark bookmark) {
+		setUrl(bookmark.getUrl());
+		setTitle(bookmark.getTitle());
+	}
+
 	public String getTitle() {
 		return mTitle;
 	}
 
 	public void setTitle(String title) {
-		mTitle = title;
+		if (title == null) {
+			mTitle = getUrl();
+		} else {
+			mTitle = title;
+		}
 	}
 
 	public String getUrl() {
