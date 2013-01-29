@@ -1,7 +1,9 @@
-package com.megginson.sloop.model;
+package com.megginson.sloop.model.io;
 
 import java.io.IOException;
 import java.io.Reader;
+
+import com.megginson.sloop.model.DataCollection;
 
 import au.com.bytecode.opencsv.CSVReader;
 

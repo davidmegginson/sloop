@@ -1,5 +1,6 @@
 package com.megginson.sloop.ui;
 
+import com.megginson.sloop.activities.MainActivity;
 import com.megginson.sloop.model.DataCollection;
 
 /**
@@ -19,7 +20,7 @@ import com.megginson.sloop.model.DataCollection;
  * @see MainActivity#onLoadFinished(android.content.Loader,
  *      DataCollectionResult)
  */
-class DataCollectionResult {
+public class DataCollectionResult {
 
 	private DataCollection mDataCollection;
 	
@@ -31,7 +32,7 @@ class DataCollectionResult {
 	 * @param dataCollection
 	 *            The data collection to return.
 	 */
-	DataCollectionResult(DataCollection dataCollection) {
+	public DataCollectionResult(DataCollection dataCollection) {
 		mDataCollection = dataCollection;
 		mThrowable = null;
 	}
@@ -42,7 +43,7 @@ class DataCollectionResult {
 	 * @param errorMessage
 	 *            The error message.
 	 */
-	DataCollectionResult(Throwable throwable) {
+	public DataCollectionResult(Throwable throwable) {
 		mThrowable = throwable;
 		mDataCollection = null;
 	}
@@ -53,7 +54,7 @@ class DataCollectionResult {
 	 * @return true if there is a {@link DataCollection} available; false if
 	 *         there is an error message.
 	 */
-	boolean hasError() {
+	public boolean hasError() {
 		return mThrowable != null;
 	}
 
@@ -63,7 +64,7 @@ class DataCollectionResult {
 	 * @return A data collection if the load was successful; null otherwise.
 	 * @see #hasError()
 	 */
-	DataCollection getDataCollection() {
+	public DataCollection getDataCollection() {
 		return mDataCollection;
 	}
 
@@ -73,7 +74,7 @@ class DataCollectionResult {
 	 * @return An error message if the load was unsuccessful; null otherwise.
 	 * @see #hasError()
 	 */
-	Throwable getThrowable() {
+	public Throwable getThrowable() {
 		return mThrowable;
 	}
 

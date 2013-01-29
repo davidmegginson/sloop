@@ -1,4 +1,4 @@
-package com.megginson.sloop.ui;
+package com.megginson.sloop.activities;
 
 import android.app.AlertDialog;
 import android.app.SearchManager;
@@ -24,6 +24,9 @@ import android.widget.TextView;
 
 import com.megginson.sloop.R;
 import com.megginson.sloop.model.DataCollection;
+import com.megginson.sloop.ui.DataCollectionLoader;
+import com.megginson.sloop.ui.DataCollectionPagerAdapter;
+import com.megginson.sloop.ui.DataCollectionResult;
 
 /**
  * Sloop's main UI activity (browse a data set).
@@ -129,7 +132,7 @@ public class MainActivity extends FragmentActivity implements
 		switch (item.getItemId()) {
 
 		case R.id.menu_bookmarks:
-			startActivity(new Intent(this, BookmarksActivity.class));
+			startActivity(new Intent(this, BookmarkListActivity.class));
 			return true;
 
 		default:

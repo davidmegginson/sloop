@@ -15,7 +15,7 @@ import android.content.AsyncTaskLoader;
 import android.content.Context;
 
 import com.megginson.sloop.model.DataCollection;
-import com.megginson.sloop.model.DataCollectionIO;
+import com.megginson.sloop.model.io.DataCollectionIO;
 
 /**
  * Load a {@link DataCollection} in a separate thread.

@@ -1,4 +1,4 @@
-package com.megginson.sloop.ui;
+package com.megginson.sloop.activities;
 
 import android.app.ListActivity;
 import android.os.Bundle;
@@ -9,7 +9,7 @@ import android.widget.ArrayAdapter;
 
 import com.megginson.sloop.R;
 
-public class BookmarksActivity extends ListActivity {
+public class BookmarkListActivity extends ListActivity {
 
 	private String mEntries[] = { "Entry 1", "Entry 2", "Entry 3" };
 
