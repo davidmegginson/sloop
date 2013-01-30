@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.PagerAdapter;
@@ -86,12 +87,11 @@ public class MainActivity extends FragmentActivity implements
 		// Set up the main display area
 		setupPager();
 
-		// Restore any saved state
-		if (savedInstanceState != null) {
-			mUrl = savedInstanceState.getString("url");
-			if (mUrl != null && mUrl.length() > 0) {
-				loadData(mUrl);
-			}
+		// Restore the last URL
+		mUrl = getSharedPreferences("main", MODE_PRIVATE)
+				.getString("url", null);
+		if (mUrl != null && mUrl.length() > 0) {
+			loadData(mUrl);
 		}
 
 		// Finally, handle any intents
@@ -102,6 +102,12 @@ public class MainActivity extends FragmentActivity implements
 	public void onSaveInstanceState(Bundle savedInstanceState) {
 		super.onSaveInstanceState(savedInstanceState);
 		savedInstanceState.putString("url", mUrl);
+
+		// save the URL for the next invocation
+		SharedPreferences.Editor editor = getSharedPreferences("main",
+				MODE_PRIVATE).edit();
+		editor.putString("url", mUrl);
+		editor.commit();
 	}
 
 	@Override
@@ -128,7 +134,7 @@ public class MainActivity extends FragmentActivity implements
 
 	@Override
 	public boolean onMenuItemSelected(int featureId, MenuItem item) {
-		
+
 		Intent intent;
 
 		switch (item.getItemId()) {
@@ -137,7 +143,7 @@ public class MainActivity extends FragmentActivity implements
 			intent = new Intent(this, BookmarkListActivity.class);
 			startActivity(intent);
 			return true;
-			
+
 		case R.id.menu_bookmark_create:
 			intent = new Intent(this, BookmarkEditActivity.class);
 			intent.putExtra("url", mUrl);
