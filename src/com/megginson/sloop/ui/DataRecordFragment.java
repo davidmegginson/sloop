@@ -1,16 +1,12 @@
 package com.megginson.sloop.ui;
 
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.ScrollView;
-import android.widget.TextView;
+import android.widget.ListView;
 
-import com.megginson.sloop.model.DataEntry;
 import com.megginson.sloop.model.DataRecord;
 
 /**
@@ -21,46 +17,18 @@ import com.megginson.sloop.model.DataRecord;
  * @see DataCollectionPagerAdapter
  */
 public class DataRecordFragment extends Fragment {
-	
+
 	public DataRecordFragment() {
 		super();
 	}
-	
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-
-		LinearLayout layout = new LinearLayout(getActivity());
-		layout.setOrientation(LinearLayout.VERTICAL);
-		
 		DataRecord dataRecord = getArguments().getParcelable("dataRecord");
-		
-		for (DataEntry entry : dataRecord) {
-			addLabel(layout, entry.getKey());
-			addValue(layout, entry.getValue());	
-		}
-		
-		ScrollView scrollView = new ScrollView(getActivity());
-		scrollView.addView(layout);
-		
-		return scrollView;
-	}
-	
-	private TextView addLabel (ViewGroup container, String text) {
-		TextView textView = new TextView(getActivity());
-		textView.setText(text);
-		textView.setTextIsSelectable(true);
-		textView.setTypeface(null, Typeface.BOLD);
-		container.addView(textView);
-		return textView;
+		ListView listView = new ListView(getActivity());
+		listView.setAdapter(new DataRecordAdapter(getActivity(), dataRecord));
+		return listView;
 	}
 
-	private TextView addValue (ViewGroup container, String text) {
-		TextView textView = new TextView(getActivity());
-		textView.setText(text);
-		textView.setTextIsSelectable(true);
-		container.addView(textView);
-		return textView;
-	}
 }
-
