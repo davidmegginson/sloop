@@ -27,7 +27,7 @@ public class DataRecordFragment extends Fragment {
 			Bundle savedInstanceState) {
 		DataRecord dataRecord = getArguments().getParcelable("dataRecord");
 		ListView listView = new ListView(getActivity());
-		listView.setAdapter(new DataRecordAdapter(getActivity(), dataRecord));
+		listView.setAdapter(new DataRecordListAdapter(getActivity(), dataRecord));
 		return listView;
 	}
 
