@@ -38,7 +38,7 @@ public class MainActivity extends FragmentActivity implements
 		LoaderCallbacks<DataCollectionResult> {
 
 	public final static String PREFERENCE_GROUP_MAIN = "main";
-	
+
 	public final static String PREFERENCE_URL = "url";
 
 	//
@@ -91,15 +91,9 @@ public class MainActivity extends FragmentActivity implements
 		// Set up the main display area
 		setupPager();
 
-		// Restore the last URL
-		mUrl = getSharedPreferences(PREFERENCE_GROUP_MAIN, MODE_PRIVATE)
-				.getString(PREFERENCE_URL, null);
-		if (mUrl != null && mUrl.length() > 0) {
-			loadData(mUrl);
-		}
-
-		// Finally, handle any intents
+		// Handle any intent
 		handleIntent(getIntent());
+
 	}
 
 	@Override
@@ -215,9 +209,22 @@ public class MainActivity extends FragmentActivity implements
 	 *            The intent passed to the activity.
 	 */
 	private void handleIntent(Intent intent) {
-		if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+		String action = intent.getAction();
+		
+		if (Intent.ACTION_SEARCH.equals(action)) {
 			String query = intent.getStringExtra(SearchManager.QUERY);
 			doSearch(query);
+		} else {
+			mUrl = intent.getStringExtra("url");
+			// Restore the last URL
+			if (mUrl == null) {
+				mUrl = getSharedPreferences(PREFERENCE_GROUP_MAIN, MODE_PRIVATE)
+						.getString(PREFERENCE_URL, null);
+			}
+
+			if (mUrl != null && mUrl.length() > 0) {
+				loadData(mUrl);
+			}
 		}
 	}
 

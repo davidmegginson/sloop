@@ -5,14 +5,18 @@ import java.util.List;
 import java.util.Map;
 
 import android.app.ListActivity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.Toast;
 
 import com.megginson.sloop.R;
 import com.megginson.sloop.model.Bookmark;
+import com.megginson.sloop.ui.BookmarkListAdapter;
 
 public class BookmarkListActivity extends ListActivity {
 	
@@ -27,8 +31,21 @@ public class BookmarkListActivity extends ListActivity {
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		
 		loadBookmarks();
-		
-		setListAdapter(new ArrayAdapter<Bookmark>(this, R.layout.list_item, mBookmarks));
+
+		setListAdapter(new BookmarkListAdapter(this, mBookmarks));
+		getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position,
+					long id) {
+				Bookmark bookmark = mBookmarks.get(position);
+				Intent intent = new Intent(BookmarkListActivity.this, MainActivity.class);
+				intent.putExtra("url", bookmark.getUrl());
+				Toast.makeText(getApplicationContext(), bookmark.getTitle(), Toast.LENGTH_SHORT).show();
+				startActivity(intent);
+				finish();
+			}
+		});
 	}
 
 	@Override
