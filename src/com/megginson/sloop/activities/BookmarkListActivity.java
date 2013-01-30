@@ -1,5 +1,9 @@
 package com.megginson.sloop.activities;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import android.app.ListActivity;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
@@ -8,10 +12,13 @@ import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 
 import com.megginson.sloop.R;
+import com.megginson.sloop.model.Bookmark;
 
 public class BookmarkListActivity extends ListActivity {
+	
+	public final static String PREFERENCE_GROUP_BOOKMARKS = "bookmarks";
 
-	private String mEntries[] = { "Entry 1", "Entry 2", "Entry 3" };
+	private List<Bookmark> mBookmarks = new ArrayList<Bookmark>();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -19,7 +26,9 @@ public class BookmarkListActivity extends ListActivity {
 		// Show the Up button in the action bar.
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		
-		setListAdapter(new ArrayAdapter<String>(this, R.layout.list_item, mEntries));
+		loadBookmarks();
+		
+		setListAdapter(new ArrayAdapter<Bookmark>(this, R.layout.list_item, mBookmarks));
 	}
 
 	@Override
@@ -44,6 +53,13 @@ public class BookmarkListActivity extends ListActivity {
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+	
+	private void loadBookmarks() {
+		Map<String,?> preferences = getSharedPreferences(PREFERENCE_GROUP_BOOKMARKS, MODE_PRIVATE).getAll();
+		for (String url : preferences.keySet()) {
+			mBookmarks.add(new Bookmark(url, (String)preferences.get(url)));
+		}
 	}
 
 }

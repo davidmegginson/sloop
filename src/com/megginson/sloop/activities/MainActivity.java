@@ -37,6 +37,10 @@ import com.megginson.sloop.ui.DataCollectionResult;
 public class MainActivity extends FragmentActivity implements
 		LoaderCallbacks<DataCollectionResult> {
 
+	public final static String PREFERENCE_GROUP_MAIN = "main";
+	
+	public final static String PREFERENCE_URL = "url";
+
 	//
 	// Saveable state
 	//
@@ -88,8 +92,8 @@ public class MainActivity extends FragmentActivity implements
 		setupPager();
 
 		// Restore the last URL
-		mUrl = getSharedPreferences("main", MODE_PRIVATE)
-				.getString("url", null);
+		mUrl = getSharedPreferences(PREFERENCE_GROUP_MAIN, MODE_PRIVATE)
+				.getString(PREFERENCE_URL, null);
 		if (mUrl != null && mUrl.length() > 0) {
 			loadData(mUrl);
 		}
@@ -104,9 +108,9 @@ public class MainActivity extends FragmentActivity implements
 		savedInstanceState.putString("url", mUrl);
 
 		// save the URL for the next invocation
-		SharedPreferences.Editor editor = getSharedPreferences("main",
-				MODE_PRIVATE).edit();
-		editor.putString("url", mUrl);
+		SharedPreferences.Editor editor = getSharedPreferences(
+				PREFERENCE_GROUP_MAIN, MODE_PRIVATE).edit();
+		editor.putString(PREFERENCE_URL, mUrl);
 		editor.commit();
 	}
 
