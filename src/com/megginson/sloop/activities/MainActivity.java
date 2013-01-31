@@ -19,6 +19,7 @@ import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.SearchView;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.megginson.sloop.R;
@@ -66,6 +67,11 @@ public class MainActivity extends FragmentActivity implements
 	 * The text field holding the selected URL.
 	 */
 	private EditText mUrlField;
+	
+	/**
+	 * The seek bar for scrolling through the collection.
+	 */
+	private SeekBar mSeekBar;
 
 	//
 	// Activity lifecycle methods.
@@ -88,6 +94,9 @@ public class MainActivity extends FragmentActivity implements
 
 		// Set up the main display area
 		setupPager();
+		
+		// Set up the seek bar.
+		setupSeekBar();
 
 		// Handle any intent
 		handleIntent(getIntent());
@@ -187,8 +196,11 @@ public class MainActivity extends FragmentActivity implements
 		if (result.hasError()) {
 			showError(result.getThrowable().getMessage());
 		} else {
-			mPagerAdapter.setDataCollection(result.getDataCollection());
-			updateInfo(String.format("%,d record(s)", result.getDataCollection().size()));
+			DataCollection dataCollection = result.getDataCollection();
+			mPagerAdapter.setDataCollection(dataCollection);
+			mSeekBar.setProgress(0);
+			mSeekBar.setMax(dataCollection.size());
+			updateInfoBar(0);
 		}
 	}
 
@@ -275,6 +287,38 @@ public class MainActivity extends FragmentActivity implements
 		// Set up the ViewPager with the data collection adapter.
 		mViewPager = (ViewPager) findViewById(R.id.pager);
 		mViewPager.setAdapter(mPagerAdapter);
+		mViewPager
+				.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+
+					@Override
+					public void onPageSelected(int position) {
+						mSeekBar.setProgress(position);
+						updateInfoBar(position);
+					}
+
+				});
+	}
+	
+	private void setupSeekBar() {
+		mSeekBar = (SeekBar)findViewById(R.id.page_seek_bar);
+		mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+			
+			@Override
+			public void onStopTrackingTouch(SeekBar seekBar) {
+				// NO OP
+			}
+			
+			@Override
+			public void onStartTrackingTouch(SeekBar seekBar) {
+				// NO OP
+			}
+			
+			@Override
+			public void onProgressChanged(SeekBar seekBar, int progress,
+					boolean fromUser) {
+					mViewPager.setCurrentItem(progress, false);
+			}
+		});
 	}
 
 	/**
@@ -291,7 +335,6 @@ public class MainActivity extends FragmentActivity implements
 			args.putString("url", url);
 			getLoaderManager().restartLoader(0, args, MainActivity.this);
 			setProgressBarIndeterminateVisibility(true);
-			updateInfo("Loading " + url + "...");
 			hideKeyboard();
 		} else {
 			showError("Please enter a web address");
@@ -309,12 +352,18 @@ public class MainActivity extends FragmentActivity implements
 	/**
 	 * Update the info bar.
 	 * 
-	 * @param message
-	 *            The message to display.
+	 * @param position
+	 *            The position in the data collection.
 	 */
-	private void updateInfo(String message) {
-		TextView infoBar = (TextView)findViewById(R.id.info_bar);
-		infoBar.setText(message);
+	private void updateInfoBar(int position) {
+		TextView infoBar = (TextView) findViewById(R.id.info_bar);
+		DataCollection dataCollection = mPagerAdapter.getDataCollection();
+		if (dataCollection == null) {
+			infoBar.setText("No data collection loaded");
+		} else {
+			infoBar.setText(String.format("Record %,d/%,d", position + 1,
+					dataCollection.size()));
+		}
 	}
 
 	/**

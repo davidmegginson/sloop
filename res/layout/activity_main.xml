@@ -24,26 +24,17 @@
         android:id="@+id/pager"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_above="@+id/page_seek_bar"
         android:layout_alignParentLeft="true"
-        android:layout_above="@+id/info_bar"
         android:layout_below="@+id/addressBar" >
-
-        <!--
-             This title strip will display the currently visible page title, as 
-			well as the page titles for adjacent pages.
-        -->
-
-        <android.support.v4.view.PagerTitleStrip
-            android:id="@+id/pager_title_strip"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:background="#33b5e5"
-            android:paddingBottom="4dp"
-            android:paddingTop="4dp"
-            android:textColor="#fff"
-            android:textSize="12sp" />
     </android.support.v4.view.ViewPager>
+
+    <SeekBar
+        android:id="@+id/page_seek_bar"
+        android:background="@color/gray"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/info_bar" />
 
     <TextView
         android:id="@+id/info_bar"
