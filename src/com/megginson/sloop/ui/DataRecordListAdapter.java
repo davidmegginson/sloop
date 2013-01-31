@@ -1,6 +1,8 @@
 package com.megginson.sloop.ui;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.view.View;
 import android.view.ViewGroup;
@@ -102,7 +104,7 @@ public class DataRecordListAdapter extends BaseAdapter {
 	private TextView makeLabel() {
 		TextView textView = new TextView(mContext);
 		textView.setTextIsSelectable(true);
-		textView.setTypeface(null, Typeface.BOLD);
+		textView.setTextColor(Color.BLUE);
 		textView.setTextSize(15);
 		return textView;
 	}

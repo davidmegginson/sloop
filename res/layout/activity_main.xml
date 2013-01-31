@@ -24,10 +24,9 @@
         android:id="@+id/pager"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/info_bar"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/addressBar"
-        tools:context=".MainActivity" >
+        android:layout_above="@+id/info_bar"
+        android:layout_below="@+id/addressBar" >
 
         <!--
              This title strip will display the currently visible page title, as 
