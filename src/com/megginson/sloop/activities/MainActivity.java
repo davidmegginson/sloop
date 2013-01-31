@@ -1,8 +1,8 @@
 package com.megginson.sloop.activities;
 
 import android.app.AlertDialog;
-import android.app.SearchManager;
 import android.app.LoaderManager.LoaderCallbacks;
+import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -15,10 +15,8 @@ import android.support.v4.view.ViewPager;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.SearchView;
 import android.widget.TextView;
@@ -190,6 +188,7 @@ public class MainActivity extends FragmentActivity implements
 			showError(result.getThrowable().getMessage());
 		} else {
 			mPagerAdapter.setDataCollection(result.getDataCollection());
+			updateInfo(String.format("%,d record(s)", result.getDataCollection().size()));
 		}
 	}
 
@@ -210,7 +209,7 @@ public class MainActivity extends FragmentActivity implements
 	 */
 	private void handleIntent(Intent intent) {
 		String action = intent.getAction();
-		
+
 		if (Intent.ACTION_SEARCH.equals(action)) {
 			String query = intent.getStringExtra(SearchManager.QUERY);
 			doSearch(query);
@@ -264,28 +263,6 @@ public class MainActivity extends FragmentActivity implements
 						return true;
 					}
 				});
-		mUrlField.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-
-			@Override
-			public void onFocusChange(View v, boolean hasFocus) {
-				Button clearUrlButton = (Button) findViewById(R.id.clearURL);
-				if (hasFocus) {
-					clearUrlButton.setVisibility(View.VISIBLE);
-				} else {
-					clearUrlButton.setVisibility(View.GONE);
-				}
-			}
-		});
-
-		Button clearButton = (Button) findViewById(R.id.clearURL);
-		clearButton.setOnClickListener(new Button.OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				mUrlField.setText(null);
-			}
-		});
-
 	}
 
 	/**
@@ -314,6 +291,7 @@ public class MainActivity extends FragmentActivity implements
 			args.putString("url", url);
 			getLoaderManager().restartLoader(0, args, MainActivity.this);
 			setProgressBarIndeterminateVisibility(true);
+			updateInfo("Loading " + url + "...");
 			hideKeyboard();
 		} else {
 			showError("Please enter a web address");
@@ -326,6 +304,17 @@ public class MainActivity extends FragmentActivity implements
 	private void hideKeyboard() {
 		InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 		imm.hideSoftInputFromWindow(mViewPager.getWindowToken(), 0);
+	}
+
+	/**
+	 * Update the info bar.
+	 * 
+	 * @param message
+	 *            The message to display.
+	 */
+	private void updateInfo(String message) {
+		TextView infoBar = (TextView)findViewById(R.id.info_bar);
+		infoBar.setText(message);
 	}
 
 	/**
