@@ -19,33 +19,20 @@ import com.megginson.sloop.model.Bookmark;
 import com.megginson.sloop.ui.BookmarkListAdapter;
 
 public class BookmarkListActivity extends ListActivity {
-	
+
 	public final static String PREFERENCE_GROUP_BOOKMARKS = "bookmarks";
 
 	private List<Bookmark> mBookmarks = new ArrayList<Bookmark>();
+;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		// Show the Up button in the action bar.
 		getActionBar().setDisplayHomeAsUpEnabled(true);
-		
-		loadBookmarks();
 
-		setListAdapter(new BookmarkListAdapter(this, mBookmarks));
-		getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view, int position,
-					long id) {
-				Bookmark bookmark = mBookmarks.get(position);
-				Intent intent = new Intent(BookmarkListActivity.this, MainActivity.class);
-				intent.putExtra("url", bookmark.getUrl());
-				Toast.makeText(getApplicationContext(), bookmark.getTitle(), Toast.LENGTH_SHORT).show();
-				startActivity(intent);
-				finish();
-			}
-		});
+		setupListView();
+		doLoadBookmarks();
 	}
 
 	@Override
@@ -59,24 +46,60 @@ public class BookmarkListActivity extends ListActivity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case android.R.id.home:
-			// This ID represents the Home or Up button. In the case of this
-			// activity, the Up button is shown. Use NavUtils to allow users
-			// to navigate up one level in the application structure. For
-			// more details, see the Navigation pattern on Android Design:
-			//
-			// http://developer.android.com/design/patterns/navigation.html#up-vs-back
-			//
-			NavUtils.navigateUpFromSameTask(this);
+			doNavigateUp();
 			return true;
+		default:
+			return super.onOptionsItemSelected(item);
 		}
-		return super.onOptionsItemSelected(item);
 	}
-	
-	private void loadBookmarks() {
-		Map<String,?> preferences = getSharedPreferences(PREFERENCE_GROUP_BOOKMARKS, MODE_PRIVATE).getAll();
+
+	//
+	// UI component configuration
+	//
+
+	/**
+	 * Set up the built-in list view.
+	 */
+	private void setupListView() {
+		setListAdapter(new BookmarkListAdapter(this, mBookmarks));
+		getListView().setOnItemClickListener(
+				new AdapterView.OnItemClickListener() {
+					@Override
+					public void onItemClick(AdapterView<?> parent, View view,
+							int position, long id) {
+						Bookmark bookmark = mBookmarks.get(position);
+						Intent intent = new Intent(BookmarkListActivity.this,
+								MainActivity.class);
+						intent.putExtra("url", bookmark.getUrl());
+						Toast.makeText(getApplicationContext(),
+								bookmark.getTitle(), Toast.LENGTH_SHORT).show();
+						startActivity(intent);
+						finish();
+					}
+				});
+	}
+
+	//
+	// Actions
+	//
+
+	/**
+	 * Action: return to home screen.
+	 */
+	private void doNavigateUp() {
+		NavUtils.navigateUpFromSameTask(this);
+	}
+
+	/**
+	 * Action: load bookmarks from shared preferences.
+	 */
+	private void doLoadBookmarks() {
+		Map<String, ?> preferences = getSharedPreferences(
+				PREFERENCE_GROUP_BOOKMARKS, MODE_PRIVATE).getAll();
 		for (String url : preferences.keySet()) {
-			mBookmarks.add(new Bookmark(url, (String)preferences.get(url)));
+			mBookmarks.add(new Bookmark(url, (String) preferences.get(url)));
 		}
+		getListView().refreshDrawableState();
 	}
 
 }
