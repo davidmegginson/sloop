@@ -69,12 +69,12 @@ public class MainActivity extends FragmentActivity implements
 	 * The text field holding the selected URL.
 	 */
 	private EditText mUrlField;
-	
+
 	/**
 	 * The clear button for the URL field.
 	 */
 	private Button mUrlClearButton;
-	
+
 	/**
 	 * The seek bar for scrolling through the collection.
 	 */
@@ -101,12 +101,12 @@ public class MainActivity extends FragmentActivity implements
 
 		// Set up the main display area
 		setupPager();
-		
+
 		// Set up the seek bar.
 		setupSeekBar();
 
 		// Handle any intent
-		handleIntent(getIntent());
+		doHandleIntent(getIntent());
 
 	}
 
@@ -124,7 +124,7 @@ public class MainActivity extends FragmentActivity implements
 
 	@Override
 	public void onNewIntent(Intent intent) {
-		handleIntent(intent);
+		doHandleIntent(intent);
 	}
 
 	@Override
@@ -146,25 +146,16 @@ public class MainActivity extends FragmentActivity implements
 
 	@Override
 	public boolean onMenuItemSelected(int featureId, MenuItem item) {
-
-		Intent intent;
-
+		// Items from the main menu
 		switch (item.getItemId()) {
-
 		case R.id.menu_bookmark_list:
-			intent = new Intent(this, BookmarkListActivity.class);
-			startActivity(intent);
+			doLaunchBookmarkList();
 			return true;
-
 		case R.id.menu_bookmark_create:
-			intent = new Intent(this, BookmarkEditActivity.class);
-			intent.putExtra("url", mUrl);
-			startActivity(intent);
+			doLaunchBookmarkCreate(mUrl);
 			return true;
-
 		default:
 			return super.onMenuItemSelected(featureId, item);
-
 		}
 	}
 
@@ -201,70 +192,23 @@ public class MainActivity extends FragmentActivity implements
 			DataCollectionResult result) {
 		MainActivity.this.setProgressBarIndeterminateVisibility(false);
 		if (result.hasError()) {
-			showError(result.getThrowable().getMessage());
+			doDisplayError(result.getThrowable().getMessage());
 		} else {
-			DataCollection dataCollection = result.getDataCollection();
-			mPagerAdapter.setDataCollection(dataCollection);
-			mSeekBar.setProgress(0);
-			mSeekBar.setMax(dataCollection.size());
-			updateInfoBar(0);
+			doUpdateDataCollection(result.getDataCollection());
 		}
 	}
 
 	@Override
 	public void onLoaderReset(Loader<DataCollectionResult> loader) {
-		mPagerAdapter.setDataCollection(null);
+		doUpdateDataCollection(null);
 	}
 
 	//
-	// Internal utility methods
+	// Configuration functions for UI components.
 	//
-
-	/**
-	 * Handle any special intents.
-	 * 
-	 * @param intent
-	 *            The intent passed to the activity.
-	 */
-	private void handleIntent(Intent intent) {
-		String action = intent.getAction();
-
-		if (Intent.ACTION_SEARCH.equals(action)) {
-			String query = intent.getStringExtra(SearchManager.QUERY);
-			doSearch(query);
-		} else {
-			mUrl = intent.getStringExtra("url");
-			// Restore the last URL
-			if (mUrl == null) {
-				mUrl = getSharedPreferences(PREFERENCE_GROUP_MAIN, MODE_PRIVATE)
-						.getString(PREFERENCE_URL, null);
-			}
-
-			if (mUrl != null && mUrl.length() > 0) {
-				loadData(mUrl);
-			}
-		}
-	}
-
-	/**
-	 * Search for a substring inside a record field.
-	 * 
-	 * Advances the view pager to the first result.
-	 * 
-	 * @param query
-	 *            the string query (currently case-sensitive).
-	 */
-	private void doSearch(String query) {
-		DataCollection dataCollection = mPagerAdapter.getDataCollection();
-		if (dataCollection != null) {
-			int position = dataCollection.search(query, 0);
-			if (position == -1) {
-				showError("No results found for " + query);
-			} else {
-				mViewPager.setCurrentItem(position);
-			}
-		}
-	}
+	// Each of these functions sets listeners, etc. for its component. The
+	// listeners use the do*() action methods to perform actions.
+	//
 
 	/**
 	 * Set up the URL text field and its clear button.
@@ -277,15 +221,15 @@ public class MainActivity extends FragmentActivity implements
 					@Override
 					public boolean onEditorAction(TextView v, int actionId,
 							KeyEvent event) {
-						hideKeyboard();
-						loadData(v.getText().toString());
+						doHideKeyboard();
+						doLoadDataCollection(v.getText().toString());
 						return true;
 					}
 				});
-		
+
 		// Button clears text
 		// TODO when this is an action item, close if there's no text
-		mUrlClearButton = (Button)findViewById(R.id.button_url_clear);
+		mUrlClearButton = (Button) findViewById(R.id.button_url_clear);
 		mUrlClearButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -306,90 +250,77 @@ public class MainActivity extends FragmentActivity implements
 		mViewPager.setAdapter(mPagerAdapter);
 		mViewPager
 				.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
-
 					@Override
 					public void onPageSelected(int position) {
-						mSeekBar.setProgress(position);
-						updateInfoBar(position);
+						doDisplayRecordNumber(position);
 					}
-
 				});
 	}
-	
+
 	private void setupSeekBar() {
-		mSeekBar = (SeekBar)findViewById(R.id.page_seek_bar);
+		mSeekBar = (SeekBar) findViewById(R.id.page_seek_bar);
 		mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-			
+
 			@Override
 			public void onStopTrackingTouch(SeekBar seekBar) {
 				// NO OP
 			}
-			
+
 			@Override
 			public void onStartTrackingTouch(SeekBar seekBar) {
 				// NO OP
 			}
-			
+
 			@Override
 			public void onProgressChanged(SeekBar seekBar, int progress,
 					boolean fromUser) {
-					mViewPager.setCurrentItem(progress, false);
+				mViewPager.setCurrentItem(progress, false);
 			}
 		});
 	}
 
+	//
+	// Abstracted UI actions
+	//
+	// These are separate functions to avoid direct dependencies among UI
+	// components and their listeners. Each action represents something that can
+	// happen in the activity, and the functions take care of figuring out what
+	// to do with different components.
+	//
+
 	/**
-	 * Load data from a new URL.
+	 * Action: handle any special intents.
 	 * 
-	 * @param url
-	 *            the URL, or null (which will display an error).
+	 * @param intent
+	 *            The intent passed to the activity.
 	 */
-	private void loadData(String url) {
-		if (url != null && url.length() > 0) {
-			mUrl = url;
-			mUrlField.setText(url);
-			Bundle args = new Bundle();
-			args.putString("url", url);
-			getLoaderManager().restartLoader(0, args, MainActivity.this);
-			setProgressBarIndeterminateVisibility(true);
-			hideKeyboard();
+	private void doHandleIntent(Intent intent) {
+		String action = intent.getAction();
+
+		if (Intent.ACTION_SEARCH.equals(action)) {
+			String query = intent.getStringExtra(SearchManager.QUERY);
+			doSearch(query);
 		} else {
-			showError("Please enter a web address");
+			mUrl = intent.getStringExtra("url");
+			// Restore the last URL
+			if (mUrl == null) {
+				mUrl = getSharedPreferences(PREFERENCE_GROUP_MAIN, MODE_PRIVATE)
+						.getString(PREFERENCE_URL, null);
+			}
+
+			if (mUrl != null && mUrl.length() > 0) {
+				doLoadDataCollection(mUrl);
+			}
 		}
 	}
 
 	/**
-	 * Hide the soft keyboard.
-	 */
-	private void hideKeyboard() {
-		InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-		imm.hideSoftInputFromWindow(mViewPager.getWindowToken(), 0);
-	}
-
-	/**
-	 * Update the info bar.
-	 * 
-	 * @param position
-	 *            The position in the data collection.
-	 */
-	private void updateInfoBar(int position) {
-		TextView infoBar = (TextView) findViewById(R.id.info_bar);
-		DataCollection dataCollection = mPagerAdapter.getDataCollection();
-		if (dataCollection == null) {
-			infoBar.setText("No data collection loaded");
-		} else {
-			infoBar.setText(String.format("Record %,d/%,d", position + 1,
-					dataCollection.size()));
-		}
-	}
-
-	/**
-	 * Report an error message.
+	 * Action: report an error message.
 	 * 
 	 * @param message
 	 *            The error message as a string.
 	 */
-	private void showError(String message) {
+	private void doDisplayError(String message) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
 		builder.setMessage(message);
 		builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
@@ -399,6 +330,125 @@ public class MainActivity extends FragmentActivity implements
 			}
 		});
 		builder.create().show();
+	}
+
+	/**
+	 * Action: search for a substring inside a record field.
+	 * 
+	 * Advances the view pager to the first result.
+	 * 
+	 * @param query
+	 *            the string query (currently case-sensitive).
+	 */
+	private void doSearch(String query) {
+		DataCollection dataCollection = mPagerAdapter.getDataCollection();
+		if (dataCollection != null) {
+			int position = dataCollection.search(query, 0);
+			if (position == -1) {
+				doDisplayError("No results found for " + query);
+			} else {
+				mViewPager.setCurrentItem(position);
+			}
+		}
+	}
+
+	/**
+	 * Action: launch the bookmark list activity.
+	 */
+	private void doLaunchBookmarkList() {
+		Intent intent = new Intent(this, BookmarkListActivity.class);
+		startActivity(intent);
+	}
+
+	/**
+	 * Action: launch the bookmark create activity.
+	 * 
+	 * @param url
+	 *            The URL of the bookmark to be created or edited.
+	 */
+	private void doLaunchBookmarkCreate(String url) {
+		Intent intent = new Intent(this, BookmarkEditActivity.class);
+		intent.putExtra("url", url);
+		startActivity(intent);
+	}
+
+	/**
+	 * Load a data collection from a URL.
+	 * 
+	 * When the load is complete, the loader will invoke the
+	 * {@link #onLoadFinished(Loader, DataCollectionResult)} method with the
+	 * result.
+	 * 
+	 * @param url
+	 *            the URL of the data collection.
+	 */
+	private void doLoadDataCollection(String url) {
+		if (url == null || url.length() == 0) {
+			doDisplayError("Please enter a web address");
+			return;
+		}
+		mUrl = url;
+		mUrlField.setText(url);
+		Bundle args = new Bundle();
+		args.putString("url", url);
+		getLoaderManager().restartLoader(0, args, MainActivity.this);
+		setProgressBarIndeterminateVisibility(true);
+		doHideKeyboard();
+	}
+
+	/**
+	 * Action: update the data collection displayed.
+	 * 
+	 * Assigns the new data collection to the pager adapter, and updates the
+	 * seekbar and the info bar.
+	 * 
+	 * @param dataCollection
+	 *            the new data collection, or null to clear.
+	 */
+	private void doUpdateDataCollection(DataCollection dataCollection) {
+		mPagerAdapter.setDataCollection(dataCollection);
+		if (dataCollection != null) {
+			mSeekBar.setMax(dataCollection.size());
+			doDisplayRecordNumber(0);
+		} else {
+			mSeekBar.setProgress(0);
+			mSeekBar.setMax(0);
+			doDisplayInfo("No data collection loaded");
+		}
+	}
+
+	/**
+	 * Action: display the current record number.
+	 * 
+	 * Updates the position of the horizontal seekbar, and displays the record
+	 * number in the info bar.
+	 * 
+	 * @param recordNumber
+	 *            the record number to display (zero-based).
+	 */
+	private void doDisplayRecordNumber(int recordNumber) {
+		mSeekBar.setProgress(recordNumber);
+		doDisplayInfo(String.format("Record %,d/%,d", recordNumber + 1,
+				mPagerAdapter.getDataCollection().size()));
+	}
+
+	/**
+	 * Action: update text in the info bar.
+	 * 
+	 * @param message
+	 *            The message to display.
+	 */
+	private void doDisplayInfo(String message) {
+		TextView infoBar = (TextView) findViewById(R.id.info_bar);
+		infoBar.setText(message);
+	}
+
+	/**
+	 * Action: hide the soft keyboard.
+	 */
+	private void doHideKeyboard() {
+		InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+		imm.hideSoftInputFromWindow(mViewPager.getWindowToken(), 0);
 	}
 
 }
