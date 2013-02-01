@@ -1,0 +1,22 @@
+This is the source code for the Sloop data browser.  The latest copy
+of the source code is always available at GitHub:
+
+  https://github.com/davidmegginson/sloop
+
+Sloop is an Android application for browsing open data in CSV format.
+You can point sloop to any URL containing a CSV file, and it will
+attempt to render that data in a browseable form, allowing you to
+swipe your way through records.
+
+Sloop is currently in early prototype.  This is not (yet) a complete
+application for end users, but is developing rapidly.  Unit tests are
+available in a separate project:
+
+  https://github.com/davidmegginson/sloop-test
+
+Sloop is in the Public Domain.  See the LICENSE file for details.
+
+
+David Megginson
+Ottawa, Ontario, Canada
+2013-02-01
