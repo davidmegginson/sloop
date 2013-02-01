@@ -15,8 +15,10 @@ import android.support.v4.view.ViewPager;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.SearchView;
 import android.widget.SeekBar;
@@ -67,6 +69,11 @@ public class MainActivity extends FragmentActivity implements
 	 * The text field holding the selected URL.
 	 */
 	private EditText mUrlField;
+	
+	/**
+	 * The clear button for the URL field.
+	 */
+	private Button mUrlClearButton;
 	
 	/**
 	 * The seek bar for scrolling through the collection.
@@ -270,11 +277,21 @@ public class MainActivity extends FragmentActivity implements
 					@Override
 					public boolean onEditorAction(TextView v, int actionId,
 							KeyEvent event) {
-						v.clearFocus();
+						hideKeyboard();
 						loadData(v.getText().toString());
 						return true;
 					}
 				});
+		
+		// Button clears text
+		// TODO when this is an action item, close if there's no text
+		mUrlClearButton = (Button)findViewById(R.id.button_url_clear);
+		mUrlClearButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				mUrlField.setText(null);
+			}
+		});
 	}
 
 	/**

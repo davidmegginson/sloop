@@ -2,8 +2,10 @@ package com.megginson.sloop.ui;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -24,6 +26,8 @@ import com.megginson.sloop.model.DataRecord;
  * @author David Megginson
  */
 public class DataRecordListAdapter extends BaseAdapter {
+
+	private final static int SCREEN_WIDTH_BREAKPOINT = 600;
 
 	private final static int LABEL_POSITION = 0;
 
@@ -89,11 +93,50 @@ public class DataRecordListAdapter extends BaseAdapter {
 	 */
 	private LinearLayout makeLayout() {
 		LinearLayout layout = new LinearLayout(mContext);
-		layout.setOrientation(LinearLayout.VERTICAL);
-		layout.setPadding(0, 20, 0, 20);
+		if (pixelsToDp((int)getScreenWidth()) >= SCREEN_WIDTH_BREAKPOINT) {
+			// if the screen is wide, put labels to the left of data
+			layout.setOrientation(LinearLayout.HORIZONTAL);
+		} else {
+			// if the screen is narrow, put labels above data
+			layout.setOrientation(LinearLayout.VERTICAL);
+		}
+		layout.setPadding(0, (int)dpToPixels(10), 0, (int)dpToPixels(10));
 		return layout;
 	}
 
+	/**
+	 * Get the width of the screen, to determine breakpoints.
+	 * 
+	 * @return the screen width.
+	 */
+	private float getScreenWidth() {
+		WindowManager windowManager = (WindowManager) mContext
+				.getSystemService(Context.WINDOW_SERVICE);
+		Point screenSize = new Point();
+		windowManager.getDefaultDisplay().getSize(screenSize);
+		return screenSize.x;
+	}
+	
+	/**
+	 * Convert raw pixels to device-independent pixels.
+	 * 
+	 * @param pixels the number of raw pixels.
+	 * @return the number of device-independent pixels.
+	 */
+	private int pixelsToDp (int pixels) {
+		return (int)(pixels / (mContext.getResources().getDisplayMetrics().density));
+	}
+	
+	/**
+	 * Convert device-independent pixels to raw pixels.
+	 * 
+	 * @param pixels the number of device-independent pixels.
+	 * @return the number of raw pixels.
+	 */
+	private int dpToPixels (int dp) {
+		return (int)(dp * (mContext.getResources().getDisplayMetrics().density));
+	}
+	
 	/**
 	 * Construct the text view that holds the label.
 	 * 
@@ -103,7 +146,10 @@ public class DataRecordListAdapter extends BaseAdapter {
 		TextView textView = new TextView(mContext);
 		textView.setTextIsSelectable(true);
 		textView.setTextColor(Color.BLUE);
-		textView.setTextSize(15);
+		if (pixelsToDp((int)getScreenWidth()) >= SCREEN_WIDTH_BREAKPOINT) {
+			// if the screen is wide, we're showing side-by-side
+			textView.setWidth((int)(getScreenWidth() / 3));
+		}
 		return textView;
 	}
 
@@ -115,7 +161,6 @@ public class DataRecordListAdapter extends BaseAdapter {
 	private TextView makeValue() {
 		TextView textView = new TextView(mContext);
 		textView.setTextIsSelectable(true);
-		textView.setTextSize(20);
 		return textView;
 	}
 
