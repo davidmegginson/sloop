@@ -19,11 +19,9 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.SearchView;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.megginson.sloop.R;
 import com.megginson.sloop.model.DataCollection;
-import com.megginson.sloop.model.DataEntry;
 import com.megginson.sloop.ui.DataCollectionLoader;
 import com.megginson.sloop.ui.DataCollectionPagerAdapter;
 import com.megginson.sloop.ui.DataCollectionResult;
@@ -51,8 +49,6 @@ public class MainActivity extends FragmentActivity implements
 	private String mUrl = null;
 
 	private boolean mIsLoading = false;
-
-	private DataCollectionLoader mLoader;
 
 	//
 	// UI components.

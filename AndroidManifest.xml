@@ -45,6 +45,14 @@
             android:name="com.megginson.sloop.activities.BookmarkEditActivity"
             android:label="@string/title_activity_bookmark_edit" >
         </activity>
+        <activity
+            android:name="com.megginson.sloop.activities.FilterActivity"
+            android:label="@string/title_activity_filter"
+            android:parentActivityName="com.megginson.sloop.activities.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.megginson.sloop.activities.MainActivity" />
+        </activity>
     </application>
 
 </manifest>

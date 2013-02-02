@@ -16,5 +16,6 @@
     <string name="bookmark_url_label">Bookmark URL</string>
     <string name="save_bookmark">Save bookmark</string>
     <string name="label_bookmark_title">Bookmark title</string>
+    <string name="title_activity_filter">FilterActivity</string>
 
 </resources>

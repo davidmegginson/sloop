@@ -1,5 +1,6 @@
 package com.megginson.sloop.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -7,9 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
 
-import com.megginson.sloop.activities.MainActivity;
+import com.megginson.sloop.activities.FilterActivity;
 import com.megginson.sloop.model.DataEntry;
 import com.megginson.sloop.model.DataRecord;
 
@@ -43,9 +43,11 @@ public class DataRecordFragment extends Fragment {
 		return listView;
 	}
 	
+	// TODO does this belong here?
 	private void doAssignFilter(DataEntry entry){
-		// TODO send an intent to the FilterActivity
-		Toast.makeText(getActivity(), "Filter: " + entry.getKey() + "=" + entry.getValue(), Toast.LENGTH_SHORT).show();
+		Intent intent = new Intent(getActivity(), FilterActivity.class);
+		intent.putExtra("entry", entry);
+		getActivity().startActivity(intent);
 	}
 
 }
