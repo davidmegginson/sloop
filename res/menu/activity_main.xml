@@ -4,7 +4,7 @@
         android:id="@+id/menu_address_bar"
         android:actionProviderClass="com.megginson.sloop.widgets.AddressActionProvider"
         android:icon="@drawable/ic_web_site"
-        android:showAsAction="always"
+        android:showAsAction="ifRoom|collapseActionView"
         android:title="Open Data Collection"/>
     <item
         android:id="@+id/menu_search"

@@ -48,6 +48,10 @@ public class MainActivity extends FragmentActivity implements
 	 */
 	private String mUrl = null;
 
+	private boolean mIsLoading = false;
+
+	private DataCollectionLoader mLoader;
+
 	//
 	// UI components.
 	//
@@ -88,7 +92,7 @@ public class MainActivity extends FragmentActivity implements
 
 		// Set up the seek bar.
 		setupSeekBar();
-		
+
 		// What are we supposed to be doing?
 		doHandleIntent(getIntent());
 	}
@@ -177,7 +181,11 @@ public class MainActivity extends FragmentActivity implements
 			doDisplayError(result.getThrowable().getMessage());
 		} else {
 			doUpdateDataCollection(result.getDataCollection());
-			mAddressProvider.setUrl(mUrl);
+			mIsLoading = false;
+			if (mAddressProvider != null) {
+				mAddressProvider.setUrl(mUrl);
+				mAddressProvider.setIsLoading(false);
+			}
 		}
 	}
 
@@ -243,6 +251,8 @@ public class MainActivity extends FragmentActivity implements
 	private void setupAddressProvider(MenuItem item) {
 		mAddressProvider = (AddressActionProvider) item.getActionProvider();
 		mAddressProvider.setMenuItem(item);
+		mAddressProvider.setUrl(mUrl);
+		mAddressProvider.setIsLoading(mIsLoading);
 		mAddressProvider
 				.setAddressBarListener(new AddressActionProvider.AddressBarListener() {
 					@Override
@@ -252,7 +262,7 @@ public class MainActivity extends FragmentActivity implements
 
 					@Override
 					public void onLoadCancelled(String url) {
-						// TODO Auto-generated method stub
+
 					}
 				});
 	}
@@ -379,6 +389,7 @@ public class MainActivity extends FragmentActivity implements
 			return;
 		}
 		mUrl = url;
+		mIsLoading = true;
 		Bundle args = new Bundle();
 		args.putString("url", url);
 		getLoaderManager().restartLoader(0, args, MainActivity.this);

@@ -8,7 +8,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.megginson.sloop.R;
@@ -35,6 +34,10 @@ import com.megginson.sloop.R;
  */
 public class AddressActionProvider extends ActionProvider {
 
+	private String mUrl;
+
+	private boolean mIsLoading = false;
+
 	private AddressBarListener mListener;
 
 	// FIXME just until I figure out how to get it
@@ -46,16 +49,21 @@ public class AddressActionProvider extends ActionProvider {
 
 	private EditText mUrlField;
 
-	private ProgressBar mProgressBar;
-
 	private Button mCancelButton;
-	
-	private boolean mIsLoading = false;
 
 	public AddressActionProvider(Context context) {
 		super(context);
 		mContext = context;
 		System.err.println(context);
+	}
+
+	@Override
+	public View onCreateActionView() {
+		LayoutInflater inflater = LayoutInflater.from(mContext);
+		mContentView = inflater.inflate(R.layout.address_bar, null);
+		setupUrlField();
+		setupCancelButton();
+		return mContentView;
 	}
 
 	/**
@@ -73,16 +81,6 @@ public class AddressActionProvider extends ActionProvider {
 		mMenuItem = menuItem;
 	}
 
-	@Override
-	public View onCreateActionView() {
-		LayoutInflater inflater = LayoutInflater.from(mContext);
-		mContentView = inflater.inflate(R.layout.address_bar, null);
-		setupUrlField();
-		setupProgressBar();
-		setupCancelButton();
-		return mContentView;
-	}
-
 	/**
 	 * Set a listener to receive notifications of events from this widget.
 	 * 
@@ -94,12 +92,13 @@ public class AddressActionProvider extends ActionProvider {
 	}
 
 	public void setUrl(String url) {
-		mUrlField.setText(url);
+		mUrl = url;
+		doUpdateStatus();
 	}
-	
-	public void setIsLoading (boolean isLoading) {
+
+	public void setIsLoading(boolean isLoading) {
 		mIsLoading = isLoading;
-		doUpdateLoading();
+		doUpdateStatus();
 	}
 
 	private void setupUrlField() {
@@ -116,13 +115,6 @@ public class AddressActionProvider extends ActionProvider {
 
 	}
 
-	private void setupProgressBar() {
-		mProgressBar = (ProgressBar) mContentView
-				.findViewById(R.id.progress_bar);
-		mProgressBar.setIndeterminate(true);
-		doUpdateLoading();
-	}
-
 	private void setupCancelButton() {
 		mCancelButton = (Button) mContentView
 				.findViewById(R.id.button_url_clear);
@@ -133,15 +125,14 @@ public class AddressActionProvider extends ActionProvider {
 			}
 		});
 	}
-	
+
 	/**
 	 * Update the loading status display.
 	 */
-	private void doUpdateLoading() {
-		if (mIsLoading) {
-			mProgressBar.setVisibility(View.VISIBLE);
-		} else {
-			mProgressBar.setVisibility(View.INVISIBLE);
+	private void doUpdateStatus() {
+		// update the URL field
+		if (mUrlField != null) {
+			mUrlField.setText(mUrl);
 		}
 	}
 
@@ -149,10 +140,16 @@ public class AddressActionProvider extends ActionProvider {
 	 * Do a cancel action, depending on contenxt.
 	 */
 	private void doCancel() {
-		if (mUrlField.getText() == null || mUrlField.getText().length() == 0) {
-			mMenuItem.collapseActionView();
-		} else {
+		if (mIsLoading) {
+			// if loading, cancel the load
+			mListener.onLoadCancelled(mUrl);
+		} else if (mUrlField.getText() != null
+				&& mUrlField.getText().length() > 0) {
+			// if not loading but there's text, clear the field
 			mUrlField.setText(null);
+		} else {
+			// if not loading and no text, collapse
+			mMenuItem.collapseActionView();
 		}
 	}
 
