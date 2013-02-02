@@ -15,11 +15,8 @@ import android.support.v4.view.ViewPager;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.SearchView;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -29,6 +26,7 @@ import com.megginson.sloop.model.DataCollection;
 import com.megginson.sloop.ui.DataCollectionLoader;
 import com.megginson.sloop.ui.DataCollectionPagerAdapter;
 import com.megginson.sloop.ui.DataCollectionResult;
+import com.megginson.sloop.widgets.AddressBarActionProvider;
 
 /**
  * Sloop's main UI activity (browse a data set).
@@ -54,6 +52,11 @@ public class MainActivity extends FragmentActivity implements
 	//
 	// UI components.
 	//
+	
+	/**
+	 * The address action provider.
+	 */
+	private AddressBarActionProvider mAddressProvider;
 
 	/**
 	 * The {@link PagerAdapter} for the current data collection.
@@ -64,16 +67,6 @@ public class MainActivity extends FragmentActivity implements
 	 * The {@link ViewPager} that will host the data collection.
 	 */
 	private ViewPager mViewPager;
-
-	/**
-	 * The text field holding the selected URL.
-	 */
-	private EditText mUrlField;
-
-	/**
-	 * The clear button for the URL field.
-	 */
-	private Button mUrlClearButton;
 
 	/**
 	 * The seek bar for scrolling through the collection.
@@ -95,9 +88,6 @@ public class MainActivity extends FragmentActivity implements
 		// Not necessary for 4.2, but for 4.0, this has to be called after the
 		// content view has been set, or else we start with the spinner active.
 		setProgressBarIndeterminateVisibility(false);
-
-		// Set up the field where the user enters a URL.
-		setupUrlField();
 
 		// Set up the main display area
 		setupPager();
@@ -133,6 +123,22 @@ public class MainActivity extends FragmentActivity implements
 
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.activity_main, menu);
+		
+		// Set up the address bar action
+		MenuItem item = menu.findItem(R.id.menu_address_bar);
+		mAddressProvider = (AddressBarActionProvider)item.getActionProvider();
+		mAddressProvider.setMenuItem(item);
+		mAddressProvider.setAddressBarListener(new AddressBarActionProvider.AddressBarListener() {
+			@Override
+			public void onLoadStarted(String url) {
+				doLoadDataCollection(url);
+			}
+			
+			@Override
+			public void onLoadCancelled(String url) {
+				// TODO Auto-generated method stub
+			}
+		});
 
 		// Register this activity to handle searches
 		SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
@@ -195,6 +201,7 @@ public class MainActivity extends FragmentActivity implements
 			doDisplayError(result.getThrowable().getMessage());
 		} else {
 			doUpdateDataCollection(result.getDataCollection());
+			mAddressProvider.setUrl(mUrl);
 		}
 	}
 
@@ -209,34 +216,6 @@ public class MainActivity extends FragmentActivity implements
 	// Each of these functions sets listeners, etc. for its component. The
 	// listeners use the do*() action methods to perform actions.
 	//
-
-	/**
-	 * Set up the URL text field and its clear button.
-	 */
-	private void setupUrlField() {
-		// Handle the enter key in the URL field
-		mUrlField = (EditText) findViewById(R.id.urlField);
-		mUrlField
-				.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-					@Override
-					public boolean onEditorAction(TextView v, int actionId,
-							KeyEvent event) {
-						doHideKeyboard();
-						doLoadDataCollection(v.getText().toString());
-						return true;
-					}
-				});
-
-		// Button clears text
-		// TODO when this is an action item, close if there's no text
-		mUrlClearButton = (Button) findViewById(R.id.button_url_clear);
-		mUrlClearButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				mUrlField.setText(null);
-			}
-		});
-	}
 
 	/**
 	 * Set up the main ViewPager.
@@ -388,7 +367,6 @@ public class MainActivity extends FragmentActivity implements
 			return;
 		}
 		mUrl = url;
-		mUrlField.setText(url);
 		Bundle args = new Bundle();
 		args.putString("url", url);
 		getLoaderManager().restartLoader(0, args, MainActivity.this);
