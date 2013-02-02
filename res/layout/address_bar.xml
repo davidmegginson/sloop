@@ -10,29 +10,27 @@
         android:id="@+id/urlField"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:ems="10"
         android:hint="@string/url_field_hint"
         android:inputType="textUri"
         android:paddingRight="32dp"
         android:singleLine="true" />
-
-    <Button
-        android:id="@+id/button_url_clear"
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:background="@drawable/ic_cancel" />
 
     <ProgressBar
         android:id="@+id/progress_bar"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/urlField"
         android:layout_alignParentLeft="true"
+        android:layout_below="@+id/urlField"
+        android:layout_toLeftOf="@+id/button_url_clear" />
+
+    <Button
+        android:id="@+id/button_url_clear"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_above="@+id/progress_bar"
         android:layout_alignParentRight="true"
-        android:visibility="gone" />
+        android:background="@drawable/ic_cancel" />
 
 </RelativeLayout>

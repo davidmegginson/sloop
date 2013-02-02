@@ -15,7 +15,6 @@ import android.support.v4.view.ViewPager;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.SearchView;
 import android.widget.SeekBar;
@@ -26,7 +25,7 @@ import com.megginson.sloop.model.DataCollection;
 import com.megginson.sloop.ui.DataCollectionLoader;
 import com.megginson.sloop.ui.DataCollectionPagerAdapter;
 import com.megginson.sloop.ui.DataCollectionResult;
-import com.megginson.sloop.widgets.AddressBarActionProvider;
+import com.megginson.sloop.widgets.AddressActionProvider;
 
 /**
  * Sloop's main UI activity (browse a data set).
@@ -52,11 +51,11 @@ public class MainActivity extends FragmentActivity implements
 	//
 	// UI components.
 	//
-	
+
 	/**
 	 * The address action provider.
 	 */
-	private AddressBarActionProvider mAddressProvider;
+	private AddressActionProvider mAddressProvider;
 
 	/**
 	 * The {@link PagerAdapter} for the current data collection.
@@ -80,24 +79,35 @@ public class MainActivity extends FragmentActivity implements
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
-		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+		System.err.println("onCreate");
 
 		setContentView(R.layout.activity_main);
-
-		// Not necessary for 4.2, but for 4.0, this has to be called after the
-		// content view has been set, or else we start with the spinner active.
-		setProgressBarIndeterminateVisibility(false);
 
 		// Set up the main display area
 		setupPager();
 
 		// Set up the seek bar.
 		setupSeekBar();
-
-		// Handle any intent
+		
+		// What are we supposed to be doing?
 		doHandleIntent(getIntent());
+	}
 
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		super.onCreateOptionsMenu(menu);
+		System.err.println("onCreateOptionsMenu");
+
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.activity_main, menu);
+
+		// Set up the address bar action
+		setupAddressProvider(menu.findItem(R.id.menu_address_bar));
+
+		// Register this activity to handle searches
+		setupSearchManager(menu.findItem(R.id.menu_search));
+
+		return true;
 	}
 
 	@Override
@@ -115,39 +125,6 @@ public class MainActivity extends FragmentActivity implements
 	@Override
 	public void onNewIntent(Intent intent) {
 		doHandleIntent(intent);
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		super.onCreateOptionsMenu(menu);
-
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.activity_main, menu);
-		
-		// Set up the address bar action
-		MenuItem item = menu.findItem(R.id.menu_address_bar);
-		mAddressProvider = (AddressBarActionProvider)item.getActionProvider();
-		mAddressProvider.setMenuItem(item);
-		mAddressProvider.setAddressBarListener(new AddressBarActionProvider.AddressBarListener() {
-			@Override
-			public void onLoadStarted(String url) {
-				doLoadDataCollection(url);
-			}
-			
-			@Override
-			public void onLoadCancelled(String url) {
-				// TODO Auto-generated method stub
-			}
-		});
-
-		// Register this activity to handle searches
-		SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-		SearchView searchView = (SearchView) menu.findItem(R.id.menu_search)
-				.getActionView();
-		searchView.setSearchableInfo(searchManager
-				.getSearchableInfo(getComponentName()));
-
-		return true;
 	}
 
 	@Override
@@ -196,7 +173,6 @@ public class MainActivity extends FragmentActivity implements
 	@Override
 	public void onLoadFinished(Loader<DataCollectionResult> loader,
 			DataCollectionResult result) {
-		MainActivity.this.setProgressBarIndeterminateVisibility(false);
 		if (result.hasError()) {
 			doDisplayError(result.getThrowable().getMessage());
 		} else {
@@ -256,6 +232,42 @@ public class MainActivity extends FragmentActivity implements
 				mViewPager.setCurrentItem(progress, false);
 			}
 		});
+	}
+
+	/**
+	 * Set up the address bar action provider.
+	 * 
+	 * @param item
+	 *            The menu item for the address bar action.
+	 */
+	private void setupAddressProvider(MenuItem item) {
+		mAddressProvider = (AddressActionProvider) item.getActionProvider();
+		mAddressProvider.setMenuItem(item);
+		mAddressProvider
+				.setAddressBarListener(new AddressActionProvider.AddressBarListener() {
+					@Override
+					public void onLoadStarted(String url) {
+						doLoadDataCollection(url);
+					}
+
+					@Override
+					public void onLoadCancelled(String url) {
+						// TODO Auto-generated method stub
+					}
+				});
+	}
+
+	/**
+	 * Set up the search view action provider.
+	 * 
+	 * @param item
+	 *            The menu item for the search view.
+	 */
+	private void setupSearchManager(MenuItem item) {
+		SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+		SearchView searchView = (SearchView) item.getActionView();
+		searchView.setSearchableInfo(searchManager
+				.getSearchableInfo(getComponentName()));
 	}
 
 	//
@@ -370,7 +382,10 @@ public class MainActivity extends FragmentActivity implements
 		Bundle args = new Bundle();
 		args.putString("url", url);
 		getLoaderManager().restartLoader(0, args, MainActivity.this);
-		setProgressBarIndeterminateVisibility(true);
+		if (mAddressProvider != null) {
+			mAddressProvider.setIsLoading(true);
+			mAddressProvider.setUrl(mUrl);
+		}
 		doHideKeyboard();
 	}
 
