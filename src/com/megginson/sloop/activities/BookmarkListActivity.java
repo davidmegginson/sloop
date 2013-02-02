@@ -23,7 +23,6 @@ public class BookmarkListActivity extends ListActivity {
 	public final static String PREFERENCE_GROUP_BOOKMARKS = "bookmarks";
 
 	private List<Bookmark> mBookmarks = new ArrayList<Bookmark>();
-;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +43,7 @@ public class BookmarkListActivity extends ListActivity {
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
+		// react to menu selections
 		switch (item.getItemId()) {
 		case android.R.id.home:
 			doNavigateUp();
@@ -80,7 +80,7 @@ public class BookmarkListActivity extends ListActivity {
 	}
 
 	//
-	// Actions
+	// Abstracted UI actions
 	//
 
 	/**

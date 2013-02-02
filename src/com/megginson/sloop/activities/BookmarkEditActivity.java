@@ -36,7 +36,7 @@ public class BookmarkEditActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_bookmark_edit);
 
-		intentToBookmark();
+		doInitializeBookmark();
 
 		setupForm();
 	}
@@ -48,38 +48,32 @@ public class BookmarkEditActivity extends Activity {
 		return true;
 	}
 
+	/**
+	 * Set up the bookmark form.
+	 */
 	private void setupForm() {
-
 		// fill in the title field, if supplied
 		mTitleField = (EditText) findViewById(R.id.field_bookmark_title);
-		mTitleField.setText(mBookmark.getTitle());
+		mTitleField.setText(mBookmark.getTitle());		
 
 		// fill in the URL field, if supplied
 		mUrlField = (EditText) findViewById(R.id.field_bookmark_url);
-		mUrlField.setText(mBookmark.getUrl());
+		mUrlField.setText(mBookmark.getUrl());		
 
-		// add listener to the save button
+		// set up the save button
 		Button saveButton = (Button) findViewById(R.id.button_bookmark_save);
 		saveButton.setOnClickListener(new View.OnClickListener() {
-
 			@Override
 			public void onClick(View v) {
-				// TODO validate
-				formToBookmark();
-				SharedPreferences.Editor editor = getSharedPreferences(
-						BookmarkListActivity.PREFERENCE_GROUP_BOOKMARKS,
-						MODE_PRIVATE).edit();
-				editor.putString(mBookmark.getUrl(), mBookmark.getTitle());
-				editor.commit();
-				Toast.makeText(getApplicationContext(), "Bookmark saved",
-						Toast.LENGTH_SHORT).show();
-				finish();
+				doSubmitForm();
 			}
-		});
+		});		
 	}
 
-	private void intentToBookmark() {
-		// fixme not picking up title
+	/**
+	 * Action: initialize the bookmark from the intent.
+	 */
+	private void doInitializeBookmark() {
 		Intent intent = getIntent();
 		if (intent != null) {
 			String url = intent.getStringExtra("url");
@@ -93,8 +87,24 @@ public class BookmarkEditActivity extends Activity {
 
 	}
 
-	private void formToBookmark() {
+	/**
+	 * Action: save the bookmark from the URL field.
+	 */
+	private void doSubmitForm() {
+		// TODO validate
 		mBookmark.setUrl(mUrlField.getText().toString());
 		mBookmark.setTitle(mTitleField.getText().toString());
+		doSaveAndExit();
+	}
+	
+	private void doSaveAndExit() {
+		SharedPreferences.Editor editor = getSharedPreferences(
+				BookmarkListActivity.PREFERENCE_GROUP_BOOKMARKS,
+				MODE_PRIVATE).edit();
+		editor.putString(mBookmark.getUrl(), mBookmark.getTitle());
+		editor.commit();
+		Toast.makeText(getApplicationContext(), "Bookmark saved",
+				Toast.LENGTH_SHORT).show();
+		finish();		
 	}
 }
