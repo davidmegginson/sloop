@@ -1,13 +1,8 @@
 package com.megginson.sloop.model;
 
 import java.util.AbstractList;
-import java.util.AbstractMap;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import android.os.Bundle;
 import android.os.Parcel;

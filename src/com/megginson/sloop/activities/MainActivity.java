@@ -24,6 +24,8 @@ import android.widget.Toast;
 import com.megginson.sloop.R;
 import com.megginson.sloop.model.DataCollection;
 import com.megginson.sloop.model.DataEntry;
+import com.megginson.sloop.model.DataRecord;
+import com.megginson.sloop.model.ListItemFilter;
 import com.megginson.sloop.ui.DataCollectionLoader;
 import com.megginson.sloop.ui.DataCollectionPagerAdapter;
 import com.megginson.sloop.ui.DataCollectionResult;
@@ -302,22 +304,18 @@ public class MainActivity extends FragmentActivity implements
 	private void doHandleIntent(Intent intent) {
 		String action = intent.getAction();
 		
-		if (ACTION_MAIN.equals(action)) {
-			mUrl = intent.getStringExtra("url");
-			// Restore the last URL
-			if (mUrl == null) {
-				mUrl = getSharedPreferences(PREFERENCE_GROUP_MAIN, MODE_PRIVATE)
-						.getString(PREFERENCE_URL, null);
-			}
-
-			if (mUrl != null && mUrl.length() > 0) {
-				doLoadDataCollection(mUrl);
-			}			
-		} 
+		System.err.println("Handle intent");
 		
-		else if (ACTION_FILTER.equals(action)) {
+		if (ACTION_FILTER.equals(action)) {
 			// TODO set a filter
-			DataEntry entry = intent.getParcelableExtra("entry");
+			final DataEntry entry = intent.getParcelableExtra("entry");
+			mPagerAdapter.setFilter(new ListItemFilter<DataRecord>() {
+				@Override
+				public boolean isMatch(DataRecord dataRecord) {
+					return entry.getValue().equals(dataRecord.get(entry.getKey()));
+				}
+			});
+			System.err.println("Set filter " + entry.toString());
 			Toast.makeText(this, "Filter " + entry.toString(), Toast.LENGTH_LONG).show();
 		}
 		
@@ -325,6 +323,22 @@ public class MainActivity extends FragmentActivity implements
 			String query = intent.getStringExtra(SearchManager.QUERY);
 			doSearch(query);
 		}
+		
+		else {
+			// ACTION_MAIN is the default
+			System.err.println("Intent ACTION_MAIN");
+			String url = intent.getStringExtra("url");
+			// Restore the last URL
+			if (url == null) {
+				url = getSharedPreferences(PREFERENCE_GROUP_MAIN, MODE_PRIVATE)
+						.getString(PREFERENCE_URL, null);
+			}
+
+			if (url != null && url.length() > 0) {
+				doLoadDataCollection(url);
+			}			
+		} 
+		
 	}
 
 	/**
