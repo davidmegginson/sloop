@@ -131,7 +131,6 @@ public class DataCollectionPagerAdapter extends FragmentStatePagerAdapter {
 		if (mDataCollection != null && mFilter != null) {
 			mFilteredList = new FilteredList<DataRecord>(mFilter,
 					mDataCollection);
-			System.err.println("Filter updated");
 		}
 	}
 

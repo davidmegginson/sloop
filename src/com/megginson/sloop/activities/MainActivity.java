@@ -438,7 +438,7 @@ public class MainActivity extends FragmentActivity implements
 	private void doUpdateDataCollection(DataCollection dataCollection) {
 		mPagerAdapter.setDataCollection(dataCollection);
 		if (dataCollection != null) {
-			mSeekBar.setMax(dataCollection.size());
+			mSeekBar.setMax(mPagerAdapter.getCount());
 			doDisplayRecordNumber(0);
 		} else {
 			mSeekBar.setProgress(0);
@@ -459,7 +459,7 @@ public class MainActivity extends FragmentActivity implements
 	private void doDisplayRecordNumber(int recordNumber) {
 		mSeekBar.setProgress(recordNumber);
 		doDisplayInfo(String.format("Record %,d/%,d", recordNumber + 1,
-				mPagerAdapter.getDataCollection().size()));
+				mPagerAdapter.getCount()));
 	}
 
 	/**
