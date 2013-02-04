@@ -19,9 +19,11 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.SearchView;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.megginson.sloop.R;
 import com.megginson.sloop.model.DataCollection;
+import com.megginson.sloop.model.DataEntry;
 import com.megginson.sloop.ui.DataCollectionLoader;
 import com.megginson.sloop.ui.DataCollectionPagerAdapter;
 import com.megginson.sloop.ui.DataCollectionResult;
@@ -34,6 +36,10 @@ import com.megginson.sloop.widgets.AddressActionProvider;
  */
 public class MainActivity extends FragmentActivity implements
 		LoaderCallbacks<DataCollectionResult> {
+	
+	public final static String ACTION_MAIN = "com.megginson.sloop.intent.MAIN";
+	
+	public final static String ACTION_FILTER = "com.megginson.sloop.intent.FILTER";
 
 	public final static String PREFERENCE_GROUP_MAIN = "main";
 
@@ -295,11 +301,8 @@ public class MainActivity extends FragmentActivity implements
 	 */
 	private void doHandleIntent(Intent intent) {
 		String action = intent.getAction();
-
-		if (Intent.ACTION_SEARCH.equals(action)) {
-			String query = intent.getStringExtra(SearchManager.QUERY);
-			doSearch(query);
-		} else {
+		
+		if (ACTION_MAIN.equals(action)) {
 			mUrl = intent.getStringExtra("url");
 			// Restore the last URL
 			if (mUrl == null) {
@@ -309,7 +312,18 @@ public class MainActivity extends FragmentActivity implements
 
 			if (mUrl != null && mUrl.length() > 0) {
 				doLoadDataCollection(mUrl);
-			}
+			}			
+		} 
+		
+		else if (ACTION_FILTER.equals(action)) {
+			// TODO set a filter
+			DataEntry entry = intent.getParcelableExtra("entry");
+			Toast.makeText(this, "Filter " + entry.toString(), Toast.LENGTH_LONG).show();
+		}
+		
+		else if (Intent.ACTION_SEARCH.equals(action)) {
+			String query = intent.getStringExtra(SearchManager.QUERY);
+			doSearch(query);
 		}
 	}
 

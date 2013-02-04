@@ -10,6 +10,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.megginson.sloop.activities.FilterActivity;
+import com.megginson.sloop.activities.MainActivity;
 import com.megginson.sloop.model.DataEntry;
 import com.megginson.sloop.model.DataRecord;
 
@@ -45,7 +46,8 @@ public class DataRecordFragment extends Fragment {
 	
 	// TODO does this belong here?
 	private void doAssignFilter(DataEntry entry){
-		Intent intent = new Intent(getActivity(), FilterActivity.class);
+		Intent intent = new Intent(getActivity(), MainActivity.class);
+		intent.setAction(MainActivity.ACTION_FILTER);
 		intent.putExtra("entry", entry);
 		getActivity().startActivity(intent);
 	}

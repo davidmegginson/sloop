@@ -1,8 +1,13 @@
 package com.megginson.sloop.model;
 
 import java.util.AbstractList;
+import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import android.os.Bundle;
 import android.os.Parcel;
@@ -84,9 +89,60 @@ public class DataRecord extends AbstractList<DataEntry> implements Parcelable {
 		return mDataEntries.get(location);
 	}
 
+	/**
+	 * Return the value of the first column with the specified name.
+	 * 
+	 * @param name
+	 *            the column name.
+	 * @return the value, or null if it does not exist.
+	 */
+	public String get(String name) {
+		return get(name, 0);
+	}
+
+	/**
+	 * Return the value of the nth column with the specified name.
+	 * 
+	 * @param name
+	 *            the column name.
+	 * @param index
+	 *            the column index, zero-based (counting only columns with the
+	 *            same name)
+	 * @return the value of the column, or null if it does not exist.
+	 */
+	public String get(String name, int index) {
+		for (DataEntry dataEntry : mDataEntries) {
+			if (name.equals(dataEntry.getKey())) {
+				if (index == 0) {
+					return dataEntry.getValue();
+				} else {
+					index--;
+				}
+			}
+		}
+		return null;
+	}
+
 	@Override
 	public int size() {
 		return mDataEntries.size();
+	}
+
+	/**
+	 * Return the number of entries with the specified name.
+	 * 
+	 * @param name
+	 *            the column name.
+	 * @return the number of entries.
+	 */
+	public int size(String name) {
+		int count = 0;
+		for (DataEntry dataEntry : mDataEntries) {
+			if (name.equals(dataEntry.getKey())) {
+				count++;
+			}
+		}
+		return count;
 	}
 
 	@Override
