@@ -60,7 +60,7 @@ public class AddressActionProvider extends ActionProvider {
 	@Override
 	public View onCreateActionView() {
 		LayoutInflater inflater = LayoutInflater.from(mContext);
-		mContentView = inflater.inflate(R.layout.address_bar, null);
+		mContentView = inflater.inflate(R.layout.widget_address_bar, null);
 		setupUrlField();
 		setupCancelButton();
 		return mContentView;
