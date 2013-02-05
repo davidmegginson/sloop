@@ -38,9 +38,9 @@ import com.megginson.sloop.widgets.AddressActionProvider;
  */
 public class MainActivity extends FragmentActivity implements
 		LoaderCallbacks<DataCollectionResult> {
-	
+
 	public final static String ACTION_MAIN = "com.megginson.sloop.intent.MAIN";
-	
+
 	public final static String ACTION_FILTER = "com.megginson.sloop.intent.FILTER";
 
 	public final static String PREFERENCE_GROUP_MAIN = "main";
@@ -303,30 +303,12 @@ public class MainActivity extends FragmentActivity implements
 	 */
 	private void doHandleIntent(Intent intent) {
 		String action = intent.getAction();
-		
-		System.err.println("Handle intent");
-		
-		if (ACTION_FILTER.equals(action)) {
-			// TODO set a filter
-			final DataEntry entry = intent.getParcelableExtra("entry");
-			mPagerAdapter.setFilter(new ListItemFilter<DataRecord>() {
-				@Override
-				public boolean isMatch(DataRecord dataRecord) {
-					return entry.getValue().equals(dataRecord.get(entry.getKey()));
-				}
-			});
-			System.err.println("Set filter " + entry.toString());
-			Toast.makeText(this, "Filter " + entry.toString(), Toast.LENGTH_LONG).show();
+		if (action == null) {
+			action = ACTION_MAIN;
 		}
-		
-		else if (Intent.ACTION_SEARCH.equals(action)) {
-			String query = intent.getStringExtra(SearchManager.QUERY);
-			doSearch(query);
-		}
-		
-		else {
+
+		if (ACTION_MAIN.equals(action)) {
 			// ACTION_MAIN is the default
-			System.err.println("Intent ACTION_MAIN");
 			String url = intent.getStringExtra("url");
 			// Restore the last URL
 			if (url == null) {
@@ -336,9 +318,37 @@ public class MainActivity extends FragmentActivity implements
 
 			if (url != null && url.length() > 0) {
 				doLoadDataCollection(url);
-			}			
-		} 
-		
+			}
+		}
+
+		else if (ACTION_FILTER.equals(action)) {
+			// TODO set a filter
+			DataEntry entry = intent.getParcelableExtra("entry");
+			doSetFilter(entry);
+		}
+
+		else if (Intent.ACTION_SEARCH.equals(action)) {
+			String query = intent.getStringExtra(SearchManager.QUERY);
+			doSearch(query);
+		}
+	}
+	
+	/**
+	 * Action: set the filter for the data collection.
+	 * 
+	 * @param entry the data entry (soon to be the filter)
+	 */
+	private void doSetFilter(final DataEntry entry) {
+		mPagerAdapter.setFilter(new ListItemFilter<DataRecord>() {
+			@Override
+			public boolean isMatch(DataRecord dataRecord) {
+				return entry.getValue().equals(
+						dataRecord.get(entry.getKey()));
+			}
+		});
+		System.err.println("Set filter " + entry.toString());
+		Toast.makeText(this, "Filter " + entry.toString(),
+				Toast.LENGTH_LONG).show();
 	}
 
 	/**
