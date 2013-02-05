@@ -3,6 +3,8 @@ package com.megginson.sloop.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.megginson.sloop.util.ListItemFilter;
+
 import android.os.Parcel;
 import android.os.Parcelable;
 

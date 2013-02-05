@@ -1,5 +1,7 @@
 package com.megginson.sloop.model;
 
+import com.megginson.sloop.util.Util;
+
 /**
  * A saved reference to an external data set.
  * 
@@ -60,7 +62,7 @@ public class Bookmark {
 			return true;
 		} else if (o != null && o instanceof Bookmark) {
 			Bookmark b = (Bookmark) o;
-			return (ModelUtil.equals(getUrl(), b.getUrl()) && ModelUtil.equals(
+			return (Util.equals(getUrl(), b.getUrl()) && Util.equals(
 					getTitle(), b.getTitle()));
 		} else {
 			return false;
@@ -69,7 +71,7 @@ public class Bookmark {
 
 	@Override
 	public int hashCode() {
-		return ModelUtil.hashCode(getUrl()) + ModelUtil.hashCode(getTitle());
+		return Util.hashCode(getUrl()) + Util.hashCode(getTitle());
 	}
 
 	@Override

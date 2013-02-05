@@ -1,4 +1,4 @@
-package com.megginson.sloop.model;
+package com.megginson.sloop.util;
 
 import android.os.Parcelable;
 

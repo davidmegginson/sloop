@@ -1,5 +1,7 @@
 package com.megginson.sloop.model;
 
+import com.megginson.sloop.util.ListItemFilter;
+
 import android.os.Parcel;
 import android.os.Parcelable;
 

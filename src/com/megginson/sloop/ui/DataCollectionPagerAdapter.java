@@ -10,8 +10,8 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 
 import com.megginson.sloop.model.DataCollection;
 import com.megginson.sloop.model.DataRecord;
-import com.megginson.sloop.model.FilteredList;
-import com.megginson.sloop.model.ListItemFilter;
+import com.megginson.sloop.util.FilteredList;
+import com.megginson.sloop.util.ListItemFilter;
 
 /**
  * Pager adapter for a data collection.

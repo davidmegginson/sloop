@@ -25,10 +25,10 @@ import com.megginson.sloop.R;
 import com.megginson.sloop.model.DataCollection;
 import com.megginson.sloop.model.DataEntry;
 import com.megginson.sloop.model.DataRecord;
-import com.megginson.sloop.model.ListItemFilter;
 import com.megginson.sloop.ui.DataCollectionLoader;
 import com.megginson.sloop.ui.DataCollectionPagerAdapter;
 import com.megginson.sloop.ui.DataCollectionResult;
+import com.megginson.sloop.util.ListItemFilter;
 import com.megginson.sloop.widgets.AddressActionProvider;
 
 /**

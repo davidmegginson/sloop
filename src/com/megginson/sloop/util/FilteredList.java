@@ -1,4 +1,4 @@
-package com.megginson.sloop.model;
+package com.megginson.sloop.util;
 
 import java.util.AbstractList;
 import java.util.ArrayList;
@@ -27,9 +27,9 @@ import java.util.List;
  */
 public class FilteredList<T> extends AbstractList<T> {
 
-	private List<T> mList;
-
 	private ListItemFilter<T> mFilter;
+
+	private List<T> mList;
 
 	private List<Integer> mMatchCache;
 
@@ -68,7 +68,7 @@ public class FilteredList<T> extends AbstractList<T> {
 	}
 
 	/**
-	 * Build the internal filtering cache.
+	 * Force building the internal filtering cache.
 	 * 
 	 * Call this method if you want to force the filtered list to build its
 	 * cache early (say, to avoid a delay later).
