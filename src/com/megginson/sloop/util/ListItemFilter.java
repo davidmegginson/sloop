@@ -1,6 +1,5 @@
 package com.megginson.sloop.util;
 
-import android.os.Parcelable;
 
 /**
  * A test for a list item.
