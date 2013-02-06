@@ -4,14 +4,18 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.megginson.sloop.R;
 import com.megginson.sloop.model.DataEntry;
 
 public class FilterActivity extends Activity {
+	
+	String mHeaders[];
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -22,9 +26,9 @@ public class FilterActivity extends Activity {
 		
 		Intent intent = getIntent();
 		DataEntry entry = intent.getParcelableExtra("entry");
+		mHeaders = intent.getStringArrayExtra("headers");
 		
-		TextView fubar = (TextView)findViewById(R.id.fubar);
-		fubar.setText(entry.toString());
+		setupForm(entry);
 	}
 
 	@Override
@@ -49,6 +53,21 @@ public class FilterActivity extends Activity {
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+	
+	private void setupForm(DataEntry entry) {
+		if (mHeaders == null) {
+			return;
+		}
+		
+		LinearLayout mainLayout = (LinearLayout)findViewById(R.id.activity_filter);
+		for (String header : mHeaders) {
+			LayoutInflater inflater = LayoutInflater.from(this);
+			LinearLayout layout = (LinearLayout)inflater.inflate(R.layout.component_filter, null);
+			TextView label = (TextView)layout.findViewById(R.id.label_filter);
+			label.setText(header);
+			mainLayout.addView(layout);
+		}
 	}
 
 }

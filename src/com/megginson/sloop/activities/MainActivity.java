@@ -19,16 +19,13 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.SearchView;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.megginson.sloop.R;
 import com.megginson.sloop.model.DataCollection;
 import com.megginson.sloop.model.DataEntry;
-import com.megginson.sloop.model.DataRecord;
 import com.megginson.sloop.ui.DataCollectionLoader;
 import com.megginson.sloop.ui.DataCollectionPagerAdapter;
 import com.megginson.sloop.ui.DataCollectionResult;
-import com.megginson.sloop.util.ListItemFilter;
 import com.megginson.sloop.widgets.AddressActionProvider;
 
 /**
@@ -339,16 +336,10 @@ public class MainActivity extends FragmentActivity implements
 	 * @param entry the data entry (soon to be the filter)
 	 */
 	private void doSetFilter(final DataEntry entry) {
-		mPagerAdapter.setFilter(new ListItemFilter<DataRecord>() {
-			@Override
-			public boolean isMatch(DataRecord dataRecord) {
-				return entry.getValue().equals(
-						dataRecord.get(entry.getKey()));
-			}
-		});
-		System.err.println("Set filter " + entry.toString());
-		Toast.makeText(this, "Filter " + entry.toString(),
-				Toast.LENGTH_LONG).show();
+		Intent intent = new Intent(this, FilterActivity.class);
+		intent.putExtra("entry", entry);
+		intent.putExtra("headers", mPagerAdapter.getDataCollection().getHeader());
+		startActivity(intent);
 	}
 
 	/**

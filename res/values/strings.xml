@@ -19,5 +19,6 @@
     <string name="title_activity_filter">FilterActivity</string>
     <string name="label_name">Name</string>
     <string name="label_value">Value</string>
+    <string name="hint_filter">Text to filter</string>
 
 </resources>
