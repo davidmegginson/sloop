@@ -19,6 +19,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.SearchView;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.megginson.sloop.R;
 import com.megginson.sloop.model.DataCollection;
@@ -336,10 +337,8 @@ public class MainActivity extends FragmentActivity implements
 	 * @param entry the data entry (soon to be the filter)
 	 */
 	private void doSetFilter(final DataEntry entry) {
-		Intent intent = new Intent(this, FilterActivity.class);
-		intent.putExtra("entry", entry);
-		intent.putExtra("headers", mPagerAdapter.getDataCollection().getHeader());
-		startActivity(intent);
+		// TODO create filter
+		Toast.makeText(this, "Filter: " + entry, Toast.LENGTH_SHORT).show();
 	}
 
 	/**
