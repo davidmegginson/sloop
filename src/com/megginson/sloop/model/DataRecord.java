@@ -85,31 +85,31 @@ public class DataRecord extends AbstractList<DataEntry> implements Parcelable {
 	}
 
 	/**
-	 * Return the value of the first column with the specified name.
+	 * Return the first column with the specified name.
 	 * 
 	 * @param name
 	 *            the column name.
-	 * @return the value, or null if it does not exist.
+	 * @return the data entry, or null if it does not exist.
 	 */
-	public String get(String name) {
+	public DataEntry get(String name) {
 		return get(name, 0);
 	}
 
 	/**
-	 * Return the value of the nth column with the specified name.
+	 * Return the nth column with the specified name.
 	 * 
 	 * @param name
 	 *            the column name.
 	 * @param index
 	 *            the column index, zero-based (counting only columns with the
 	 *            same name)
-	 * @return the value of the column, or null if it does not exist.
+	 * @return the matching entry, or null if it does not exist.
 	 */
-	public String get(String name, int index) {
+	public DataEntry get(String name, int index) {
 		for (DataEntry dataEntry : mDataEntries) {
 			if (name.equals(dataEntry.getKey())) {
 				if (index == 0) {
-					return dataEntry.getValue();
+					return dataEntry;
 				} else {
 					index--;
 				}
