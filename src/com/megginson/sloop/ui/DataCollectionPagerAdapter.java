@@ -10,19 +10,23 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 
 import com.megginson.sloop.model.DataCollection;
 import com.megginson.sloop.model.DataRecord;
+import com.megginson.sloop.model.DataRecordFilter;
 import com.megginson.sloop.util.FilteredList;
-import com.megginson.sloop.util.ListItemFilter;
 
 /**
  * Pager adapter for a data collection.
  * 
- * The adapter can optionally take a {@link ListItemFilter} that will control
- * which items are visible.
+ * The page includes a {@link DataRecordFilter} that can limit the number of
+ * terms visible. The {@link #getCount()} method returns the number of items
+ * that satisfy the filter, while the {@link #getUnfilteredCount()} method
+ * returns the total size of the collection.
+ * 
+ * @author David Megginson
  */
 public class DataCollectionPagerAdapter extends FragmentStatePagerAdapter {
 
 	private DataCollection mDataCollection;
-	private ListItemFilter<DataRecord> mFilter;
+	private DataRecordFilter mFilter = new DataRecordFilter();
 	private FilteredList<DataRecord> mFilteredList;
 
 	public DataCollectionPagerAdapter(FragmentManager fm) {
@@ -57,20 +61,8 @@ public class DataCollectionPagerAdapter extends FragmentStatePagerAdapter {
 	 * 
 	 * @return the filter, or null if the collection is unfiltered.
 	 */
-	public ListItemFilter<DataRecord> getFilter() {
+	public DataRecordFilter getFilter() {
 		return mFilter;
-	}
-
-	/**
-	 * Set the filter to apply to the data collection.
-	 * 
-	 * @param filter
-	 *            the filter to apply, or null to leave the list unfiltered.
-	 */
-	public void setFilter(ListItemFilter<DataRecord> filter) {
-		mFilter = filter;
-		updateFilter();
-		notifyDataSetChanged();
 	}
 
 	@Override
@@ -126,9 +118,10 @@ public class DataCollectionPagerAdapter extends FragmentStatePagerAdapter {
 	/**
 	 * Update the filtered list.
 	 */
-	private void updateFilter() {
+	public void updateFilter() {
 		mFilteredList = null;
-		if (mDataCollection != null && mFilter != null) {
+		if (mDataCollection != null && mFilter != null
+				&& mFilter.getFilters().size() > 0) {
 			mFilteredList = new FilteredList<DataRecord>(mFilter,
 					mDataCollection);
 		}

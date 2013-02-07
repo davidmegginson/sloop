@@ -24,6 +24,8 @@ import android.widget.Toast;
 import com.megginson.sloop.R;
 import com.megginson.sloop.model.DataCollection;
 import com.megginson.sloop.model.DataEntry;
+import com.megginson.sloop.model.DataEntryFilter;
+import com.megginson.sloop.model.DataRecordFilter;
 import com.megginson.sloop.ui.DataCollectionLoader;
 import com.megginson.sloop.ui.DataCollectionPagerAdapter;
 import com.megginson.sloop.ui.DataCollectionResult;
@@ -330,15 +332,27 @@ public class MainActivity extends FragmentActivity implements
 			doSearch(query);
 		}
 	}
-	
+
 	/**
 	 * Action: set the filter for the data collection.
 	 * 
-	 * @param entry the data entry (soon to be the filter)
+	 * @param entry
+	 *            the data entry (soon to be the filter)
 	 */
 	private void doSetFilter(final DataEntry entry) {
-		// TODO create filter
-		Toast.makeText(this, "Filter: " + entry, Toast.LENGTH_SHORT).show();
+		DataRecordFilter filter = mPagerAdapter.getFilter();
+		if (filter.getFilter(entry.getKey()) != null) {
+			filter.clearFilter(entry.getKey());
+			Toast.makeText(this, "Clearing filter for " + entry.getKey(),
+					Toast.LENGTH_SHORT).show();
+		} else {
+			mPagerAdapter.getFilter().putFilter(
+					new DataEntryFilter(entry.getKey(), entry.getValue()));
+			Toast.makeText(this,
+					"Filtering " + entry.getKey() + '=' + entry.getValue(),
+					Toast.LENGTH_SHORT).show();
+		}
+		mPagerAdapter.updateFilter();
 	}
 
 	/**

@@ -35,7 +35,7 @@ public class DataRecordFilter implements ListItemFilter<DataRecord>, Parcelable 
 	/**
 	 * Create a new, empty filter.
 	 * 
-	 * Use {@link #addFilter(DataEntryFilter)} to add column-specific subfilters
+	 * Use {@link #putFilter(DataEntryFilter)} to add column-specific subfilters
 	 * as needed.
 	 */
 	public DataRecordFilter() {
@@ -52,8 +52,17 @@ public class DataRecordFilter implements ListItemFilter<DataRecord>, Parcelable 
 	 * @see #getFilter(String)
 	 * @see #getFilters()
 	 */
-	public void addFilter(DataEntryFilter filter) {
+	public void putFilter(DataEntryFilter filter) {
 		mFilters.put(filter.getName(), filter);
+	}
+	
+	/**
+	 * Clear the filter for a column.
+	 * 
+	 * @param name the column name.
+	 */
+	public void clearFilter(String name) {
+		mFilters.remove(name);
 	}
 
 	/**
@@ -62,7 +71,7 @@ public class DataRecordFilter implements ListItemFilter<DataRecord>, Parcelable 
 	 * @param name
 	 *            the column name.
 	 * @return the existing filter, or null if none exists.
-	 * @see #addFilter(DataEntryFilter)
+	 * @see #putFilter(DataEntryFilter)
 	 * @see #getFilters()
 	 */
 	public DataEntryFilter getFilter(String name) {
@@ -73,11 +82,18 @@ public class DataRecordFilter implements ListItemFilter<DataRecord>, Parcelable 
 	 * Get a collection of all column filters.
 	 * 
 	 * @return all column filters as a (possibly empty) collection.
-	 * @see #addFilter(DataEntryFilter)
+	 * @see #putFilter(DataEntryFilter)
 	 * @see #getFilter(String)
 	 */
 	public Collection<DataEntryFilter> getFilters() {
 		return mFilters.values();
+	}
+	
+	/**
+	 * Clear all column filters.
+	 */
+	public void clear() {
+		mFilters.clear();
 	}
 
 	@Override
@@ -113,7 +129,7 @@ public class DataRecordFilter implements ListItemFilter<DataRecord>, Parcelable 
 			Parcelable filters[] = source
 					.readParcelableArray(DataEntryFilter.class.getClassLoader());
 			for (Parcelable filter : filters) {
-				recordFilter.addFilter((DataEntryFilter) filter);
+				recordFilter.putFilter((DataEntryFilter) filter);
 			}
 			return recordFilter;
 		}

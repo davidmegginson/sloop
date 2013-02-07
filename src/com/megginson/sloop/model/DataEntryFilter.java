@@ -9,24 +9,19 @@ import com.megginson.sloop.util.ListItemFilter;
 /**
  * Test a data entry for a {@link FilteredList}
  * 
+ * Currently, this filter tests only equality.
+ * 
  * @author David Megginson
  */
 public class DataEntryFilter implements ListItemFilter<DataEntry>, Parcelable {
-
-	public final static int OPERATOR_EQUALS = 1;
-	public final static int OPERATOR_NOTEQUALS = 2;
-	public final static int OPERATOR_STARTSWITH = 3;
 
 	private String mName;
 
 	private String mPattern;
 
-	private int mOperator;
-
-	public DataEntryFilter(String name, String pattern, int operator) {
+	public DataEntryFilter(String name, String pattern) {
 		setName(name);
 		setValue(pattern);
-		setOperator(operator);
 	}
 
 	public String getName() {
@@ -45,27 +40,9 @@ public class DataEntryFilter implements ListItemFilter<DataEntry>, Parcelable {
 		mPattern = pattern;
 	}
 
-	public int getOperator() {
-		return mOperator;
-	}
-
-	public void setOperator(int operator) {
-		mOperator = operator;
-	}
-
 	@Override
 	public boolean isMatch(DataEntry item) {
-		if (mName.equals(item.getKey())) {
-			switch (mOperator) {
-			case OPERATOR_EQUALS:
-				return item.getValue().equals(mPattern);
-			case OPERATOR_NOTEQUALS:
-				return item.getValue().equals(mPattern);
-			case OPERATOR_STARTSWITH:
-				return item.getValue().startsWith(mPattern);
-			}
-		}
-		return false;
+		return (mName.equals(item.getKey()) && mPattern.equals(item.getValue()));
 	}
 
 	@Override
@@ -75,7 +52,6 @@ public class DataEntryFilter implements ListItemFilter<DataEntry>, Parcelable {
 
 	@Override
 	public void writeToParcel(Parcel dest, int flags) {
-		dest.writeInt(mOperator);
 		dest.writeString(mName);
 		dest.writeString(mPattern);
 	}
@@ -84,10 +60,9 @@ public class DataEntryFilter implements ListItemFilter<DataEntry>, Parcelable {
 
 		@Override
 		public DataEntryFilter createFromParcel(Parcel source) {
-			int operator = source.readInt();
 			String name = source.readString();
 			String pattern = source.readString();
-			return new DataEntryFilter(name, pattern, operator);
+			return new DataEntryFilter(name, pattern);
 		}
 
 		@Override
