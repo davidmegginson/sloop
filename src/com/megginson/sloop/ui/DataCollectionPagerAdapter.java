@@ -71,6 +71,7 @@ public class DataCollectionPagerAdapter extends FragmentStatePagerAdapter {
 		Bundle args = new Bundle();
 		// getList() will choose the filtered list if necessary
 		args.putParcelable("dataRecord", getList().get(position));
+		args.putParcelable("filter", mFilter);
 		fragment.setArguments(args);
 		return fragment;
 	}

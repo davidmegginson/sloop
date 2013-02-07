@@ -1,6 +1,7 @@
 package com.megginson.sloop.ui;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 import com.megginson.sloop.R;
 import com.megginson.sloop.model.DataEntry;
 import com.megginson.sloop.model.DataRecord;
+import com.megginson.sloop.model.DataRecordFilter;
 
 /**
  * Adapt a single {@link DataRecord} for display as a list of entries.
@@ -29,10 +31,13 @@ public class DataRecordListAdapter extends BaseAdapter {
 	private Context mContext;
 
 	private DataRecord mDataRecord;
+	
+	private DataRecordFilter mFilter;
 
-	public DataRecordListAdapter(Context context, DataRecord dataRecord) {
+	public DataRecordListAdapter(Context context, DataRecord dataRecord, DataRecordFilter filter) {
 		mContext = context;
 		mDataRecord = dataRecord;
+		mFilter = filter;
 	}
 
 	@Override
@@ -72,6 +77,12 @@ public class DataRecordListAdapter extends BaseAdapter {
 		
 		valueView = (TextView)layout.findViewById(R.id.field_value);
 		valueView.setText(entry.getValue());
+
+		// if this item is filtered, show it
+		if (mFilter.getFilter(entry.getKey()) != null) {
+			// FIXME don't hard-code
+			layout.setBackgroundColor(Color.LTGRAY);
+		}
 
 		return layout;
 	}

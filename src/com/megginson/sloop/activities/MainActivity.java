@@ -353,6 +353,7 @@ public class MainActivity extends FragmentActivity implements
 					Toast.LENGTH_SHORT).show();
 		}
 		mPagerAdapter.updateFilter();
+		mViewPager.setAdapter(mPagerAdapter);
 	}
 
 	/**
