@@ -21,9 +21,6 @@ import com.megginson.sloop.model.DataRecordFilter;
  * The {@link DataRecordFragment} class uses this adapter to display the data
  * record in a {@link ListView}.
  * 
- * Each list entry is a linear layout containing two text views, one for the
- * entry's label, and one for its value.
- * 
  * @author David Megginson
  */
 public class DataRecordListAdapter extends BaseAdapter {
@@ -82,6 +79,8 @@ public class DataRecordListAdapter extends BaseAdapter {
 		if (mFilter.getFilter(entry.getKey()) != null) {
 			// FIXME don't hard-code
 			layout.setBackgroundColor(Color.LTGRAY);
+		} else {
+			layout.setBackgroundColor(Color.TRANSPARENT);
 		}
 
 		return layout;
