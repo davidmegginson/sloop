@@ -354,6 +354,7 @@ public class MainActivity extends FragmentActivity implements
 		}
 		mPagerAdapter.updateFilter();
 		mViewPager.setAdapter(mPagerAdapter);
+		doDisplayRecordNumber(mViewPager.getCurrentItem());
 	}
 
 	/**
@@ -472,9 +473,15 @@ public class MainActivity extends FragmentActivity implements
 	 *            the record number to display (zero-based).
 	 */
 	private void doDisplayRecordNumber(int recordNumber) {
+		int count = mPagerAdapter.getCount();
+		int unfilteredCount = mPagerAdapter.getUnfilteredCount();
 		mSeekBar.setProgress(recordNumber);
-		doDisplayInfo(String.format("Record %,d/%,d", recordNumber + 1,
-				mPagerAdapter.getCount()));
+		mSeekBar.setMax(count);
+		if (count < unfilteredCount) {
+			doDisplayInfo(String.format("Filtered record %d/%d (%d total)", recordNumber + 1, count, unfilteredCount));
+		} else {
+			doDisplayInfo(String.format("Record %,d/%,d", recordNumber + 1, count));
+		}
 	}
 
 	/**
