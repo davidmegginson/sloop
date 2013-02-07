@@ -366,6 +366,7 @@ public class MainActivity extends FragmentActivity implements
 					"Filtering " + entry.getKey() + '=' + entry.getValue(),
 					Toast.LENGTH_SHORT).show();
 		}
+		// TODO should be an async task?
 		mPagerAdapter.updateFilter();
 		mViewPager.setAdapter(mPagerAdapter);
 		doDisplayRecordNumber(mViewPager.getCurrentItem());
