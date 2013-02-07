@@ -478,7 +478,7 @@ public class MainActivity extends FragmentActivity implements
 		mSeekBar.setProgress(recordNumber);
 		mSeekBar.setMax(count);
 		if (count < unfilteredCount) {
-			doDisplayInfo(String.format("Filtered record %d/%d (%d total)", recordNumber + 1, count, unfilteredCount));
+			doDisplayInfo(String.format("Filtered record %,d/%,d (%,d total)", recordNumber + 1, count, unfilteredCount));
 		} else {
 			doDisplayInfo(String.format("Record %,d/%,d", recordNumber + 1, count));
 		}
