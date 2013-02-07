@@ -15,7 +15,9 @@ import android.support.v4.view.ViewPager;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ProgressBar;
 import android.widget.SearchView;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -81,6 +83,8 @@ public class MainActivity extends FragmentActivity implements
 	 * The seek bar for scrolling through the collection.
 	 */
 	private SeekBar mSeekBar;
+	
+	private ProgressBar mProgressBar;
 
 	//
 	// Activity lifecycle methods.
@@ -95,6 +99,9 @@ public class MainActivity extends FragmentActivity implements
 
 		// Set up the main display area
 		setupPager();
+		
+		// Set up the progress indicator
+		setupProgressBar();
 
 		// Set up the seek bar.
 		setupSeekBar();
@@ -193,6 +200,8 @@ public class MainActivity extends FragmentActivity implements
 				mAddressProvider.setIsLoading(false);
 			}
 		}
+		mIsLoading = false;
+		mProgressBar.setVisibility(View.GONE);
 	}
 
 	@Override
@@ -224,6 +233,11 @@ public class MainActivity extends FragmentActivity implements
 						doDisplayRecordNumber(position);
 					}
 				});
+	}
+	
+	private void setupProgressBar() {
+		mProgressBar = (ProgressBar)findViewById(R.id.progressBar);
+		mProgressBar.setVisibility(View.GONE);
 	}
 
 	private void setupSeekBar() {
@@ -440,6 +454,8 @@ public class MainActivity extends FragmentActivity implements
 			mAddressProvider.setUrl(mUrl);
 		}
 		doHideKeyboard();
+		mIsLoading = true;
+		mProgressBar.setVisibility(View.VISIBLE);
 	}
 
 	/**
