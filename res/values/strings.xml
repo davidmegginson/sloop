@@ -13,7 +13,6 @@
     <string name="info_records_unfiltered">Record %1$,d/%2$,d</string>
     <string name="label_bookmark_title">Bookmark title</string>
     <string name="label_bookmark_url">Bookmark URL</string>
-    <string name="menu_bookmark_create">Create a new bookmark</string>
     <string name="menu_bookmarks">Bookmarks</string>
     <string name="menu_bookmark_this">Bookmark this dataset</string>
     <string name="menu_search">Search</string>

@@ -13,7 +13,6 @@
     <string name="info_records_unfiltered">Dossier %1$,d / %2$,d</string>
     <string name="label_bookmark_title">Titre du favori</string>
     <string name="label_bookmark_url">URL du favori</string>
-    <string name="menu_bookmark_create">Create a new bookmark</string>
     <string name="menu_bookmarks">Parcourir les favoris</string>
     <string name="menu_bookmark_this">Enregistrer comme favori</string>
     <string name="menu_search">Rechercher</string>
