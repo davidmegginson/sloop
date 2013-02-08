@@ -40,8 +40,6 @@ import com.megginson.sloop.widgets.AddressActionProvider;
 public class MainActivity extends FragmentActivity implements
 		LoaderCallbacks<DataCollectionResult> {
 
-	public final static String ACTION_MAIN = "com.megginson.sloop.intent.MAIN";
-
 	public final static String ACTION_FILTER = "com.megginson.sloop.intent.FILTER";
 
 	public final static String PREFERENCE_GROUP_MAIN = "main";
@@ -82,7 +80,7 @@ public class MainActivity extends FragmentActivity implements
 	 * The seek bar for scrolling through the collection.
 	 */
 	private SeekBar mSeekBar;
-	
+
 	private ProgressBar mProgressBar;
 
 	//
@@ -98,7 +96,7 @@ public class MainActivity extends FragmentActivity implements
 
 		// Set up the main display area
 		setupPager();
-		
+
 		// Set up the progress indicator
 		setupProgressBar();
 
@@ -132,10 +130,13 @@ public class MainActivity extends FragmentActivity implements
 		savedInstanceState.putString("url", mUrl);
 
 		// save the URL for the next invocation
-		SharedPreferences.Editor editor = getSharedPreferences(
-				PREFERENCE_GROUP_MAIN, MODE_PRIVATE).edit();
-		editor.putString(PREFERENCE_URL, mUrl);
-		editor.commit();
+		if (mUrl != null) {
+			System.err.println("Saving URL " + mUrl);
+			SharedPreferences.Editor editor = getSharedPreferences(
+					PREFERENCE_GROUP_MAIN, MODE_PRIVATE).edit();
+			editor.putString(PREFERENCE_URL, mUrl);
+			editor.commit();
+		}
 	}
 
 	@Override
@@ -205,7 +206,7 @@ public class MainActivity extends FragmentActivity implements
 
 	@Override
 	public void onLoaderReset(Loader<DataCollectionResult> loader) {
-		doUpdateDataCollection(null);
+		// NO OP
 	}
 
 	//
@@ -233,9 +234,9 @@ public class MainActivity extends FragmentActivity implements
 					}
 				});
 	}
-	
+
 	private void setupProgressBar() {
-		mProgressBar = (ProgressBar)findViewById(R.id.progressBar);
+		mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
 		mProgressBar.setVisibility(View.GONE);
 	}
 
@@ -316,19 +317,19 @@ public class MainActivity extends FragmentActivity implements
 	 */
 	private void doHandleIntent(Intent intent) {
 		String action = intent.getAction();
-		if (action == null) {
-			action = ACTION_MAIN;
-		}
 
-		if (ACTION_MAIN.equals(action)) {
-			// ACTION_MAIN is the default
+		// ACTION_MAIN is the default
+		if (action == null) {
+			action = Intent.ACTION_MAIN;
+		}
+		
+		if (Intent.ACTION_MAIN.equals(action)) {
 			String url = intent.getStringExtra("url");
 			// Restore the last URL
 			if (url == null) {
 				url = getSharedPreferences(PREFERENCE_GROUP_MAIN, MODE_PRIVATE)
 						.getString(PREFERENCE_URL, null);
 			}
-
 			if (url != null && url.length() > 0) {
 				doLoadDataCollection(url);
 			}
@@ -363,7 +364,7 @@ public class MainActivity extends FragmentActivity implements
 					Toast.LENGTH_SHORT).show();
 		} else {
 			collection.setFiltered(true);
-			collection.putFilter(entry.getKey(), new ValueFilter() {		
+			collection.putFilter(entry.getKey(), new ValueFilter() {
 				@Override
 				public boolean isMatch(String value) {
 					return entry.getValue().equals(value);
@@ -501,9 +502,11 @@ public class MainActivity extends FragmentActivity implements
 		mSeekBar.setProgress(recordNumber);
 		mSeekBar.setMax(count);
 		if (count < unfilteredCount) {
-			doDisplayInfo(String.format("Filtered record %,d/%,d (%,d total)", recordNumber + 1, count, unfilteredCount));
+			doDisplayInfo(String.format("Filtered record %,d/%,d (%,d total)",
+					recordNumber + 1, count, unfilteredCount));
 		} else {
-			doDisplayInfo(String.format("Record %,d/%,d", recordNumber + 1, count));
+			doDisplayInfo(String.format("Record %,d/%,d", recordNumber + 1,
+					count));
 		}
 	}
 
