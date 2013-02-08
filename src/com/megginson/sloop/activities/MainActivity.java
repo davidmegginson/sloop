@@ -432,7 +432,7 @@ public class MainActivity extends FragmentActivity implements
 	 */
 	private void doLaunchBookmarkCreate(String url) {
 		Intent intent = new Intent(this, BookmarkEditActivity.class);
-		intent.putExtra("url", url);
+		intent.putExtra(BookmarkEditActivity.PARAM_URL, url);
 		startActivity(intent);
 	}
 

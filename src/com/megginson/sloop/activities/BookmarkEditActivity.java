@@ -1,11 +1,14 @@
 package com.megginson.sloop.activities;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -24,6 +27,11 @@ import com.megginson.sloop.model.Bookmark;
  * 
  */
 public class BookmarkEditActivity extends Activity {
+
+	/**
+	 * Name of the intent extra for a new bookmark URL.
+	 */
+	public final static String PARAM_URL = "url";
 
 	private Bookmark mBookmark;
 
@@ -48,17 +56,26 @@ public class BookmarkEditActivity extends Activity {
 		return true;
 	}
 
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			doCancel();
+			return true;
+		}
+		return super.onKeyDown(keyCode, event);
+	}
+
 	/**
 	 * Set up the bookmark form.
 	 */
 	private void setupForm() {
 		// fill in the title field, if supplied
 		mTitleField = (EditText) findViewById(R.id.field_bookmark_title);
-		mTitleField.setText(mBookmark.getTitle());		
+		mTitleField.setText(mBookmark.getTitle());
 
 		// fill in the URL field, if supplied
 		mUrlField = (EditText) findViewById(R.id.field_bookmark_url);
-		mUrlField.setText(mBookmark.getUrl());		
+		mUrlField.setText(mBookmark.getUrl());
 
 		// set up the save button
 		Button saveButton = (Button) findViewById(R.id.button_bookmark_save);
@@ -67,7 +84,7 @@ public class BookmarkEditActivity extends Activity {
 			public void onClick(View v) {
 				doSubmitForm();
 			}
-		});		
+		});
 	}
 
 	/**
@@ -76,10 +93,10 @@ public class BookmarkEditActivity extends Activity {
 	private void doInitializeBookmark() {
 		Intent intent = getIntent();
 		if (intent != null) {
-			String url = intent.getStringExtra("url");
+			String url = intent.getStringExtra(PARAM_URL);
 			String title = getSharedPreferences(
-						BookmarkListActivity.PREFERENCE_GROUP_BOOKMARKS,
-						MODE_PRIVATE).getString(url, url);
+					BookmarkListActivity.PREFERENCE_GROUP_BOOKMARKS,
+					MODE_PRIVATE).getString(url, url);
 			mBookmark = new Bookmark(url, title);
 		} else {
 			mBookmark = new Bookmark();
@@ -96,15 +113,36 @@ public class BookmarkEditActivity extends Activity {
 		mBookmark.setTitle(mTitleField.getText().toString());
 		doSaveAndExit();
 	}
-	
+
+	/**
+	 * Action: cancel any changes and exit the activity.
+	 */
+	private void doCancel() {
+		Toast.makeText(this, R.string.msg_bookmark_canceled, Toast.LENGTH_LONG)
+				.show();
+		finish();
+	}
+
+	/**
+	 * Action: save the bookmark and exit the activity.
+	 */
 	private void doSaveAndExit() {
+		Toast.makeText(this, R.string.msg_bookmark_saved,
+				Toast.LENGTH_LONG).show();
 		SharedPreferences.Editor editor = getSharedPreferences(
-				BookmarkListActivity.PREFERENCE_GROUP_BOOKMARKS,
-				MODE_PRIVATE).edit();
+				BookmarkListActivity.PREFERENCE_GROUP_BOOKMARKS, MODE_PRIVATE)
+				.edit();
 		editor.putString(mBookmark.getUrl(), mBookmark.getTitle());
 		editor.commit();
-		Toast.makeText(getApplicationContext(), "Bookmark saved",
-				Toast.LENGTH_SHORT).show();
-		finish();		
+		finish();
 	}
+
+	/**
+	 * Action: hide the soft keyboard.
+	 */
+	private void doHideKeyboard() {
+		InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+		imm.toggleSoftInput(0, 0);
+	}
+
 }

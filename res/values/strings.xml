@@ -20,5 +20,7 @@
     <string name="label_name">Name</string>
     <string name="label_value">Value</string>
     <string name="hint_filter">Text to filter</string>
+    <string name="msg_bookmark_saved">Bookmark saved</string>
+    <string name="msg_bookmark_canceled">Bookmark change canceled</string>
 
 </resources>
