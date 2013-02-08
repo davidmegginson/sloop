@@ -12,7 +12,6 @@ import android.widget.ListView;
 import com.megginson.sloop.activities.MainActivity;
 import com.megginson.sloop.model.DataEntry;
 import com.megginson.sloop.model.DataRecord;
-import com.megginson.sloop.model.DataRecordFilter;
 
 /**
  * A view fragment wrapping a data record
@@ -31,9 +30,8 @@ public class DataRecordFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		final DataRecord dataRecord = getArguments().getParcelable("dataRecord");
-		final DataRecordFilter filter = getArguments().getParcelable("filter");
 		ListView listView = new ListView(getActivity());
-		listView.setAdapter(new DataRecordListAdapter(getActivity(), dataRecord, filter));
+		listView.setAdapter(new DataRecordListAdapter(getActivity(), dataRecord));
 		listView.setOnItemLongClickListener(new ListView.OnItemLongClickListener() {
 			@Override
 			public boolean onItemLongClick(AdapterView<?> parent, View view,

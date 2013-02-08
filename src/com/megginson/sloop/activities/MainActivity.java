@@ -26,8 +26,7 @@ import android.widget.Toast;
 import com.megginson.sloop.R;
 import com.megginson.sloop.model.DataCollection;
 import com.megginson.sloop.model.DataEntry;
-import com.megginson.sloop.model.DataEntryFilter;
-import com.megginson.sloop.model.DataRecordFilter;
+import com.megginson.sloop.model.ValueFilter;
 import com.megginson.sloop.ui.DataCollectionLoader;
 import com.megginson.sloop.ui.DataCollectionPagerAdapter;
 import com.megginson.sloop.ui.DataCollectionResult;
@@ -354,20 +353,26 @@ public class MainActivity extends FragmentActivity implements
 	 *            the data entry (soon to be the filter)
 	 */
 	private void doSetFilter(final DataEntry entry) {
-		DataRecordFilter filter = mPagerAdapter.getFilter();
-		if (filter.getFilter(entry.getKey()) != null) {
-			filter.clearFilter(entry.getKey());
+		DataCollection collection = mPagerAdapter.getDataCollection();
+		if (collection.getFilter(entry.getKey()) != null) {
+			collection.putFilter(entry.getKey(), null);
+			if (!collection.hasFilters()) {
+				collection.setFiltered(false);
+			}
 			Toast.makeText(this, "Clearing filter for " + entry.getKey(),
 					Toast.LENGTH_SHORT).show();
 		} else {
-			mPagerAdapter.getFilter().putFilter(
-					new DataEntryFilter(entry.getKey(), entry.getValue()));
+			collection.setFiltered(true);
+			collection.putFilter(entry.getKey(), new ValueFilter() {		
+				@Override
+				public boolean isMatch(String value) {
+					return entry.getValue().equals(value);
+				}
+			});
 			Toast.makeText(this,
 					"Filtering " + entry.getKey() + '=' + entry.getValue(),
 					Toast.LENGTH_SHORT).show();
 		}
-		// TODO should be an async task?
-		mPagerAdapter.updateFilter();
 		mViewPager.setAdapter(mPagerAdapter);
 		doDisplayRecordNumber(mViewPager.getCurrentItem());
 	}
@@ -490,8 +495,9 @@ public class MainActivity extends FragmentActivity implements
 	 *            the record number to display (zero-based).
 	 */
 	private void doDisplayRecordNumber(int recordNumber) {
-		int count = mPagerAdapter.getCount();
-		int unfilteredCount = mPagerAdapter.getUnfilteredCount();
+		DataCollection collection = mPagerAdapter.getDataCollection();
+		int count = collection.size();
+		int unfilteredCount = collection.sizeUnfiltered();
 		mSeekBar.setProgress(recordNumber);
 		mSeekBar.setMax(count);
 		if (count < unfilteredCount) {

@@ -1,17 +1,11 @@
 package com.megginson.sloop.ui;
 
-import java.util.Collections;
-import java.util.List;
-
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
 import com.megginson.sloop.model.DataCollection;
-import com.megginson.sloop.model.DataRecord;
-import com.megginson.sloop.model.DataRecordFilter;
-import com.megginson.sloop.util.FilteredList;
 
 /**
  * Pager adapter for a data collection.
@@ -26,8 +20,6 @@ import com.megginson.sloop.util.FilteredList;
 public class DataCollectionPagerAdapter extends FragmentStatePagerAdapter {
 
 	private DataCollection mDataCollection;
-	private DataRecordFilter mFilter = new DataRecordFilter();
-	private FilteredList<DataRecord> mFilteredList;
 
 	public DataCollectionPagerAdapter(FragmentManager fm) {
 		super(fm);
@@ -52,41 +44,24 @@ public class DataCollectionPagerAdapter extends FragmentStatePagerAdapter {
 		if (dataCollection != null) {
 			mDataCollection = dataCollection;
 		}
-		updateFilter();
 		notifyDataSetChanged();
-	}
-
-	/**
-	 * Get the filter currently applied to the data collection.
-	 * 
-	 * @return the filter, or null if the collection is unfiltered.
-	 */
-	public DataRecordFilter getFilter() {
-		return mFilter;
 	}
 
 	@Override
 	public Fragment getItem(int position) {
 		DataRecordFragment fragment = new DataRecordFragment();
 		Bundle args = new Bundle();
-		// getList() will choose the filtered list if necessary
-		args.putParcelable("dataRecord", getList().get(position));
-		args.putParcelable("filter", mFilter);
+		args.putParcelable("dataRecord", mDataCollection.get(position));
 		fragment.setArguments(args);
 		return fragment;
 	}
 
 	@Override
 	public int getCount() {
-		// getList() will choose the filtered list if necessary
-		return getList().size();
-	}
-
-	public int getUnfilteredCount() {
-		if (mDataCollection != null) {
-			return mDataCollection.size();
-		} else {
+		if (mDataCollection == null) {
 			return 0;
+		} else {
+			return mDataCollection.size();
 		}
 	}
 
@@ -97,35 +72,7 @@ public class DataCollectionPagerAdapter extends FragmentStatePagerAdapter {
 
 	@Override
 	public int getItemPosition(Object object) {
-		// force a reset after notifyChanged
-		return POSITION_NONE;
-	}
-
-	/**
-	 * Select the filtered or unfiltered list, as appropriate.
-	 * 
-	 * @return the list to use (or a default empty list, if neither exists).
-	 */
-	private List<DataRecord> getList() {
-		if (mFilteredList != null) {
-			return mFilteredList;
-		} else if (mDataCollection != null) {
-			return mDataCollection;
-		} else {
-			return Collections.emptyList();
-		}
-	}
-
-	/**
-	 * Update the filtered list.
-	 */
-	public void updateFilter() {
-		mFilteredList = null;
-		if (mDataCollection != null && mFilter != null
-				&& mFilter.getFilters().size() > 0) {
-			mFilteredList = new FilteredList<DataRecord>(mFilter,
-					mDataCollection);
-		}
+		return mDataCollection.indexOf(object);
 	}
 
 }

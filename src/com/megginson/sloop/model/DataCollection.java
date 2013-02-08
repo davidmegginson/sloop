@@ -80,6 +80,20 @@ public class DataCollection extends AbstractList<DataRecord> {
 	public void setFiltered(boolean isFiltered) {
 		mIsFiltered = isFiltered;
 	}
+	
+	/**
+	 * Indicate whether any filters are currently assigned.
+	 * 
+	 * @return true if there is at least one filter assigned.
+	 */
+	public boolean hasFilters () {
+		for (ValueFilter filter : mFilters) {
+			if (filter != null) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 	/**
 	 * Add a filter for one of the columns.

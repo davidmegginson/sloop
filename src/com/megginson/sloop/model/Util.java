@@ -1,4 +1,4 @@
-package com.megginson.sloop.util;
+package com.megginson.sloop.model;
 
 /**
  * Android-independent static utility methods.

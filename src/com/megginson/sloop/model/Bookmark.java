@@ -1,6 +1,5 @@
 package com.megginson.sloop.model;
 
-import com.megginson.sloop.util.Util;
 
 /**
  * A saved reference to an external data set.
