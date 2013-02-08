@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:visibility="invisible"
-        android:contentDescription="Checked "
+        android:contentDescription="@string/alt_filtered"
         android:src="@drawable/ic_locked" />
 
     <TextView
