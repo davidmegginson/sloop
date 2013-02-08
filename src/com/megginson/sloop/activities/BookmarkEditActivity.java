@@ -1,14 +1,12 @@
 package com.megginson.sloop.activities;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -135,14 +133,6 @@ public class BookmarkEditActivity extends Activity {
 		editor.putString(mBookmark.getUrl(), mBookmark.getTitle());
 		editor.commit();
 		finish();
-	}
-
-	/**
-	 * Action: hide the soft keyboard.
-	 */
-	private void doHideKeyboard() {
-		InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-		imm.toggleSoftInput(0, 0);
 	}
 
 }

@@ -42,6 +42,10 @@ public class MainActivity extends FragmentActivity implements
 
 	public final static String ACTION_FILTER = "com.megginson.sloop.intent.FILTER";
 
+	public final static String PARAM_URL = "url";
+
+	public final static String PARAM_ENTRY = "entry";
+
 	public final static String PREFERENCE_GROUP_MAIN = "main";
 
 	public final static String PREFERENCE_URL = "url";
@@ -90,7 +94,6 @@ public class MainActivity extends FragmentActivity implements
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		System.err.println("onCreate");
 
 		setContentView(R.layout.activity_main);
 
@@ -110,7 +113,6 @@ public class MainActivity extends FragmentActivity implements
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
-		System.err.println("onCreateOptionsMenu");
 
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.activity_main, menu);
@@ -127,11 +129,10 @@ public class MainActivity extends FragmentActivity implements
 	@Override
 	public void onSaveInstanceState(Bundle savedInstanceState) {
 		super.onSaveInstanceState(savedInstanceState);
-		savedInstanceState.putString("url", mUrl);
+		savedInstanceState.putString(PARAM_URL, mUrl);
 
 		// save the URL for the next invocation
 		if (mUrl != null) {
-			System.err.println("Saving URL " + mUrl);
 			SharedPreferences.Editor editor = getSharedPreferences(
 					PREFERENCE_GROUP_MAIN, MODE_PRIVATE).edit();
 			editor.putString(PREFERENCE_URL, mUrl);
@@ -181,8 +182,7 @@ public class MainActivity extends FragmentActivity implements
 		DataCollectionLoader loader = new DataCollectionLoader(
 				getApplicationContext());
 		if (args != null) {
-			loader.setURL(args.getString("url"));
-			loader.setResourceName(args.getString("resourceName"));
+			loader.setURL(args.getString(PARAM_URL));
 		}
 		return loader;
 	}
@@ -322,9 +322,9 @@ public class MainActivity extends FragmentActivity implements
 		if (action == null) {
 			action = Intent.ACTION_MAIN;
 		}
-		
+
 		if (Intent.ACTION_MAIN.equals(action)) {
-			String url = intent.getStringExtra("url");
+			String url = intent.getStringExtra(PARAM_URL);
 			// Restore the last URL
 			if (url == null) {
 				url = getSharedPreferences(PREFERENCE_GROUP_MAIN, MODE_PRIVATE)
@@ -336,8 +336,7 @@ public class MainActivity extends FragmentActivity implements
 		}
 
 		else if (ACTION_FILTER.equals(action)) {
-			// TODO set a filter
-			DataEntry entry = intent.getParcelableExtra("entry");
+			DataEntry entry = intent.getParcelableExtra(PARAM_ENTRY);
 			doSetFilter(entry);
 		}
 
@@ -360,8 +359,10 @@ public class MainActivity extends FragmentActivity implements
 			if (!collection.hasFilters()) {
 				collection.setFiltered(false);
 			}
-			Toast.makeText(this, "Clearing filter for " + entry.getKey(),
-					Toast.LENGTH_SHORT).show();
+			Toast.makeText(
+					this,
+					String.format(getString(R.string.msg_filter_cleared),
+							entry.getKey()), Toast.LENGTH_SHORT).show();
 		} else {
 			collection.setFiltered(true);
 			collection.putFilter(entry.getKey(), new ValueFilter() {
@@ -370,8 +371,10 @@ public class MainActivity extends FragmentActivity implements
 					return entry.getValue().equals(value);
 				}
 			});
-			Toast.makeText(this,
-					"Filtering " + entry.getKey() + '=' + entry.getValue(),
+			Toast.makeText(
+					this,
+					String.format(getString(R.string.msg_filter_set),
+							entry.getKey(), entry.getValue()),
 					Toast.LENGTH_SHORT).show();
 		}
 		mViewPager.setAdapter(mPagerAdapter);
@@ -387,12 +390,13 @@ public class MainActivity extends FragmentActivity implements
 	private void doDisplayError(String message) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
 		builder.setMessage(message);
-		builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				dialog.cancel();
-			}
-		});
+		builder.setNeutralButton(R.string.btn_ok,
+				new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						dialog.cancel();
+					}
+				});
 		builder.create().show();
 	}
 
@@ -409,7 +413,8 @@ public class MainActivity extends FragmentActivity implements
 		if (dataCollection != null) {
 			int position = dataCollection.search(query, 0);
 			if (position == -1) {
-				doDisplayError("No results found for " + query);
+				doDisplayError(String.format(
+						getString(R.string.msg_search_no_results), query));
 			} else {
 				mViewPager.setCurrentItem(position);
 			}
@@ -448,13 +453,13 @@ public class MainActivity extends FragmentActivity implements
 	 */
 	private void doLoadDataCollection(String url) {
 		if (url == null || url.length() == 0) {
-			doDisplayError("Please enter a web address");
+			doDisplayError(getString(R.string.msg_web_address));
 			return;
 		}
 		mUrl = url;
 		mIsLoading = true;
 		Bundle args = new Bundle();
-		args.putString("url", url);
+		args.putString(PARAM_URL, url);
 		getLoaderManager().restartLoader(0, args, MainActivity.this);
 		if (mAddressProvider != null) {
 			mAddressProvider.setIsLoading(true);
@@ -482,7 +487,7 @@ public class MainActivity extends FragmentActivity implements
 		} else {
 			mSeekBar.setProgress(0);
 			mSeekBar.setMax(0);
-			doDisplayInfo("No data collection loaded");
+			doDisplayInfo(getString(R.string.msg_no_data));
 		}
 	}
 
@@ -502,11 +507,13 @@ public class MainActivity extends FragmentActivity implements
 		mSeekBar.setProgress(recordNumber);
 		mSeekBar.setMax(count);
 		if (count < unfilteredCount) {
-			doDisplayInfo(String.format("Filtered record %,d/%,d (%,d total)",
+			doDisplayInfo(String.format(
+					getString(R.string.info_records_filtered),
 					recordNumber + 1, count, unfilteredCount));
 		} else {
-			doDisplayInfo(String.format("Record %,d/%,d", recordNumber + 1,
-					count));
+			doDisplayInfo(String.format(
+					getString(R.string.info_records_unfiltered),
+					recordNumber + 1, count));
 		}
 	}
 

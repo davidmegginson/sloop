@@ -35,8 +35,6 @@ public class DataCollectionLoader extends AsyncTaskLoader<DataCollectionResult> 
 	 */
 	private String mUrl = null;
 
-	private String mResourceName = null;
-
 	/**
 	 * Last data collection loaded.
 	 */
@@ -69,17 +67,6 @@ public class DataCollectionLoader extends AsyncTaskLoader<DataCollectionResult> 
 		}
 	}
 
-	public String getResourceName() {
-		return mResourceName;
-	}
-
-	public void setResourceName(String resourceName) {
-		if (resourceName != mResourceName) {
-			mDataCollection = null;
-			mResourceName = resourceName;
-		}
-	}
-
 	@Override
 	protected void onStartLoading() {
 		// TODO Auto-generated method stub
@@ -98,15 +85,11 @@ public class DataCollectionLoader extends AsyncTaskLoader<DataCollectionResult> 
 			DataCollection dataCollection = null;
 			try {
 				InputStream input = null;
-				if (mResourceName != null) {
-					input = getContext().getAssets().open(mResourceName);
-				} else {
-					// FIXME poor excuse for caching
-					if (mUrl.equals(sLastUrl)) {
-						return new DataCollectionResult(sLastDataCollection);
-					}
-					input = openURL(mUrl);
+				// FIXME poor excuse for caching
+				if (mUrl.equals(sLastUrl)) {
+					return new DataCollectionResult(sLastDataCollection);
 				}
+				input = openURL(mUrl);
 				try {
 					if (input != null) {
 						dataCollection = DataCollectionIO
