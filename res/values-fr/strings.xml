@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="activity_bookmark_edit">Modifier un favori</string>
+    <string name="activity_bookmarks">Favoris</string>
+    <string name="alt_filtered">Icône de verrouillage (filtré)</string>
+    <string name="app_name">Sloop</string>
+    <string name="btn_ok">D\'accord</string>
+    <string name="btn_save_bookmark">Enregistrer cet favori</string>
+    <string name="hint_search">Texte de recherche</string>
+    <string name="hint_url">Adresse Web (URL)</string>
+    <string name="info_records_filtered">Dossier filtré %1$,d / %2$,d (%3$,d au total)</string>
+    <string name="info_records_unfiltered">Dossier %1$,d / %2$,d</string>
+    <string name="label_bookmark_title">Titre du favori</string>
+    <string name="label_bookmark_url">URL du favori</string>
+    <string name="menu_bookmark_create">Create a new bookmark</string>
+    <string name="menu_bookmarks">Parcourir les favoris</string>
+    <string name="menu_bookmark_this">Enregistrer comme favori</string>
+    <string name="menu_search">Rechercher</string>
+    <string name="menu_settings">Paramètres</string>
+    <string name="msg_bookmark_canceled">Changement annulée</string>
+    <string name="msg_bookmark_saved">Favori enregistré</string>
+    <string name="msg_filter_cleared">Filtre retiré pour %1$s.</string>
+    <string name="msg_filter_set">Filtrage sur %1$s = %2$s.</string>
+    <string name="msg_no_data">Aucune collecte des données chargée.</string>
+    <string name="msg_search_no_results">Aucun résultat de recherche pour "%1$s".</string>
+    <string name="msg_web_address">Veuillez fournier une adresse Web (URL).</string>
+
+</resources>

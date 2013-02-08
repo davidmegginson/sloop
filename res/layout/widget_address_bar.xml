@@ -10,7 +10,7 @@
         android:id="@+id/urlField"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/url_field_hint"
+        android:hint="@string/hint_url"
         android:inputType="textUri"
         android:paddingRight="32dp"
         android:singleLine="true" />
