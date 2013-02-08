@@ -72,7 +72,9 @@ public class DataRecordListAdapter extends BaseAdapter {
 		valueView.setText(entry.getValue());
 		
 		if (entry.hasFilter()) {
-			layout.setBackgroundColor(Color.LTGRAY);
+			layout.setBackgroundColor(Color.YELLOW);
+		} else if (position % 2 == 1){
+			layout.setBackgroundColor(Color.rgb(0xee, 0xee, 0xee));
 		} else {
 			layout.setBackgroundColor(Color.TRANSPARENT);
 		}
