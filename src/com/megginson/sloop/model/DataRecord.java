@@ -55,12 +55,13 @@ public class DataRecord extends AbstractList<DataEntry> implements Parcelable {
 	 * @param values
 	 *            An array of strings representing the values.
 	 */
-	public DataRecord(String headers[], String values[]) {
+	public DataRecord(String headers[], String values[], ValueFilter filters[]) {
 		for (int i = 0; i < headers.length; i++) {
+			boolean hasFilter = (filters[i] != null);
 			if (i < values.length) {
-				addEntry(headers[i], values[i]);
+				addEntry(headers[i], values[i], hasFilter);
 			} else {
-				addEntry(headers[i], null);
+				addEntry(headers[i], null, hasFilter);
 			}
 		}
 	}
@@ -75,8 +76,8 @@ public class DataRecord extends AbstractList<DataEntry> implements Parcelable {
 	 * @param value
 	 *            The string value of the {@link DataEntry}.
 	 */
-	public void addEntry(String name, String value) {
-		add(new DataEntry(name, value));
+	public void addEntry(String name, String value, boolean hasFilter) {
+		add(new DataEntry(name, value, hasFilter));
 	}
 
 	@Override

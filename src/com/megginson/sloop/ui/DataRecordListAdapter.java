@@ -1,6 +1,7 @@
 package com.megginson.sloop.ui;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -69,6 +70,12 @@ public class DataRecordListAdapter extends BaseAdapter {
 		
 		valueView = (TextView)layout.findViewById(R.id.field_value);
 		valueView.setText(entry.getValue());
+		
+		if (entry.hasFilter()) {
+			layout.setBackgroundColor(Color.LTGRAY);
+		} else {
+			layout.setBackgroundColor(Color.TRANSPARENT);
+		}
 
 		return layout;
 	}

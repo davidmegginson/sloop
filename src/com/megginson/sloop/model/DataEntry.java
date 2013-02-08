@@ -20,15 +20,30 @@ public class DataEntry implements Map.Entry<String, String>, Parcelable {
 
 	private String mKey;
 	private String mValue;
+	private boolean mHasFilter = false;
 	
 	public DataEntry(DataEntry dataEntry) {
 		mKey = dataEntry.getKey();
 		setValue(dataEntry.getValue());
 	}
+	
+	public DataEntry (String key, String value) {
+		this(key, value, false);
+	}
 
-	public DataEntry(String key, String value) {
+	public DataEntry(String key, String value, boolean hasFilter) {
 		mKey = key;
 		setValue(value);
+		mHasFilter = hasFilter;
+	}
+	
+	/**
+	 * Indicate whether there is a filter associated with this entry.
+	 * 
+	 * @return true if there is an associated filter; false otherwise.
+	 */
+	public boolean hasFilter () {
+		return mHasFilter;
 	}
 
 	@Override
@@ -57,6 +72,7 @@ public class DataEntry implements Map.Entry<String, String>, Parcelable {
 	public void writeToParcel(Parcel dest, int flags) {
 		dest.writeString(mKey);
 		dest.writeString(mValue);
+		dest.writeValue(mHasFilter);
 	}
 
 	@Override
@@ -92,7 +108,8 @@ public class DataEntry implements Map.Entry<String, String>, Parcelable {
 		public DataEntry createFromParcel(Parcel source) {
 			String key = source.readString();
 			String value = source.readString();
-			return new DataEntry(key, value);
+			boolean hasFilter = (Boolean)source.readValue(Boolean.class.getClassLoader());
+			return new DataEntry(key, value, hasFilter);
 		}
 
 		@Override

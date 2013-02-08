@@ -173,7 +173,7 @@ public class DataCollection extends AbstractList<DataRecord> {
 		} else {
 			rawLocation = location;
 		}
-		return new DataRecord(mHeaders, mRecords.get(rawLocation));
+		return new DataRecord(mHeaders, mRecords.get(rawLocation), mFilters);
 	}
 
 	@Override
