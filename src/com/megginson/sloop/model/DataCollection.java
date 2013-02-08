@@ -239,7 +239,7 @@ public class DataCollection extends AbstractList<DataRecord> {
 	 */
 	private boolean doFilterRecord(String record[]) {
 		for (int i = 0; i < mHeaders.length; i++) {
-			if (i < mFilters.length && mFilters[i] != null && !mFilters[i].isMatch(record[i])) {
+			if (i < mFilters.length && i < record.length && mFilters[i] != null && !mFilters[i].isMatch(record[i])) {
 				return false;
 			}
 		}

@@ -6,8 +6,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.LinearLayout;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.megginson.sloop.R;
@@ -27,7 +28,7 @@ public class DataRecordListAdapter extends BaseAdapter {
 	private Context mContext;
 
 	private DataRecord mDataRecord;
-	
+
 	public DataRecordListAdapter(Context context, DataRecord dataRecord) {
 		mContext = context;
 		mDataRecord = dataRecord;
@@ -50,30 +51,38 @@ public class DataRecordListAdapter extends BaseAdapter {
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		LinearLayout layout;
+		View layout;
+		ImageView checkView;
 		TextView labelView;
 		TextView valueView;
 
 		// Reuse existing components if we can
 		if (convertView == null) {
 			LayoutInflater inflater = LayoutInflater.from(mContext);
-			layout = (LinearLayout)inflater.inflate(R.layout.component_data_entry, null);
+			layout = inflater.inflate(
+					R.layout.component_data_entry, null);
 		} else {
-			layout = (LinearLayout)convertView;
+			layout = convertView;
 		}
 
 		// Set the appropriate text for this entry
 		DataEntry entry = mDataRecord.get(position);
 
-		labelView = (TextView)layout.findViewById(R.id.field_name);
+		labelView = (TextView) layout.findViewById(R.id.field_name);
 		labelView.setText(entry.getKey());
-		
-		valueView = (TextView)layout.findViewById(R.id.field_value);
+
+		valueView = (TextView) layout.findViewById(R.id.field_value);
 		valueView.setText(entry.getValue());
 		
+		checkView = (ImageView) layout.findViewById(R.id.image_checkbox);
+
 		if (entry.hasFilter()) {
-			layout.setBackgroundColor(Color.YELLOW);
-		} else if (position % 2 == 1){
+			checkView.setVisibility(View.VISIBLE);
+		} else {
+			checkView.setVisibility(View.INVISIBLE);			
+		}
+		
+		if (position % 2 == 1) {
 			layout.setBackgroundColor(Color.rgb(0xee, 0xee, 0xee));
 		} else {
 			layout.setBackgroundColor(Color.TRANSPARENT);
