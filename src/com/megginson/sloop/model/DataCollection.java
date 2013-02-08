@@ -80,13 +80,13 @@ public class DataCollection extends AbstractList<DataRecord> {
 	public void setFiltered(boolean isFiltered) {
 		mIsFiltered = isFiltered;
 	}
-	
+
 	/**
 	 * Indicate whether any filters are currently assigned.
 	 * 
 	 * @return true if there is at least one filter assigned.
 	 */
-	public boolean hasFilters () {
+	public boolean hasFilters() {
 		for (ValueFilter filter : mFilters) {
 			if (filter != null) {
 				return true;
@@ -191,8 +191,8 @@ public class DataCollection extends AbstractList<DataRecord> {
 	/**
 	 * Get the unfiltered size of the collection.
 	 * 
-	 * This method will always return the total number of records
-	 * in the collection, even if filtering is in force.
+	 * This method will always return the total number of records in the
+	 * collection, even if filtering is in force.
 	 * 
 	 * @return the total number of items in the (unfiltered) collection.
 	 * @see #size()
@@ -239,8 +239,10 @@ public class DataCollection extends AbstractList<DataRecord> {
 	 */
 	private boolean doFilterRecord(String record[]) {
 		for (int i = 0; i < mHeaders.length; i++) {
-			if (i < mFilters.length && i < record.length && mFilters[i] != null && !mFilters[i].isMatch(record[i])) {
-				return false;
+			if (i < mFilters.length && mFilters[i] != null) {
+				if (i >= record.length || !mFilters[i].isMatch(record[i])) {
+					return false;
+				}
 			}
 		}
 		return true;
