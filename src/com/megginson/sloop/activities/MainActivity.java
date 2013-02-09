@@ -38,8 +38,7 @@ import com.megginson.sloop.widgets.AddressActionProvider;
  * 
  * @author David Megginson
  */
-public class MainActivity extends FragmentActivity implements
-		LoaderCallbacks<DataCollectionResult> {
+public class MainActivity extends FragmentActivity  {
 
 	public final static String ACTION_FILTER = "com.megginson.sloop.intent.FILTER";
 
@@ -177,49 +176,6 @@ public class MainActivity extends FragmentActivity implements
 		} else {
 			return super.onKeyUp(keyCode, event);
 		}
-	}
-
-	//
-	// Loader callbacks
-	//
-
-	@Override
-	public Loader<DataCollectionResult> onCreateLoader(int id, Bundle args) {
-		// only one loader for now, so ignore id
-		DataCollectionLoader loader = new DataCollectionLoader(
-				getApplicationContext());
-		if (args != null) {
-			loader.setURL(args.getString(PARAM_URL));
-			loader.setForceLoad(args.getBoolean(PARAM_FORCE_LOAD));
-		}
-		return loader;
-	}
-
-	@Override
-	public void onLoadFinished(Loader<DataCollectionResult> loader,
-			DataCollectionResult result) {
-		if (result.hasError()) {
-			// if the load failed, show and error and stick around
-			doDisplayError(result.getThrowable().getMessage());
-		} else if (result.getRedirectUrl() != null) {
-			// if it was a non-CSV resource, launch the browser
-			doLaunchBrowser(result.getRedirectUrl());
-		} else {
-			// succeeded - show the collection
-			doUpdateDataCollection(result.getDataCollection());
-			mIsLoading = false;
-			if (mAddressProvider != null) {
-				mAddressProvider.setUrl(mUrl);
-				mAddressProvider.setIsLoading(false);
-			}
-		}
-		mIsLoading = false;
-		mProgressBar.setVisibility(View.GONE);
-	}
-
-	@Override
-	public void onLoaderReset(Loader<DataCollectionResult> loader) {
-		// NO OP
 	}
 
 	//
@@ -477,7 +433,48 @@ public class MainActivity extends FragmentActivity implements
 		Bundle args = new Bundle();
 		args.putString(PARAM_URL, url);
 		args.putBoolean(PARAM_FORCE_LOAD, forceLoad);
-		getLoaderManager().restartLoader(0, args, MainActivity.this);
+		getLoaderManager().restartLoader(0, args, new LoaderCallbacks<DataCollectionResult>() {
+
+			@Override
+			public Loader<DataCollectionResult> onCreateLoader(int id, Bundle args) {
+				// only one loader for now, so ignore id
+				DataCollectionLoader loader = new DataCollectionLoader(
+						getApplicationContext());
+				if (args != null) {
+					loader.setURL(args.getString(PARAM_URL));
+					loader.setForceLoad(args.getBoolean(PARAM_FORCE_LOAD));
+				}
+				return loader;
+			}
+
+			@Override
+			public void onLoadFinished(Loader<DataCollectionResult> loader,
+					DataCollectionResult result) {
+				if (result.hasError()) {
+					// if the load failed, show and error and stick around
+					doDisplayError(result.getThrowable().getMessage());
+				} else if (result.getRedirectUrl() != null) {
+					// if it was a non-CSV resource, launch the browser
+					doLaunchBrowser(result.getRedirectUrl());
+				} else {
+					// succeeded - show the collection
+					doUpdateDataCollection(result.getDataCollection());
+					mIsLoading = false;
+					if (mAddressProvider != null) {
+						mAddressProvider.setUrl(mUrl);
+						mAddressProvider.setIsLoading(false);
+					}
+				}
+				mIsLoading = false;
+				mProgressBar.setVisibility(View.GONE);
+			}
+
+			@Override
+			public void onLoaderReset(Loader<DataCollectionResult> loader) {
+				// NO OP
+			}
+
+		});
 		if (mAddressProvider != null) {
 			mAddressProvider.setIsLoading(true);
 			mAddressProvider.setUrl(mUrl);
