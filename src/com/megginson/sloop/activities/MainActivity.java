@@ -49,6 +49,8 @@ public class MainActivity extends FragmentActivity implements
 	public final static String PREFERENCE_GROUP_MAIN = "main";
 
 	public final static String PREFERENCE_URL = "url";
+	
+	public final static String DEFAULT_URL = "https://docs.google.com/spreadsheet/ccc?key=0AoDV0i2WefMXdEI2VV9Xb1I5eFpBeS1HYkw5NGNqR3c&output=csv#gid=0";
 
 	//
 	// Saveable state
@@ -329,6 +331,7 @@ public class MainActivity extends FragmentActivity implements
 			if (url == null) {
 				url = getSharedPreferences(PREFERENCE_GROUP_MAIN, MODE_PRIVATE)
 						.getString(PREFERENCE_URL, null);
+				url = DEFAULT_URL;
 			}
 			if (url != null && url.length() > 0) {
 				doLoadDataCollection(url);
@@ -352,7 +355,7 @@ public class MainActivity extends FragmentActivity implements
 	 * @param entry
 	 *            the data entry (soon to be the filter)
 	 */
-	private void doSetFilter(final DataEntry entry) {
+	private void doSetFilter(DataEntry entry) {
 		DataCollection collection = mPagerAdapter.getDataCollection();
 		if (collection.getFilter(entry.getKey()) != null) {
 			collection.putFilter(entry.getKey(), null);
@@ -365,10 +368,11 @@ public class MainActivity extends FragmentActivity implements
 							entry.getKey()), Toast.LENGTH_SHORT).show();
 		} else {
 			collection.setFiltered(true);
+			final String entryValue = entry.getValue();
 			collection.putFilter(entry.getKey(), new ValueFilter() {
 				@Override
 				public boolean isMatch(String value) {
-					return entry.getValue().equals(value);
+					return entryValue.equals(value);
 				}
 			});
 			Toast.makeText(

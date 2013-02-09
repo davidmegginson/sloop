@@ -71,7 +71,7 @@ public class BookmarkListActivity extends ListActivity {
 						Intent intent = new Intent(BookmarkListActivity.this,
 								MainActivity.class);
 						intent.setAction(Intent.ACTION_MAIN);
-						intent.putExtra("url", bookmark.getUrl());
+						intent.putExtra(MainActivity.PARAM_URL, bookmark.getUrl());
 						Toast.makeText(getApplicationContext(),
 								bookmark.getTitle(), Toast.LENGTH_SHORT).show();
 						startActivity(intent);

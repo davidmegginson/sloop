@@ -1,5 +1,8 @@
 package com.megginson.sloop.model;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
 /**
  * Android-independent static utility methods.
  */
@@ -48,6 +51,22 @@ public class Util {
 			return false;
 		} else {
 			return o1.equals(o2);
+		}
+	}
+	
+	/**
+	 * Test whether a string is a properly-formed URL.
+	 * 
+	 * @param s the string to test.
+	 * @return true if the string is a URL.
+	 */
+	public static boolean isUrl (String s) {
+		try {
+			// let Java do the work
+			new URL(s);
+			return true;
+		} catch (MalformedURLException e) {
+			return false;
 		}
 	}
 
