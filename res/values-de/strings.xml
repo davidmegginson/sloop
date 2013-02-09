@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="activity_bookmark_edit">Lesezeichen bearbeiten</string>
+    <string name="activity_bookmarks">Lesezeichen</string>
+    <string name="alt_filtered">Schloss-Symbol (gefiltert)</string>
+    <string name="app_name">Sloop</string>
+    <string name="btn_ok">Einverstanden</string>
+    <string name="btn_save_bookmark">Lesezeichen speichern</string>
+    <string name="hint_search">Suchtext</string>
+    <string name="hint_url">Webadresse (URL)</string>
+    <string name="info_records_filtered">Gefilterte Datensatz %1$,d/%2$,d (%3$,d total)</string>
+    <string name="info_records_unfiltered">Datensatz %1$,d/%2$,d</string>
+    <string name="label_bookmark_title">Titel des Lesezeichens</string>
+    <string name="label_bookmark_url">URL des Lesezeichens</string>
+    <string name="menu_bookmarks">Lesezeichen</string>
+    <string name="menu_bookmark_this">Lesezeichen erstellen</string>
+    <string name="menu_search">Suchen</string>
+    <string name="menu_settings">Einstellungen</string>
+    <string name="msg_bookmark_canceled">Änderungen des Lesezeichens storniert</string>
+    <string name="msg_bookmark_saved">Lesezeichung gespeichert</string>
+    <string name="msg_filter_cleared">Filter entfernt für %1$s.</string>
+    <string name="msg_filter_set">Filter auf %1$s = %2$s.</string>
+    <string name="msg_no_data">Kein Datenerfassung geladen.</string>
+    <string name="msg_search_no_results">Keine Suchergebnisse für "%1$s".</string>
+    <string name="msg_web_address">Bitte geben Sie eine Webadresse (URL).</string>
+
+</resources>

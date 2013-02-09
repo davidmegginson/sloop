@@ -14,7 +14,7 @@
     <string name="label_bookmark_title">Título de favorito</string>
     <string name="label_bookmark_url">URL de favorito</string>
     <string name="menu_bookmarks">Favoritos</string>
-    <string name="menu_bookmark_this">Añadar a favoritos este recopilación de datos</string>
+    <string name="menu_bookmark_this">Añadar a favoritos</string>
     <string name="menu_search">Buscar</string>
     <string name="menu_settings">Configuración</string>
     <string name="msg_bookmark_canceled">Cambio de favorito anulado.</string>
