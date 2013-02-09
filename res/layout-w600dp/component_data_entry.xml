@@ -19,7 +19,6 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="13"
-        android:text="@string/label_name"
         style="@style/EntryLabel"
         android:paddingRight="10dp"
         android:textAppearance="?android:attr/textAppearanceMedium" />
@@ -29,7 +28,6 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="21"
-        android:text="@string/label_value"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
 </LinearLayout>

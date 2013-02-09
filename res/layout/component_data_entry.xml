@@ -22,7 +22,6 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/field_name"
         android:layout_toRightOf="@+id/image_checkbox"
-        android:text="@string/label_value"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
@@ -31,7 +30,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@+id/image_checkbox"
-        android:text="@string/label_name"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
 </RelativeLayout>
