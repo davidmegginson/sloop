@@ -46,6 +46,8 @@ public class MainActivity extends FragmentActivity implements
 	public final static String PARAM_URL = "url";
 
 	public final static String PARAM_ENTRY = "entry";
+	
+	public final static String PARAM_FORCE_LOAD = "forceLoad";
 
 	public final static String PREFERENCE_GROUP_MAIN = "main";
 
@@ -157,6 +159,9 @@ public class MainActivity extends FragmentActivity implements
 		case R.id.menu_bookmark_create:
 			doLaunchBookmarkCreate(mUrl);
 			return true;
+		case R.id.menu_reload:
+			doLoadDataCollection(mUrl, true);
+			return true;
 		default:
 			return super.onMenuItemSelected(featureId, item);
 		}
@@ -185,6 +190,7 @@ public class MainActivity extends FragmentActivity implements
 				getApplicationContext());
 		if (args != null) {
 			loader.setURL(args.getString(PARAM_URL));
+			loader.setForceLoad(args.getBoolean(PARAM_FORCE_LOAD));
 		}
 		return loader;
 	}
@@ -284,7 +290,7 @@ public class MainActivity extends FragmentActivity implements
 				.setAddressBarListener(new AddressActionProvider.AddressBarListener() {
 					@Override
 					public void onLoadStarted(String url) {
-						doLoadDataCollection(url);
+						doLoadDataCollection(url, true);
 					}
 
 					@Override
@@ -340,7 +346,7 @@ public class MainActivity extends FragmentActivity implements
 				url = DEFAULT_URL;
 			}
 			if (url != null && url.length() > 0) {
-				doLoadDataCollection(url);
+				doLoadDataCollection(url, false);
 			}
 		}
 
@@ -461,14 +467,16 @@ public class MainActivity extends FragmentActivity implements
 	 * @param url
 	 *            the URL of the data collection.
 	 */
-	private void doLoadDataCollection(String url) {
+	private void doLoadDataCollection(String url, boolean forceLoad) {
 		if (url == null || url.length() == 0) {
 			doDisplayError(getString(R.string.msg_web_address));
 			return;
 		}
+		mUrl = url;
 		mIsLoading = true;
 		Bundle args = new Bundle();
 		args.putString(PARAM_URL, url);
+		args.putBoolean(PARAM_FORCE_LOAD, forceLoad);
 		getLoaderManager().restartLoader(0, args, MainActivity.this);
 		if (mAddressProvider != null) {
 			mAddressProvider.setIsLoading(true);

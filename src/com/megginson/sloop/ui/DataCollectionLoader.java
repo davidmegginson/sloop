@@ -36,6 +36,11 @@ public class DataCollectionLoader extends AsyncTaskLoader<DataCollectionResult> 
 	 * URL of the data collection to be loaded.
 	 */
 	private String mUrl = null;
+	
+	/**
+	 * Should we force load, even if we already have the data?
+	 */
+	private boolean mForceLoad = false;
 
 	/**
 	 * Last data collection loaded.
@@ -68,6 +73,14 @@ public class DataCollectionLoader extends AsyncTaskLoader<DataCollectionResult> 
 			mUrl = url;
 		}
 	}
+	
+	public boolean isForceLoad() {
+		return mForceLoad;
+	}
+	
+	public void setForceLoad(boolean forceLoad) {
+		mForceLoad = forceLoad;
+	}
 
 	@Override
 	protected void onStartLoading() {
@@ -88,7 +101,7 @@ public class DataCollectionLoader extends AsyncTaskLoader<DataCollectionResult> 
 			try {
 				InputStream input = null;
 				// FIXME poor excuse for caching
-				if (mUrl.equals(sLastUrl)) {
+				if (!mForceLoad && mUrl.equals(sLastUrl)) {
 					return new DataCollectionResult(sLastDataCollection);
 				}
 				input = openURL(mUrl);
