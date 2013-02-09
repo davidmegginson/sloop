@@ -1,0 +1,27 @@
+body {
+    background: #eeeeff;
+    font-size: 100%;
+    font-family: Helvetica, sans-serif;
+    margin: 3em;
+}
+
+#logo {
+    float: left;
+    width: 3em;
+    height: 3em;
+}
+
+img.screenshot {
+    float: right;
+    width: 33%;
+}
+
+.faq dt {
+    font-weight: bold;
+    font-size: 120%;
+    margin-bottom: 1ex;
+}
+
+.faq dd {
+    margin-bottom: 2ex;
+}
