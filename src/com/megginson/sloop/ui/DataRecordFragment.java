@@ -1,9 +1,6 @@
 package com.megginson.sloop.ui;
 
-import java.util.Locale;
-
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -58,27 +55,42 @@ public class DataRecordFragment extends Fragment {
 		return listView;
 	}
 
-	// TODO does this belong here?
+	/**
+	 * Send out the intent to create a filter.
+	 * 
+	 * This method sends a request to the existing {@link MainActivity} at the
+	 * top of the stack to start filtering its results.
+	 * 
+	 * TODO does this belong here?
+	 * 
+	 * @param entry
+	 *            the data entry to use as a model for the filter.
+	 */
 	private void doAssignFilter(DataEntry entry) {
 		Intent intent = new Intent(getActivity(), MainActivity.class);
 		intent.setAction(MainActivity.ACTION_FILTER);
+		// don't create a new instance of MainActivity
 		intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
 		intent.putExtra(MainActivity.PARAM_ENTRY, entry);
 		startActivity(intent);
 	}
 
+	/**
+	 * Send out the intent to open a URL.
+	 * 
+	 * A new {@link MainActivity} will intercept the intent first, but if it
+	 * turns out not to be a CSV resource, it will pass it on to other Android
+	 * apps (e.g. the browser).
+	 * 
+	 * TODO does this belong here?
+	 * 
+	 * @param url
+	 *            the URL to pass to {@link MainActivity}
+	 */
 	private void doOpenUrl(String url) {
-		Intent intent;
-		// FIXME this logic should be in the main activity
-		// FIXME Google Doc CSV won't end with the extension
-		if (url.toLowerCase(Locale.ENGLISH).endsWith(".csv")) {
-			intent = new Intent(getActivity(), MainActivity.class);
-			intent.setAction(Intent.ACTION_MAIN);
-			intent.putExtra(MainActivity.PARAM_URL, url);
-		} else {
-			intent = new Intent(Intent.ACTION_VIEW);
-			intent.setData(Uri.parse(url));
-		}
+		Intent intent = new Intent(getActivity(), MainActivity.class);
+		intent.setAction(Intent.ACTION_MAIN);
+		intent.putExtra(MainActivity.PARAM_URL, url);
 		startActivity(intent);
 	}
 

@@ -5,17 +5,19 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 
+import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpHead;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import android.content.AsyncTaskLoader;
 import android.content.Context;
 
-import com.megginson.sloop.model.DataCollection;
 import com.megginson.sloop.io.DataCollectionIO;
+import com.megginson.sloop.model.DataCollection;
 
 /**
  * Load a {@link DataCollection} in a separate thread.
@@ -90,14 +92,16 @@ public class DataCollectionLoader extends AsyncTaskLoader<DataCollectionResult> 
 					return new DataCollectionResult(sLastDataCollection);
 				}
 				input = openURL(mUrl);
-				try {
-					if (input != null) {
+				if (input == null) {
+					return new DataCollectionResult(mUrl);
+				} else {
+					try {
 						dataCollection = DataCollectionIO
 								.readCSV(new InputStreamReader(input, Charset
 										.forName("utf8")));
+					} finally {
+						input.close();
 					}
-				} finally {
-					input.close();
 				}
 			} catch (Throwable t) {
 				return new DataCollectionResult(t);
@@ -111,14 +115,30 @@ public class DataCollectionLoader extends AsyncTaskLoader<DataCollectionResult> 
 		return new DataCollectionResult(mDataCollection);
 	}
 
+	/**
+	 * Attempt to open a URL for reading a data collection.
+	 * 
+	 * @param url
+	 * @return
+	 * @throws IOException
+	 */
 	private InputStream openURL(String url) throws IOException {
 		HttpClient client = new DefaultHttpClient();
-		HttpGet request = new HttpGet(url);
-		HttpResponse response = client.execute(request);
-		HttpEntity entity = response.getEntity();
-		if (entity != null) {
+
+		// Check the content type
+		HttpHead headRequest = new HttpHead(url);
+		HttpResponse headResponse = client.execute(headRequest);
+		Header contentType = headResponse.getFirstHeader("Content-Type");
+
+		// Load only if it's text/csv
+		if (contentType != null
+				&& contentType.getValue().startsWith("text/csv")) {
+			HttpGet request = new HttpGet(url);
+			HttpResponse response = client.execute(request);
+			HttpEntity entity = response.getEntity();
 			return entity.getContent();
 		} else {
+			// return null to try the browser instead
 			return null;
 		}
 	}

@@ -53,14 +53,17 @@ public class Util {
 			return o1.equals(o2);
 		}
 	}
-	
+
 	/**
 	 * Test whether a string is a properly-formed URL.
 	 * 
-	 * @param s the string to test.
+	 * Sloop uses this method to make URLs into links.
+	 * 
+	 * @param s
+	 *            the string to test.
 	 * @return true if the string is a URL.
 	 */
-	public static boolean isUrl (String s) {
+	public static boolean isUrl(String s) {
 		try {
 			// let Java do the work
 			new URL(s);

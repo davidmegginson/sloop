@@ -24,6 +24,8 @@ public class DataCollectionResult {
 
 	private DataCollection mDataCollection;
 	
+	private String mRedirectUrl;
+	
 	private Throwable mThrowable;
 	
 	/**
@@ -34,6 +36,18 @@ public class DataCollectionResult {
 	 */
 	public DataCollectionResult(DataCollection dataCollection) {
 		mDataCollection = dataCollection;
+		mRedirectUrl = null;
+		mThrowable = null;
+	}
+	
+	/**
+	 * Result for a load that needs to redirect to a non-CSV URL.
+	 * 
+	 * @param redirectUrl the URL to send to the browser.
+	 */
+	public DataCollectionResult(String redirectUrl) {
+		mDataCollection = null;
+		mRedirectUrl = redirectUrl;
 		mThrowable = null;
 	}
 
@@ -44,8 +58,9 @@ public class DataCollectionResult {
 	 *            The error message.
 	 */
 	public DataCollectionResult(Throwable throwable) {
-		mThrowable = throwable;
 		mDataCollection = null;
+		mRedirectUrl = null;
+		mThrowable = throwable;
 	}
 
 	/**
@@ -66,6 +81,10 @@ public class DataCollectionResult {
 	 */
 	public DataCollection getDataCollection() {
 		return mDataCollection;
+	}
+	
+	public String getRedirectUrl() {
+		return mRedirectUrl;
 	}
 
 	/**

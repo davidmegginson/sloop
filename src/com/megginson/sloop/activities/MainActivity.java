@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.PagerAdapter;
@@ -49,7 +50,7 @@ public class MainActivity extends FragmentActivity implements
 	public final static String PREFERENCE_GROUP_MAIN = "main";
 
 	public final static String PREFERENCE_URL = "url";
-	
+
 	public final static String DEFAULT_URL = "https://docs.google.com/spreadsheet/ccc?key=0AoDV0i2WefMXdEI2VV9Xb1I5eFpBeS1HYkw5NGNqR3c&output=csv#gid=0";
 
 	//
@@ -130,11 +131,10 @@ public class MainActivity extends FragmentActivity implements
 
 	@Override
 	public void onSaveInstanceState(Bundle savedInstanceState) {
-		super.onSaveInstanceState(savedInstanceState);
-		savedInstanceState.putString(PARAM_URL, mUrl);
-
 		// save the URL for the next invocation
 		if (mUrl != null) {
+			super.onSaveInstanceState(savedInstanceState);
+			savedInstanceState.putString(PARAM_URL, mUrl);
 			SharedPreferences.Editor editor = getSharedPreferences(
 					PREFERENCE_GROUP_MAIN, MODE_PRIVATE).edit();
 			editor.putString(PREFERENCE_URL, mUrl);
@@ -193,8 +193,13 @@ public class MainActivity extends FragmentActivity implements
 	public void onLoadFinished(Loader<DataCollectionResult> loader,
 			DataCollectionResult result) {
 		if (result.hasError()) {
+			// if the load failed, show and error and stick around
 			doDisplayError(result.getThrowable().getMessage());
+		} else if (result.getRedirectUrl() != null) {
+			// if it was a non-CSV resource, launch the browser
+			doLaunchBrowser(result.getRedirectUrl());
 		} else {
+			// succeeded - show the collection
 			doUpdateDataCollection(result.getDataCollection());
 			mIsLoading = false;
 			if (mAddressProvider != null) {
@@ -327,6 +332,7 @@ public class MainActivity extends FragmentActivity implements
 
 		if (Intent.ACTION_MAIN.equals(action)) {
 			String url = intent.getStringExtra(PARAM_URL);
+			System.err.println("Intent " + url);
 			// Restore the last URL
 			if (url == null) {
 				url = getSharedPreferences(PREFERENCE_GROUP_MAIN, MODE_PRIVATE)
@@ -460,7 +466,6 @@ public class MainActivity extends FragmentActivity implements
 			doDisplayError(getString(R.string.msg_web_address));
 			return;
 		}
-		mUrl = url;
 		mIsLoading = true;
 		Bundle args = new Bundle();
 		args.putString(PARAM_URL, url);
@@ -493,6 +498,21 @@ public class MainActivity extends FragmentActivity implements
 			mSeekBar.setMax(0);
 			doDisplayInfo(getString(R.string.msg_no_data));
 		}
+	}
+	
+	/**
+	 * End this activity and launch a non-CSV URL.
+	 * 
+	 * This method invokes {@link #finish()}.
+	 * 
+	 * @param url The URL to launch in the browser (etc.).
+	 */
+	private void doLaunchBrowser(String url) {
+		Intent intent = new Intent(Intent.ACTION_VIEW);
+		intent.setData(Uri.parse(url));
+		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		startActivity(intent);
+		finish();
 	}
 
 	/**
