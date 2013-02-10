@@ -2,36 +2,51 @@
 <html>
   <head>
     <title>Sloop data browser</title>
-    <link rel="stylesheet" href="style/main.css" />
+    <link rel="stylesheet" type="text/css" href="style/main.css" />
+    <link rel="stylesheet" media="(min-width:800px)" type="text/css" href="style/main-800.css" />
   </head>
   <body>
-    <img id="logo" src="images/sloop-logo.png" alt="Home" />
-    <h1>Sloop data browser</h1>
+    <header>
+      <img id="logo" src="images/sloop-logo.png" alt="Home" />
+      <a href="#nav" class="nav-jump">Navigation</a>
+    </header>
 
-    <img class="screenshot" src="images/sloop-screen.png" alt="Sloop screenshot" />
+    <article>
+      <h1>Sloop data browser</h1>
 
-    <p>Sloop is a Public-Domain Android mobile browser for open
-    data. It presents spreadsheet-type data in a mobile-friendly
-    way:</p>
+      <figure class="optional">
+        <img class="screenshot" src="images/sloop-screen.png" alt="Sloop screenshot" />
+        <figcaption>The Sloop app on a Galaxy Note.</figcaption>
+      </figure>
 
-    <ul>
-      <li><strong>Swipe left or right</strong> to move through records.</li>
-      <li><strong>Swipe up or down</strong> to scroll through the fields in a single record.</li>
-      <li><strong>Long press</strong> on a single field to make it
-      into a filter (so that you'll see only records that have the
-      same value in the same field, for example, records where the
-      <cite>Country</cite> field has the value "UK").</li>
-      <li><strong>Follow links</strong> to other data collections, or to web sites.</li>
-    </ul>
-
-    <section id="links">
-      <h2>Links</h2>
+      <p>Sloop is a Public-Domain Android mobile browser for open
+      data. It presents spreadsheet-type data in a mobile-friendly
+      way:</p>
 
       <ul>
+        <li><strong>Swipe left or right</strong> to move through records.</li>
+        <li><strong>Swipe up or down</strong> to scroll through the fields in a single record.</li>
+        <li><strong>Long press</strong> on a single field to make it
+        into a filter (so that you'll see only records that have the
+        same value in the same field, for example, records where the
+        <cite>Country</cite> field has the value "UK").</li>
+        <li><strong>Follow links</strong> to other data collections, or to web sites.</li>
+      </ul>
+
+    </article>
+
+    <nav id="nav">
+      <h2>Navigation</h2>
+      <ul>
+        <li>Home</li>
         <li><a href="faq.html">Frequently-asked questions</a></li>
         <li><a href="publishing.html">Publishing data for Sloop</a></li>
+        <li><a href="https://github.com/davidmegginson/sloop">Sloop on Github</a></li>
       </ul>
+    </nav>
+
+    <footer>
       
-    </section>
+    </footer>
   </body>
 </html>

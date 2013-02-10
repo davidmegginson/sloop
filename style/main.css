@@ -1,21 +1,78 @@
 body {
-    background: #eeeeff;
+    background: #480060;
+    color: #300048;
     font-size: 100%;
     font-family: Helvetica, sans-serif;
-    margin: 3em;
+}
+
+.nav-jump {
+    display: block;
+    float: right;
+    padding: 1ex .5em;
+    border: solid 1px;
+    text-style: none;
+    background: #7b0019;
+    color: #f0f0f0;
 }
 
 #logo {
-    float: left;
-    width: 3em;
     height: 3em;
 }
 
-img.screenshot {
+header {
+    display: block;
+    height: 5ex;
+    margin: 1ex 1em;
+    padding: .5ex 1em;
+}
+
+article {
+    background: #f0f0f0;
+    padding: 1ex 1em;
+    margin: 2ex 1em 2ex 1em;
+}
+
+nav {
+    background: #f0f0f0;
+    padding: 2ex 2em;
+    margin: 2ex 1em;
+}
+
+nav ul {
+    list-style: none;
+    padding: 0;
+}
+
+nav ul li {
+    margin: 1ex 0;
+    text-weight: bold;
+}
+
+figure {
+    background: #480060;
     float: right;
     width: 33%;
     max-width: 20em;
-    border: solid;
+    min-width: 10em;
+    padding: 1ex;
+}
+
+h1, h2, h3, h4 {
+    color: #7b0099;
+}
+
+figure.optional {
+    display: none;
+}
+
+figcaption {
+    padding: 1ex;
+    font-size: 83.333333%;
+    color: #f0f0f0;
+}
+
+figure img {
+    max-width: 100%;
 }
 
 .faq dt {

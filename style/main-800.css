@@ -1,0 +1,52 @@
+.nav-jump {
+    display: none;
+}
+
+article {
+    margin: 2ex 1em 2ex 15em;
+}
+
+article:after {
+    content: ".";
+    display: block;
+    height: 0;
+    clear: both;
+    visibility: hidden;
+}
+
+nav {
+    background: transparent;
+    color: #f0f0f0;
+    margin: 0;
+    position: absolute;
+    top: 7ex;
+    left: 2ex;
+    width: 10em;
+}
+
+nav h2 {
+    display: none;
+}
+
+nav ul {
+    list-style: none;
+    padding: 0;
+}
+
+nav li {
+    font-weight: bold;
+}
+
+nav a:link, nav a:visited {
+    color: #f0f0f0;
+    font-weight: normal;
+}
+
+nav ul li {
+    padding: 0;
+    margin: 1ex 0;
+}
+
+figure.optional {
+    display: block;
+}

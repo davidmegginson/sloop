@@ -3,103 +3,122 @@
   <head>
     <title>Publishing data for Sloop</title>
     <link rel="stylesheet" type="text/css" href="style/main.css" />
+    <link rel="stylesheet" media="(min-width:800px)" type="text/css" href="style/main-800.css" />
   </head>
   <body>
-    <a href="index.html"><img id="logo" src="images/sloop-logo.png" alt="Sloop logo" /></a>
-    <h1>Publishing data for Sloop</h1>
 
-    <p>Sloop reads data collections from a very simple text format
-    called <a
-    href="http://en.wikipedia.org/wiki/Comma-separated_values">Comma-Separated
-    Values</a> (CSV).</p>
+    <header>
+      <a href="index.html"><img id="logo" src="images/sloop-logo.png" alt="Sloop logo" /></a>
+      <a href="#nav" class="nav-jump">Navigation</a>
+    </header>
 
-    <p>For decades, spreadsheet applications and database programs
-    have used CSV to export and import data, and every (or nearly
-    every) data-oriented program supports it.  That means that if you
-    want to publish open data online and browse it in Sloop, you can
-    create it using familiar spreadsheet programs like <a
-    href="http://en.wikipedia.org/wiki/LibreOffice_Calc">LibreOffice
-    Calc</a> or <a
-    href="http://en.wikipedia.org/wiki/Microsoft_Excel">Microsoft
-    Excel</a>, or online applications such as <a
-    href="http://en.wikipedia.org/wiki/Google_Drive">Google Drive</a>
-    or <a href="http://en.wikipedia.org/wiki/Zoho_Office_Suite">Zoho
-    Office</a>.  You can also export CSV data collections from
-    relational database management systems such as <a
-    href="http://en.wikipedia.org/wiki/MySQL">MySQL</a> or <a
-    href="http://en.wikipedia.org/wiki/Microsoft_access">Microsoft
-    Access</a>.</p>
+    <article>
+      <h1>Publishing data for Sloop</h1>
 
-    <section id="conventions">
-      <h2>CSV conventions</h2>
+      <p>Sloop reads data collections from a very simple text format
+      called <a
+      href="http://en.wikipedia.org/wiki/Comma-separated_values">Comma-Separated
+      Values</a> (CSV).</p>
 
-      <p>CSV is not a formal standard, but rather, a set of de-facto
-      conventions that many applications share.  As a result, there
-      are no fixed rules for how to arrange the data in a CSV file, or
-      what character encoding to use, or even what separator character
-      to use.</p>
+      <p>For decades, spreadsheet applications and database programs
+      have used CSV to export and import data, and every (or nearly
+      every) data-oriented program supports it.  That means that if you
+      want to publish open data online and browse it in Sloop, you can
+      create it using familiar spreadsheet programs like <a
+      href="http://en.wikipedia.org/wiki/LibreOffice_Calc">LibreOffice
+      Calc</a> or <a
+      href="http://en.wikipedia.org/wiki/Microsoft_Excel">Microsoft
+      Excel</a>, or online applications such as <a
+      href="http://en.wikipedia.org/wiki/Google_Drive">Google Drive</a>
+      or <a href="http://en.wikipedia.org/wiki/Zoho_Office_Suite">Zoho
+      Office</a>.  You can also export CSV data collections from
+      relational database management systems such as <a
+      href="http://en.wikipedia.org/wiki/MySQL">MySQL</a> or <a
+      href="http://en.wikipedia.org/wiki/Microsoft_access">Microsoft
+      Access</a>.</p>
 
-      <p>Sloop expects that a CSV file will use the most common and portable CSV conventions:</p>
+      <section id="conventions">
+        <h2>CSV conventions</h2>
 
+        <p>CSV is not a formal standard, but rather, a set of de-facto
+        conventions that many applications share.  As a result, there
+        are no fixed rules for how to arrange the data in a CSV file, or
+        what character encoding to use, or even what separator character
+        to use.</p>
+
+        <p>Sloop expects that a CSV file will use the most common and portable CSV conventions:</p>
+
+        <ul>
+          <li>The separator character is <code>,</code> (comma).</li>
+          <li>The field quote character is <code>"</code> (double quote).</li>
+          <li>The character encoding is UTF-8.</li>
+          <li>The record separator is CRLF (carriage return and linefeed).</li>
+          <li>The first row of the CSV file contains a series of
+          headers, and the following rows represent entries with
+          (possibly-empty) values for each header.</li>
+        </ul>
+
+        <p>For a simple example, consider the following table:</p>
+
+        <table border="1">
+          <thead>
+            <tr>
+              <th>ISO 3166 code</th>
+              <th>Country name</th>
+              <th>Continent</th>
+              <th>Comments</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>CH</td>
+              <td>Switzerland</td>
+              <td>Europe</td>
+              <td>Its code comes from the Latin, "Confoederatio Helvetica".</td>
+            </tr>
+            <tr>
+              <td>IN</td>
+              <td>India</td>
+              <td>Asia</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>MX</td>
+              <td>Mexico</td>
+              <td>North America</td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p>In CSV, that simple data collection might look like this:</p>
+
+        <pre>"ISO 3166 code","Country name","Continent"
+        "CH","Switzerland","Europe","Its code comes from the Latin, ""Confoederatio Helvetica""."
+        "IN","India","Asia"
+        "MX","Mexico","North America"</pre>
+        
+        <p>(Yes, it really is that simple.)</p>
+
+        <p>If you're creating your data in a spreadsheet, make sure that
+        you don't add extra rows for titles, summaries, notes,
+        etc. &mdash; just a straight-forward grid like this.  Save your
+        data as CSV and choose "UTF-8" for your character encoding if
+        you have special or accented characters.</p>
+        
+      </section>
+
+    </article>
+
+    <nav id="nav">
+      <h2>Navigation</h2>
       <ul>
-        <li>The separator character is <code>,</code> (comma).</li>
-        <li>The field quote character is <code>"</code> (double quote).</li>
-        <li>The character encoding is UTF-8.</li>
-        <li>The record separator is CRLF (carriage return and linefeed).</li>
-        <li>The first row of the CSV file contains a series of
-        headers, and the following rows represent entries with
-        (possibly-empty) values for each header.</li>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="faq.html">Frequently-asked questions</a></li>
+        <li><a>Publishing data for Sloop</a></li>
+        <li><a href="https://github.com/davidmegginson/sloop">Sloop on Github</a></li>
       </ul>
-
-      <p>For a simple example, consider the following table:</p>
-
-      <table border="1">
-        <thead>
-          <tr>
-            <th>ISO 3166 code</th>
-            <th>Country name</th>
-            <th>Continent</th>
-            <th>Comments</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>CH</td>
-            <td>Switzerland</td>
-            <td>Europe</td>
-            <td>Its code comes from the Latin, "Confoederatio Helvetica".</td>
-          </tr>
-          <tr>
-            <td>IN</td>
-            <td>India</td>
-            <td>Asia</td>
-            <td></td>
-          </tr>
-          <tr>
-            <td>MX</td>
-            <td>Mexico</td>
-            <td>North America</td>
-            <td></td>
-          </tr>
-        </tbody>
-      </table>
-
-      <p>In CSV, that simple data collection might look like this:</p>
-
-      <pre>"ISO 3166 code","Country name","Continent"
-"CH","Switzerland","Europe","Its code comes from the Latin, ""Confoederatio Helvetica""."
-"IN","India","Asia"
-"MX","Mexico","North America"</pre>
-      
-      <p>(Yes, it really is that simple.)</p>
-
-      <p>If you're creating your data in a spreadsheet, make sure that
-      you don't add extra rows for titles, summaries, notes,
-      etc. &mdash; just a straight-forward grid like this.  Save your
-      data as CSV and choose "UTF-8" for your character encoding if
-      you have special or accented characters.</p>
-      
-    </section>
+    </nav>
 
   </body>
 </html>
