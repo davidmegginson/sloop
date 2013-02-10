@@ -38,14 +38,14 @@ import com.megginson.sloop.widgets.AddressActionProvider;
  * 
  * @author David Megginson
  */
-public class MainActivity extends FragmentActivity  {
+public class MainActivity extends FragmentActivity {
 
 	public final static String ACTION_FILTER = "com.megginson.sloop.intent.FILTER";
 
 	public final static String PARAM_URL = "url";
 
 	public final static String PARAM_ENTRY = "entry";
-	
+
 	public final static String PARAM_FORCE_LOAD = "forceLoad";
 
 	public final static String PREFERENCE_GROUP_MAIN = "main";
@@ -53,6 +53,8 @@ public class MainActivity extends FragmentActivity  {
 	public final static String PREFERENCE_URL = "url";
 
 	public final static String DEFAULT_URL = "https://docs.google.com/spreadsheet/ccc?key=0AoDV0i2WefMXdEI2VV9Xb1I5eFpBeS1HYkw5NGNqR3c&output=csv#gid=0";
+
+	public final static String HELP_URL = "http://sloopdata.org";
 
 	//
 	// Saveable state
@@ -160,6 +162,9 @@ public class MainActivity extends FragmentActivity  {
 			return true;
 		case R.id.menu_reload:
 			doLoadDataCollection(mUrl, true);
+			return true;
+		case R.id.menu_help:
+			doLaunchBrowser(HELP_URL);
 			return true;
 		default:
 			return super.onMenuItemSelected(featureId, item);
@@ -433,48 +438,54 @@ public class MainActivity extends FragmentActivity  {
 		Bundle args = new Bundle();
 		args.putString(PARAM_URL, url);
 		args.putBoolean(PARAM_FORCE_LOAD, forceLoad);
-		getLoaderManager().restartLoader(0, args, new LoaderCallbacks<DataCollectionResult>() {
+		getLoaderManager().restartLoader(0, args,
+				new LoaderCallbacks<DataCollectionResult>() {
 
-			@Override
-			public Loader<DataCollectionResult> onCreateLoader(int id, Bundle args) {
-				// only one loader for now, so ignore id
-				DataCollectionLoader loader = new DataCollectionLoader(
-						getApplicationContext());
-				if (args != null) {
-					loader.setURL(args.getString(PARAM_URL));
-					loader.setForceLoad(args.getBoolean(PARAM_FORCE_LOAD));
-				}
-				return loader;
-			}
-
-			@Override
-			public void onLoadFinished(Loader<DataCollectionResult> loader,
-					DataCollectionResult result) {
-				if (result.hasError()) {
-					// if the load failed, show and error and stick around
-					doDisplayError(result.getThrowable().getMessage());
-				} else if (result.getRedirectUrl() != null) {
-					// if it was a non-CSV resource, launch the browser
-					doLaunchBrowser(result.getRedirectUrl());
-				} else {
-					// succeeded - show the collection
-					doUpdateDataCollection(result.getDataCollection());
-					mIsLoading = false;
-					if (mAddressProvider != null) {
-						mAddressProvider.setUrl(mUrl);
-						mAddressProvider.setIsLoading(false);
+					@Override
+					public Loader<DataCollectionResult> onCreateLoader(int id,
+							Bundle args) {
+						// only one loader for now, so ignore id
+						DataCollectionLoader loader = new DataCollectionLoader(
+								getApplicationContext());
+						if (args != null) {
+							loader.setURL(args.getString(PARAM_URL));
+							loader.setForceLoad(args
+									.getBoolean(PARAM_FORCE_LOAD));
+						}
+						return loader;
 					}
-				}
-				mIsLoading = false;
-				mProgressBar.setVisibility(View.GONE);
-			}
 
-			@Override
-			public void onLoaderReset(Loader<DataCollectionResult> loader) {
-				// NO OP
-			}
+					@Override
+					public void onLoadFinished(
+							Loader<DataCollectionResult> loader,
+							DataCollectionResult result) {
+						if (result.hasError()) {
+							// if the load failed, show and error and stick
+							// around
+							doDisplayError(result.getThrowable().getMessage());
+						} else if (result.getRedirectUrl() != null) {
+							// if it was a non-CSV resource, launch the browser
+							doLaunchBrowser(result.getRedirectUrl());
+						} else {
+							// succeeded - show the collection
+							doUpdateDataCollection(result.getDataCollection());
+							mIsLoading = false;
+							if (mAddressProvider != null) {
+								mAddressProvider.setUrl(mUrl);
+								mAddressProvider.setIsLoading(false);
+							}
+						}
+						mIsLoading = false;
+						mProgressBar.setVisibility(View.GONE);
+					}
 
-		});
+					@Override
+					public void onLoaderReset(
+							Loader<DataCollectionResult> loader) {
+						// NO OP
+					}
+
+				});
 		if (mAddressProvider != null) {
 			mAddressProvider.setIsLoading(true);
 			mAddressProvider.setUrl(mUrl);
@@ -504,13 +515,14 @@ public class MainActivity extends FragmentActivity  {
 			doDisplayInfo(getString(R.string.msg_no_data));
 		}
 	}
-	
+
 	/**
 	 * End this activity and launch a non-CSV URL.
 	 * 
 	 * This method invokes {@link #finish()}.
 	 * 
-	 * @param url The URL to launch in the browser (etc.).
+	 * @param url
+	 *            The URL to launch in the browser (etc.).
 	 */
 	private void doLaunchBrowser(String url) {
 		Intent intent = new Intent(Intent.ACTION_VIEW);

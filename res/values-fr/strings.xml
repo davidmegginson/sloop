@@ -15,6 +15,8 @@
     <string name="label_bookmark_url">URL du favori</string>
     <string name="menu_bookmarks">Parcourir les favoris</string>
     <string name="menu_bookmark_this">Enregistrer comme favori</string>
+     <string name="menu_help">Aide (en anglais)</string>
+    <string name="menu_reload">Recharger</string>
     <string name="menu_search">Rechercher</string>
     <string name="menu_settings">Paramètres</string>
     <string name="msg_bookmark_canceled">Changement annulée</string>
