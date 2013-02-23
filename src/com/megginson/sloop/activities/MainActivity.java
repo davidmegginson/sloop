@@ -540,7 +540,7 @@ public class MainActivity extends FragmentActivity {
 	private void doUpdateDataCollection(DataCollection dataCollection) {
 		mPagerAdapter.setDataCollection(dataCollection);
 		if (dataCollection != null) {
-			mSeekBar.setMax(mPagerAdapter.getCount());
+			mSeekBar.setMax(mPagerAdapter.getCount() - 1);
 			doDisplayRecordNumber(0);
 		} else {
 			mSeekBar.setProgress(0);
@@ -579,7 +579,7 @@ public class MainActivity extends FragmentActivity {
 		int count = collection.getFilteredRecords().size();
 		int unfilteredCount = collection.getRecords().size();
 		mSeekBar.setProgress(recordNumber);
-		mSeekBar.setMax(count);
+		mSeekBar.setMax(count - 1);
 		if (count < unfilteredCount) {
 			doDisplayInfo(String.format(
 					getString(R.string.info_records_filtered),
