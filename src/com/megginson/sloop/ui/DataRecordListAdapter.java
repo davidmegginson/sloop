@@ -16,7 +16,7 @@ import com.megginson.sloop.model.DataRecord;
 import com.megginson.sloop.model.Util;
 
 /**
- * Adapt a single {@link DataRecord} for display as a list of entries.
+ * Adapt a single {@link DataRecordImpl} for display as a list of entries.
  * 
  * The {@link DataRecordFragment} class uses this adapter to display the data
  * record in a {@link ListView}.
@@ -32,6 +32,7 @@ public class DataRecordListAdapter extends BaseAdapter {
 	public DataRecordListAdapter(Context context, DataRecord dataRecord) {
 		mContext = context;
 		mDataRecord = dataRecord;
+		System.err.println("Got a data record with " + dataRecord.size() + " entries");
 	}
 
 	@Override

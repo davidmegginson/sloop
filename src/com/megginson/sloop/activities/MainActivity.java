@@ -330,8 +330,8 @@ public class MainActivity extends FragmentActivity {
 	 */
 	private void doSetFilter(DataEntry entry) {
 		DataCollection collection = mPagerAdapter.getDataCollection();
-		if (collection.getFilter(entry.getKey()) != null) {
-			collection.putFilter(entry.getKey(), null);
+		if (collection.getColumnFilter(entry.getKey()) != null) {
+			collection.putColumnFilter(entry.getKey(), null);
 			if (!collection.hasFilters()) {
 				collection.setFiltered(false);
 			}
@@ -342,7 +342,7 @@ public class MainActivity extends FragmentActivity {
 		} else {
 			collection.setFiltered(true);
 			final String entryValue = entry.getValue();
-			collection.putFilter(entry.getKey(), new ValueFilter() {
+			collection.putColumnFilter(entry.getKey(), new ValueFilter() {
 				@Override
 				public boolean isMatch(String value) {
 					return entryValue.equals(value);
@@ -386,9 +386,9 @@ public class MainActivity extends FragmentActivity {
 	 *            the string query (currently case-sensitive).
 	 */
 	private void doSearch(String query) {
-		DataCollection dataCollection = mPagerAdapter.getDataCollection();
-		if (dataCollection != null) {
-			int position = dataCollection.search(query, 0);
+		DataCollection dataCollectionImpl = mPagerAdapter.getDataCollection();
+		if (dataCollectionImpl != null) {
+			int position = dataCollectionImpl.search(query, 0);
 			if (position == -1) {
 				doDisplayError(String.format(
 						getString(R.string.msg_search_no_results), query));

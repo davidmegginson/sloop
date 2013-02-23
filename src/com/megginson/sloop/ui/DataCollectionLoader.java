@@ -16,11 +16,11 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import android.content.AsyncTaskLoader;
 import android.content.Context;
 
-import com.megginson.sloop.io.DataCollectionIO;
 import com.megginson.sloop.model.DataCollection;
+import com.megginson.sloop.model.impl.DataCollectionIO;
 
 /**
- * Load a {@link DataCollection} in a separate thread.
+ * Load a {@link DataCollectionImpl} in a separate thread.
  * 
  * @author David Megginson
  */

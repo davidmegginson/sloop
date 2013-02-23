@@ -34,6 +34,10 @@ public class DataRecordFragment extends Fragment {
 				.getParcelable("dataRecord");
 		ListView listView = new ListView(getActivity());
 		listView.setAdapter(new DataRecordListAdapter(getActivity(), dataRecord));
+		
+		//
+		// Long click on an item means assign a filter
+		//
 		listView.setOnItemLongClickListener(new ListView.OnItemLongClickListener() {
 			@Override
 			public boolean onItemLongClick(AdapterView<?> parent, View view,
@@ -42,6 +46,10 @@ public class DataRecordFragment extends Fragment {
 				return true;
 			}
 		});
+		
+		//
+		// Short click on an item looks for a URL to open
+		//
 		listView.setOnItemClickListener(new ListView.OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
@@ -52,6 +60,7 @@ public class DataRecordFragment extends Fragment {
 				}
 			}
 		});
+		
 		return listView;
 	}
 

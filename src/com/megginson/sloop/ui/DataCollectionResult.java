@@ -4,14 +4,14 @@ import com.megginson.sloop.activities.MainActivity;
 import com.megginson.sloop.model.DataCollection;
 
 /**
- * The result of loading a {@link DataCollection}
+ * The result of loading a {@link DataCollectionImpl}
  * 
  * The {@link DataCollectionLoader} class uses this class to represent its
  * result
  * 
  * Because the loader task runs on a background thread, we can't simply throw an
  * exception from it on error; instead, we need to wrap our result (a
- * {@link DataCollection}) in a class like this, together with information about
+ * {@link DataCollectionImpl}) in a class like this, together with information about
  * error status, then check it in the handler method in the main thread when the
  * load is complete.
  * 
@@ -66,7 +66,7 @@ public class DataCollectionResult {
 	/**
 	 * Test whether the load was successful.
 	 * 
-	 * @return true if there is a {@link DataCollection} available; false if
+	 * @return true if there is a {@link DataCollectionImpl} available; false if
 	 *         there is an error message.
 	 */
 	public boolean hasError() {
