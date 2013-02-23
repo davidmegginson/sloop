@@ -7,11 +7,6 @@
         android:showAsAction="ifRoom|collapseActionView"
         android:title="Open Data Collection"/>
     <item
-        android:id="@+id/menu_search"
-        android:actionViewClass="android.widget.SearchView"
-        android:showAsAction="ifRoom"
-        android:title="@string/menu_search"/>
-    <item
         android:id="@+id/menu_bookmark_list"
         android:icon="@drawable/ic_labels"
         android:showAsAction="ifRoom|collapseActionView"

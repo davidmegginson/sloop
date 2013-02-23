@@ -2,7 +2,6 @@ package com.megginson.sloop.activities;
 
 import android.app.AlertDialog;
 import android.app.LoaderManager.LoaderCallbacks;
-import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -13,13 +12,11 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ProgressBar;
-import android.widget.SearchView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -126,9 +123,6 @@ public class MainActivity extends FragmentActivity {
 		// Set up the address bar action
 		setupAddressProvider(menu.findItem(R.id.menu_address_bar));
 
-		// Register this activity to handle searches
-		setupSearchManager(menu.findItem(R.id.menu_search));
-
 		return true;
 	}
 
@@ -168,18 +162,6 @@ public class MainActivity extends FragmentActivity {
 			return true;
 		default:
 			return super.onMenuItemSelected(featureId, item);
-		}
-	}
-
-	@Override
-	public boolean onKeyUp(int keyCode, KeyEvent event) {
-		// Toggle the search menu item when the user presses the search button
-		if (keyCode == KeyEvent.KEYCODE_SEARCH) {
-			SearchView searchView = (SearchView) findViewById(R.id.menu_search);
-			searchView.setIconified(!searchView.isIconified());
-			return true;
-		} else {
-			return super.onKeyUp(keyCode, event);
 		}
 	}
 
@@ -261,19 +243,6 @@ public class MainActivity extends FragmentActivity {
 				});
 	}
 
-	/**
-	 * Set up the search view action provider.
-	 * 
-	 * @param item
-	 *            The menu item for the search view.
-	 */
-	private void setupSearchManager(MenuItem item) {
-		SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-		SearchView searchView = (SearchView) item.getActionView();
-		searchView.setSearchableInfo(searchManager
-				.getSearchableInfo(getComponentName()));
-	}
-
 	//
 	// Abstracted UI actions
 	//
@@ -314,11 +283,6 @@ public class MainActivity extends FragmentActivity {
 		else if (ACTION_FILTER.equals(action)) {
 			DataEntry entry = intent.getParcelableExtra(PARAM_ENTRY);
 			doSetFilter(entry);
-		}
-
-		else if (Intent.ACTION_SEARCH.equals(action)) {
-			String query = intent.getStringExtra(SearchManager.QUERY);
-			doSearch(query);
 		}
 	}
 
@@ -375,27 +339,6 @@ public class MainActivity extends FragmentActivity {
 					}
 				});
 		builder.create().show();
-	}
-
-	/**
-	 * Action: search for a substring inside a record field.
-	 * 
-	 * Advances the view pager to the first result.
-	 * 
-	 * @param query
-	 *            the string query (currently case-sensitive).
-	 */
-	private void doSearch(final String query) {
-		DataCollection dataCollection = mPagerAdapter.getDataCollection();
-		dataCollection.setTextFilter(new ValueFilter() {		
-			@Override
-			public boolean isMatch(String value) {
-				return value.contains(query);
-			}
-		});
-		dataCollection.setFilteringEnabled(true);
-		mViewPager.setAdapter(mPagerAdapter);
-		doDisplayRecordNumber(mViewPager.getCurrentItem());
 	}
 
 	/**
