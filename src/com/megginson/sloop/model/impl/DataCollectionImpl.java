@@ -38,9 +38,11 @@ class DataCollectionImpl implements DataCollection {
 
 	private String mHeaders[];
 
-	private ValueFilter mFilters[];
-
 	private List<String[]> mRecords = new ArrayList<String[]>();
+
+	private ValueFilter mColumnFilters[];
+	
+	private ValueFilter mTextFilter;
 
 	private boolean mColumnFilterFlags[];
 
@@ -54,15 +56,10 @@ class DataCollectionImpl implements DataCollection {
 
 	private UnfilteredRecordList mUnfilteredRecordList;
 
-	/**
-	 * Default constructor.
-	 * 
-	 * Creates an empty collection with no filters.
-	 */
-	public DataCollectionImpl(String headers[]) {
+	protected DataCollectionImpl(String headers[]) {
 		super();
 		mHeaders = headers;
-		mFilters = new ValueFilter[headers.length];
+		mColumnFilters = new ValueFilter[headers.length];
 		mColumnFilterFlags = new boolean[headers.length];
 	}
 
@@ -89,34 +86,18 @@ class DataCollectionImpl implements DataCollection {
 		return mUnfilteredRecordList;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.megginson.sloop.model.DataCollection#isFiltered()
-	 */
 	@Override
 	public boolean isFilteringEnabled() {
 		return mIsFiltered;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.megginson.sloop.model.DataCollection#setFiltered(boolean)
-	 */
-	@Override
 	public void setFilteringEnabled(boolean isFiltered) {
 		mIsFiltered = isFiltered;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.megginson.sloop.model.DataCollection#hasFilters()
-	 */
 	@Override
 	public boolean hasFilters() {
-		for (ValueFilter filter : mFilters) {
+		for (ValueFilter filter : mColumnFilters) {
 			if (filter != null) {
 				return true;
 			}
@@ -124,29 +105,29 @@ class DataCollectionImpl implements DataCollection {
 		return false;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.megginson.sloop.model.DataCollection#putFilter(java.lang.String,
-	 * com.megginson.sloop.model.ValueFilter)
-	 */
 	@Override
 	public void putColumnFilter(String name, ValueFilter filter) {
 		int index = indexOf(name);
-		mFilters[index] = filter;
+		mColumnFilters[index] = filter;
 		mColumnFilterFlags[index] = (filter != null);
 		mIsCacheDirty = true;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.megginson.sloop.model.DataCollection#getFilter(java.lang.String)
-	 */
 	@Override
 	public ValueFilter getColumnFilter(String name) {
-		return mFilters[indexOf(name)];
+		return mColumnFilters[indexOf(name)];
 	}
+	
+	@Override
+	public void setTextFilter(ValueFilter filter) {
+		mTextFilter = filter;
+		mIsCacheDirty = true;
+	}
+	
+	@Override
+	public ValueFilter getTextFilter(){
+		return mTextFilter;
+	}	
 
 	/**
 	 * Add a row to the collection as a string array.
@@ -157,28 +138,9 @@ class DataCollectionImpl implements DataCollection {
 	 * @param record
 	 *            an array of strings representing a row.
 	 */
-	public void addRecord(String record[]) {
+	protected void addRecord(String record[]) {
 		mRecords.add(record.clone());
 		mIsCacheDirty = true;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.megginson.sloop.model.DataCollection#search(java.lang.String,
-	 * int)
-	 */
-	@Override
-	public int search(String pattern, int startingPosition) {
-		for (int i = startingPosition; i < mRecords.size(); i++) {
-			String record[] = mRecords.get(i);
-			for (String value : record) {
-				if (value.contains(pattern)) {
-					return i;
-				}
-			}
-		}
-		return -1;
 	}
 
 	/**
@@ -215,12 +177,19 @@ class DataCollectionImpl implements DataCollection {
 	 * 
 	 * @param record
 	 *            the record to filter (in its String array form).
-	 * @return true if the record matches the filter.
+	 * @return true if the record matches the filters.
 	 */
 	private boolean doFilterRecord(String record[]) {
 		for (int i = 0; i < mHeaders.length; i++) {
-			if (i < mFilters.length && mFilters[i] != null) {
-				if (i >= record.length || !mFilters[i].isMatch(record[i])) {
+			// First, test against the column-specific filters.
+			if (i < mColumnFilters.length && mColumnFilters[i] != null) {
+				if (i >= record.length || !mColumnFilters[i].isMatch(record[i])) {
+					return false;
+				}
+			}
+			// Next, test against the general text filter.
+			if (mTextFilter != null) {
+				if (i >= record.length || !mTextFilter.isMatch(record[i])) {
 					return false;
 				}
 			}

@@ -385,17 +385,17 @@ public class MainActivity extends FragmentActivity {
 	 * @param query
 	 *            the string query (currently case-sensitive).
 	 */
-	private void doSearch(String query) {
-		DataCollection dataCollectionImpl = mPagerAdapter.getDataCollection();
-		if (dataCollectionImpl != null) {
-			int position = dataCollectionImpl.search(query, 0);
-			if (position == -1) {
-				doDisplayError(String.format(
-						getString(R.string.msg_search_no_results), query));
-			} else {
-				mViewPager.setCurrentItem(position);
+	private void doSearch(final String query) {
+		DataCollection dataCollection = mPagerAdapter.getDataCollection();
+		dataCollection.setTextFilter(new ValueFilter() {		
+			@Override
+			public boolean isMatch(String value) {
+				return value.contains(query);
 			}
-		}
+		});
+		dataCollection.setFilteringEnabled(true);
+		mViewPager.setAdapter(mPagerAdapter);
+		doDisplayRecordNumber(mViewPager.getCurrentItem());
 	}
 
 	/**

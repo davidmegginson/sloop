@@ -91,7 +91,9 @@ public interface DataCollection {
 	 * @param filter
 	 *            the filter object.
 	 * @see #getColumnFilter(String)
+	 * @see #setTextFilter(ValueFilter)
 	 * @see #isFilteringEnabled()
+	 * @see #getFilteredRecords()
 	 */
 	public abstract void putColumnFilter(String name, ValueFilter filter);
 
@@ -102,21 +104,34 @@ public interface DataCollection {
 	 *            the column name.
 	 * @return the filter if it exists, or null otherwise.
 	 * @see #putColumnFilter(String, ValueFilter)
+	 * @see #getTextFilter()
 	 */
 	public abstract ValueFilter getColumnFilter(String name);
 
 	/**
-	 * Very simple search function.
+	 * Set a text search filter for all columns.
 	 * 
-	 * FIXME replace with a different kind of filtering.
+	 * Unlike the column filters, this filter will be applied to all values in
+	 * turn, and if any of them passes, then the record passes.
 	 * 
-	 * @param pattern
-	 *            A substring to search for (case-sensitive for now).
-	 * @param startingPosition
-	 *            The record for starting the search.
-	 * @return The number of the first record containing the pattern, or -1 if
-	 *         none was found.
+	 * The collection will apply the filter only if filtering is enabled via
+	 * {@link #setFilteringEnabled(boolean)}.
+	 * 
+	 * @param filter
+	 *            the text filter object.
+	 * @see #putColumnFilter(String, ValueFilter)
+	 * @see #getTextFilter()
+	 * @see #getFilteredRecords()
 	 */
-	public abstract int search(String pattern, int startingPosition);
+	public abstract void setTextFilter(ValueFilter filter);
+
+	/**
+	 * Get the current text filter for this collection.
+	 * 
+	 * @return the filter object, or null if none exists.
+	 * @see #setTextFilter(ValueFilter)
+	 * @see #getColumnFilter(String)
+	 */
+	public abstract ValueFilter getTextFilter();
 
 }
