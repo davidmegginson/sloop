@@ -42,7 +42,7 @@ public class DataRecordFragment extends Fragment {
 			@Override
 			public boolean onItemLongClick(AdapterView<?> parent, View view,
 					int position, long id) {
-				doAssignFilter(dataRecord.get(position));
+				doAssignFilter(dataRecord.getEntries().get(position));
 				return true;
 			}
 		});
@@ -54,7 +54,7 @@ public class DataRecordFragment extends Fragment {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
-				String value = dataRecord.get(position).getValue();
+				String value = dataRecord.getEntries().get(position).getValue();
 				if (Util.isUrl(value)) {
 					doOpenUrl(value);
 				}

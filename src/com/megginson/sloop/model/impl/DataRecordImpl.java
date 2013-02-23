@@ -1,6 +1,7 @@
 package com.megginson.sloop.model.impl;
 
 import java.util.AbstractList;
+import java.util.List;
 
 import android.os.Bundle;
 import android.os.Parcel;
@@ -19,52 +20,41 @@ import com.megginson.sloop.model.DataRecord;
  * @see DataCollectionImpl
  * @see DataEntryImpl
  */
-class DataRecordImpl extends AbstractList<DataEntry> implements DataRecord {
+class DataRecordImpl implements DataRecord {
 	
 	private String mHeaders[];
 	
 	private String mValues[];
 	
 	private boolean mColumnFilterFlags[];
+	
+	private EntryList mEntryList;
 
-	/**
-	 * Convenience constructor to build the record from arrays.
-	 * 
-	 * The record will be the same length as the headers array.
-	 * 
-	 * @param headers
-	 *            An array of strings representing the headers.
-	 * @param values
-	 *            An array of strings representing the values.
-	 */
 	protected DataRecordImpl(String headers[], String values[], boolean columnFilterFlags[]) {
 		mHeaders = headers;
 		mValues = values;
 		mColumnFilterFlags = columnFilterFlags;
 	}
-
+	
 	@Override
-	public DataEntry get(int location) {
-		return new DataEntryImpl(mHeaders[location], mValues[location], mColumnFilterFlags[location]);
+	public List<DataEntry> getEntries() {
+		if (mEntryList == null) {
+			mEntryList = new EntryList();
+		}
+		return mEntryList;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.megginson.sloop.model.DataRecord#get(java.lang.String)
-	 */
 	@Override
 	public DataEntry get(String name) {
 		return get(name, 0);
 	}
 
-	/* (non-Javadoc)
-	 * @see com.megginson.sloop.model.DataRecord#get(java.lang.String, int)
-	 */
 	@Override
 	public DataEntry get(String name, int index) {
 		for (int i = 0; i < mHeaders.length; i++) {
 			if (name.equals(mHeaders[i])) {
 				if (index == 0) {
-					return get(i);
+					return makeEntry(i);
 				} else {
 					index--;
 				}
@@ -73,14 +63,6 @@ class DataRecordImpl extends AbstractList<DataEntry> implements DataRecord {
 		return null;
 	}
 
-	@Override
-	public int size() {
-		return mHeaders.length;
-	}
-
-	/* (non-Javadoc)
-	 * @see com.megginson.sloop.model.DataRecord#size(java.lang.String)
-	 */
 	@Override
 	public int size(String name) {
 		int count = 0;
@@ -94,7 +76,6 @@ class DataRecordImpl extends AbstractList<DataEntry> implements DataRecord {
 
 	@Override
 	public int describeContents() {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
@@ -106,6 +87,10 @@ class DataRecordImpl extends AbstractList<DataEntry> implements DataRecord {
 		dest.writeStringArray(mHeaders);
 		dest.writeStringArray(mValues);
 		dest.writeBooleanArray(mColumnFilterFlags);
+	}
+	
+	private DataEntry makeEntry(int index) {
+		return new DataEntryImpl(mHeaders[index], mValues[index], mColumnFilterFlags[index]);
 	}
 
 	public final static Parcelable.Creator<DataRecordImpl> CREATOR = new Parcelable.Creator<DataRecordImpl>() {
@@ -126,5 +111,25 @@ class DataRecordImpl extends AbstractList<DataEntry> implements DataRecord {
 			return new DataRecordImpl[size];
 		}
 	};
+	
+	/**
+	 * List wrapper for the record's entries.
+	 * 
+	 * @author David Megginson
+	 * @see DataRecord#getEntries()
+	 */
+	private class EntryList extends AbstractList<DataEntry> {
+		
+		@Override
+		public DataEntry get(int location) {
+			return makeEntry(location);
+		}
+
+		@Override
+		public int size() {
+			return mHeaders.length;
+		}
+
+	}
 
 }

@@ -32,17 +32,17 @@ public class DataRecordListAdapter extends BaseAdapter {
 	public DataRecordListAdapter(Context context, DataRecord dataRecord) {
 		mContext = context;
 		mDataRecord = dataRecord;
-		System.err.println("Got a data record with " + dataRecord.size() + " entries");
+		System.err.println("Got a data record with " + dataRecord.getEntries().size() + " entries");
 	}
 
 	@Override
 	public int getCount() {
-		return mDataRecord.size();
+		return mDataRecord.getEntries().size();
 	}
 
 	@Override
 	public Object getItem(int position) {
-		return mDataRecord.get(position);
+		return mDataRecord.getEntries().get(position);
 	}
 
 	@Override
@@ -67,7 +67,7 @@ public class DataRecordListAdapter extends BaseAdapter {
 		}
 
 		// Set the appropriate text for this entry
-		DataEntry entry = mDataRecord.get(position);
+		DataEntry entry = mDataRecord.getEntries().get(position);
 
 		labelView = (TextView) layout.findViewById(R.id.field_name);
 		labelView.setText(entry.getKey());
