@@ -39,18 +39,20 @@ class DataCollectionImpl implements DataCollection {
 	private String mHeaders[];
 
 	private ValueFilter mFilters[];
-	
-	private boolean mColumnFilterFlags[];
-	
-	private FilteredRecordList mFilteredRecordList;
 
 	private List<String[]> mRecords = new ArrayList<String[]>();
+
+	private boolean mColumnFilterFlags[];
 
 	private List<Integer> mFilteredIndices = new ArrayList<Integer>();
 
 	private boolean mIsFiltered = false;
 
 	private boolean mIsCacheDirty = true;
+
+	private FilteredRecordList mFilteredRecordList;
+
+	private UnfilteredRecordList mUnfilteredRecordList;
 
 	/**
 	 * Default constructor.
@@ -63,12 +65,14 @@ class DataCollectionImpl implements DataCollection {
 		mFilters = new ValueFilter[headers.length];
 		mColumnFilterFlags = new boolean[headers.length];
 	}
-	
-	public List<String> getHeaders(){
+
+	@Override
+	public List<String> getHeaders() {
 		return Arrays.asList(mHeaders);
 	}
-	
-	public List<DataRecord> getFilteredRecords(){
+
+	@Override
+	public List<DataRecord> getFilteredRecords() {
 		// create only if needed
 		if (mFilteredRecordList == null) {
 			mFilteredRecordList = new FilteredRecordList();
@@ -76,23 +80,38 @@ class DataCollectionImpl implements DataCollection {
 		return mFilteredRecordList;
 	}
 
-	/* (non-Javadoc)
+	@Override
+	public List<DataRecord> getRecords() {
+		// create only if needed
+		if (mUnfilteredRecordList == null) {
+			mUnfilteredRecordList = new UnfilteredRecordList();
+		}
+		return mUnfilteredRecordList;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.megginson.sloop.model.DataCollection#isFiltered()
 	 */
 	@Override
-	public boolean isFiltered() {
+	public boolean isFilteringEnabled() {
 		return mIsFiltered;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.megginson.sloop.model.DataCollection#setFiltered(boolean)
 	 */
 	@Override
-	public void setFiltered(boolean isFiltered) {
+	public void setFilteringEnabled(boolean isFiltered) {
 		mIsFiltered = isFiltered;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.megginson.sloop.model.DataCollection#hasFilters()
 	 */
 	@Override
@@ -105,8 +124,11 @@ class DataCollectionImpl implements DataCollection {
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.megginson.sloop.model.DataCollection#putFilter(java.lang.String, com.megginson.sloop.model.ValueFilter)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.megginson.sloop.model.DataCollection#putFilter(java.lang.String,
+	 * com.megginson.sloop.model.ValueFilter)
 	 */
 	@Override
 	public void putColumnFilter(String name, ValueFilter filter) {
@@ -116,7 +138,9 @@ class DataCollectionImpl implements DataCollection {
 		mIsCacheDirty = true;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.megginson.sloop.model.DataCollection#getFilter(java.lang.String)
 	 */
 	@Override
@@ -138,8 +162,11 @@ class DataCollectionImpl implements DataCollection {
 		mIsCacheDirty = true;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.megginson.sloop.model.DataCollection#search(java.lang.String, int)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.megginson.sloop.model.DataCollection#search(java.lang.String,
+	 * int)
 	 */
 	@Override
 	public int search(String pattern, int startingPosition) {
@@ -152,14 +179,6 @@ class DataCollectionImpl implements DataCollection {
 			}
 		}
 		return -1;
-	}
-
-	/* (non-Javadoc)
-	 * @see com.megginson.sloop.model.DataCollection#sizeUnfiltered()
-	 */
-	@Override
-	public int sizeUnfiltered() {
-		return mRecords.size();
 	}
 
 	/**
@@ -208,8 +227,19 @@ class DataCollectionImpl implements DataCollection {
 		}
 		return true;
 	}
-	
+
+	/**
+	 * List wrapper showing only filtered records.
+	 * 
+	 * If filtering is off (see {@link DataCollection#setFilteringEnabled(boolean)}),
+	 * then this will behave identically to an {@link UnfilteredRecordList}.
+	 * 
+	 * @author David Megginson
+	 * @see DataCollection#getFilteredRecords()
+	 * @see DataCollection#isFilteringEnabled()
+	 */
 	private class FilteredRecordList extends AbstractList<DataRecord> {
+
 		@Override
 		public int size() {
 			if (mIsFiltered) {
@@ -223,7 +253,7 @@ class DataCollectionImpl implements DataCollection {
 		}
 
 		@Override
-		public DataRecordImpl get(int location) {
+		public DataRecord get(int location) {
 			int rawLocation;
 			if (mIsFiltered) {
 				if (mIsCacheDirty) {
@@ -233,9 +263,34 @@ class DataCollectionImpl implements DataCollection {
 			} else {
 				rawLocation = location;
 			}
-			return new DataRecordImpl(mHeaders, mRecords.get(rawLocation), mColumnFilterFlags);
+			return new DataRecordImpl(mHeaders, mRecords.get(rawLocation),
+					mColumnFilterFlags);
 		}
-		
+
+	}
+
+	/**
+	 * List wrapper showing all records.
+	 * 
+	 * This list wrapper will include all records, even when filtering is turned
+	 * on.
+	 * 
+	 * @author David Megginson
+	 * @see DataCollection#getRecords()
+	 * @see DataCollection#isFilteringEnabled()
+	 */
+	private class UnfilteredRecordList extends AbstractList<DataRecord> {
+
+		@Override
+		public int size() {
+			return mRecords.size();
+		}
+
+		@Override
+		public DataRecord get(int location) {
+			return new DataRecordImpl(mHeaders, mRecords.get(location),
+					mColumnFilterFlags);
+		}
 	}
 
 }

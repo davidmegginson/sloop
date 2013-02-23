@@ -333,14 +333,14 @@ public class MainActivity extends FragmentActivity {
 		if (collection.getColumnFilter(entry.getKey()) != null) {
 			collection.putColumnFilter(entry.getKey(), null);
 			if (!collection.hasFilters()) {
-				collection.setFiltered(false);
+				collection.setFilteringEnabled(false);
 			}
 			Toast.makeText(
 					this,
 					String.format(getString(R.string.msg_filter_cleared),
 							entry.getKey()), Toast.LENGTH_SHORT).show();
 		} else {
-			collection.setFiltered(true);
+			collection.setFilteringEnabled(true);
 			final String entryValue = entry.getValue();
 			collection.putColumnFilter(entry.getKey(), new ValueFilter() {
 				@Override
@@ -544,7 +544,7 @@ public class MainActivity extends FragmentActivity {
 	private void doDisplayRecordNumber(int recordNumber) {
 		DataCollection collection = mPagerAdapter.getDataCollection();
 		int count = collection.getFilteredRecords().size();
-		int unfilteredCount = collection.sizeUnfiltered();
+		int unfilteredCount = collection.getRecords().size();
 		mSeekBar.setProgress(recordNumber);
 		mSeekBar.setMax(count);
 		if (count < unfilteredCount) {
