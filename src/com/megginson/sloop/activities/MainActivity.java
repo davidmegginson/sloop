@@ -543,7 +543,7 @@ public class MainActivity extends FragmentActivity {
 	 */
 	private void doDisplayRecordNumber(int recordNumber) {
 		DataCollection collection = mPagerAdapter.getDataCollection();
-		int count = collection.size();
+		int count = collection.getFilteredRecords().size();
 		int unfilteredCount = collection.sizeUnfiltered();
 		mSeekBar.setProgress(recordNumber);
 		mSeekBar.setMax(count);

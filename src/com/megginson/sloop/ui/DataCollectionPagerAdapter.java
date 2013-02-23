@@ -51,7 +51,7 @@ public class DataCollectionPagerAdapter extends FragmentStatePagerAdapter {
 	public Fragment getItem(int position) {
 		DataRecordFragment fragment = new DataRecordFragment();
 		Bundle args = new Bundle();
-		args.putParcelable("dataRecord", mDataCollection.get(position));
+		args.putParcelable("dataRecord", mDataCollection.getFilteredRecords().get(position));
 		fragment.setArguments(args);
 		return fragment;
 	}
@@ -61,7 +61,7 @@ public class DataCollectionPagerAdapter extends FragmentStatePagerAdapter {
 		if (mDataCollection == null) {
 			return 0;
 		} else {
-			return mDataCollection.size();
+			return mDataCollection.getFilteredRecords().size();
 		}
 	}
 
@@ -72,7 +72,7 @@ public class DataCollectionPagerAdapter extends FragmentStatePagerAdapter {
 
 	@Override
 	public int getItemPosition(Object object) {
-		return mDataCollection.indexOf(object);
+		return mDataCollection.getFilteredRecords().indexOf(object);
 	}
 
 }

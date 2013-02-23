@@ -2,7 +2,11 @@ package com.megginson.sloop.model;
 
 import java.util.List;
 
-public interface DataCollection extends List<DataRecord> {
+public interface DataCollection {
+	
+	public abstract List<String> getHeaders();
+	
+	public abstract List<DataRecord> getFilteredRecords();
 
 	/**
 	 * Indicate whether the collection is currently filtered.

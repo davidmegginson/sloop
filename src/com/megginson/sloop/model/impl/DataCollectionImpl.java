@@ -2,6 +2,7 @@ package com.megginson.sloop.model.impl;
 
 import java.util.AbstractList;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.megginson.sloop.model.DataCollection;
@@ -33,13 +34,15 @@ import com.megginson.sloop.model.ValueFilter;
  * @author David Megginson
  * @see DataRecordImpl
  */
-class DataCollectionImpl extends AbstractList<DataRecord> implements DataCollection {
+class DataCollectionImpl implements DataCollection {
 
 	private String mHeaders[];
 
 	private ValueFilter mFilters[];
 	
 	private boolean mColumnFilterFlags[];
+	
+	private FilteredRecordList mFilteredRecordList;
 
 	private List<String[]> mRecords = new ArrayList<String[]>();
 
@@ -59,6 +62,18 @@ class DataCollectionImpl extends AbstractList<DataRecord> implements DataCollect
 		mHeaders = headers;
 		mFilters = new ValueFilter[headers.length];
 		mColumnFilterFlags = new boolean[headers.length];
+	}
+	
+	public List<String> getHeaders(){
+		return Arrays.asList(mHeaders);
+	}
+	
+	public List<DataRecord> getFilteredRecords(){
+		// create only if needed
+		if (mFilteredRecordList == null) {
+			mFilteredRecordList = new FilteredRecordList();
+		}
+		return mFilteredRecordList;
 	}
 
 	/* (non-Javadoc)
@@ -139,32 +154,6 @@ class DataCollectionImpl extends AbstractList<DataRecord> implements DataCollect
 		return -1;
 	}
 
-	@Override
-	public DataRecordImpl get(int location) {
-		int rawLocation;
-		if (mIsFiltered) {
-			if (mIsCacheDirty) {
-				rebuildCache();
-			}
-			rawLocation = mFilteredIndices.get(location);
-		} else {
-			rawLocation = location;
-		}
-		return new DataRecordImpl(mHeaders, mRecords.get(rawLocation), mColumnFilterFlags);
-	}
-
-	@Override
-	public int size() {
-		if (mIsFiltered) {
-			if (mIsCacheDirty) {
-				rebuildCache();
-			}
-			return mFilteredIndices.size();
-		} else {
-			return mRecords.size();
-		}
-	}
-
 	/* (non-Javadoc)
 	 * @see com.megginson.sloop.model.DataCollection#sizeUnfiltered()
 	 */
@@ -218,6 +207,35 @@ class DataCollectionImpl extends AbstractList<DataRecord> implements DataCollect
 			}
 		}
 		return true;
+	}
+	
+	private class FilteredRecordList extends AbstractList<DataRecord> {
+		@Override
+		public int size() {
+			if (mIsFiltered) {
+				if (mIsCacheDirty) {
+					rebuildCache();
+				}
+				return mFilteredIndices.size();
+			} else {
+				return mRecords.size();
+			}
+		}
+
+		@Override
+		public DataRecordImpl get(int location) {
+			int rawLocation;
+			if (mIsFiltered) {
+				if (mIsCacheDirty) {
+					rebuildCache();
+				}
+				rawLocation = mFilteredIndices.get(location);
+			} else {
+				rawLocation = location;
+			}
+			return new DataRecordImpl(mHeaders, mRecords.get(rawLocation), mColumnFilterFlags);
+		}
+		
 	}
 
 }
