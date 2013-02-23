@@ -26,5 +26,6 @@
     <string name="msg_no_data">No data collection loaded.</string>
     <string name="msg_search_no_results">No search results for "%1$s".</string>
     <string name="msg_web_address">Please enter a web address (URL).</string>
+    <string name="hint_text_filter">Search text</string>
 
 </resources>

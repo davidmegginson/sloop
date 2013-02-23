@@ -4,21 +4,46 @@
     android:id="@+id/main_browser"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:layout_margin="10dp" >
+    android:layout_margin="10dp"
+    android:gravity="fill_horizontal" >
+
+    <EditText
+        android:id="@+id/field_filter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:drawableLeft="@drawable/ic_search"
+        android:hint="@string/hint_text_filter"
+        android:inputType="text|textNoSuggestions"
+        android:paddingRight="32dp"
+        android:singleLine="true" >
+
+        <requestFocus />
+    </EditText>
+
+    <Button
+        android:id="@+id/button_filter_clear"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/ic_cancel_dark" />
 
     <RelativeLayout
         android:id="@+id/main_body"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@+id/page_seek_bar"
+        android:layout_below="@+id/field_filter"
         android:orientation="vertical" >
 
         <android.support.v4.view.ViewPager
             android:id="@+id/pager"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true" >
+            android:layout_alignParentLeft="true" >
+
         </android.support.v4.view.ViewPager>
 
         <ProgressBar
