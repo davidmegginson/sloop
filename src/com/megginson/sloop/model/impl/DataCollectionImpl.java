@@ -41,7 +41,7 @@ class DataCollectionImpl implements DataCollection {
 	private List<String[]> mRecords = new ArrayList<String[]>();
 
 	private ValueFilter mColumnFilters[];
-	
+
 	private ValueFilter mTextFilter;
 
 	private boolean mColumnFilterFlags[];
@@ -117,17 +117,17 @@ class DataCollectionImpl implements DataCollection {
 	public ValueFilter getColumnFilter(String name) {
 		return mColumnFilters[indexOf(name)];
 	}
-	
+
 	@Override
 	public void setTextFilter(ValueFilter filter) {
 		mTextFilter = filter;
 		mIsCacheDirty = true;
 	}
-	
+
 	@Override
-	public ValueFilter getTextFilter(){
+	public ValueFilter getTextFilter() {
 		return mTextFilter;
-	}	
+	}
 
 	/**
 	 * Add a row to the collection as a string array.
@@ -180,28 +180,40 @@ class DataCollectionImpl implements DataCollection {
 	 * @return true if the record matches the filters.
 	 */
 	private boolean doFilterRecord(String record[]) {
+		boolean foundTextMatch = false;
+
 		for (int i = 0; i < mHeaders.length; i++) {
-			// First, test against the column-specific filters.
-			if (i < mColumnFilters.length && mColumnFilters[i] != null) {
+
+			// No filters to apply, so keep going ...
+			if (mTextFilter == null && mColumnFilters[i] == null) {
+				continue;
+			}
+
+			// If there's a column filter, it has to pass
+			if (mColumnFilters[i] != null) {
 				if (i >= record.length || !mColumnFilters[i].isMatch(record[i])) {
 					return false;
 				}
 			}
-			// Next, test against the general text filter.
-			if (mTextFilter != null) {
-				if (i >= record.length || !mTextFilter.isMatch(record[i])) {
-					return false;
+			
+			// If there's a text filter, it has to pass once for whole record
+			if (!foundTextMatch && mTextFilter != null) {
+				if (i < record.length && mTextFilter.isMatch(record[i])) {
+					foundTextMatch = true;
 				}
 			}
 		}
-		return true;
+
+		// Success if there's no text filter, or a match for the text filter.
+		return (mTextFilter == null || foundTextMatch);
 	}
 
 	/**
 	 * List wrapper showing only filtered records.
 	 * 
-	 * If filtering is off (see {@link DataCollection#setFilteringEnabled(boolean)}),
-	 * then this will behave identically to an {@link UnfilteredRecordList}.
+	 * If filtering is off (see
+	 * {@link DataCollection#setFilteringEnabled(boolean)}), then this will
+	 * behave identically to an {@link UnfilteredRecordList}.
 	 * 
 	 * @author David Megginson
 	 * @see DataCollection#getFilteredRecords()
