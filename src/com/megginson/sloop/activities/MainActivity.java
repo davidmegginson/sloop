@@ -12,10 +12,13 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -100,6 +103,9 @@ public class MainActivity extends FragmentActivity {
 
 		setContentView(R.layout.activity_main);
 
+		// Set up the text field box
+		setupFilter();
+
 		// Set up the main display area
 		setupPager();
 
@@ -171,6 +177,25 @@ public class MainActivity extends FragmentActivity {
 	// Each of these functions sets listeners, etc. for its component. The
 	// listeners use the do*() action methods to perform actions.
 	//
+
+	/**
+	 * Set up the text filter field.
+	 */
+	private void setupFilter() {
+		View filterLayout = findViewById(R.id.layout_filter);
+		EditText textField = (EditText) findViewById(R.id.field_filter);
+		Button cancelButton = (Button) findViewById(R.id.button_filter_clear);
+
+		textField
+				.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+					@Override
+					public boolean onEditorAction(TextView v, int actionId,
+							KeyEvent event) {
+						doSetTextFilter(v.getText().toString());
+						return true;
+					}
+				});
+	}
 
 	/**
 	 * Set up the main ViewPager.
@@ -282,17 +307,35 @@ public class MainActivity extends FragmentActivity {
 
 		else if (ACTION_FILTER.equals(action)) {
 			DataEntry entry = intent.getParcelableExtra(PARAM_ENTRY);
-			doSetFilter(entry);
+			doSetColumnFilter(entry);
+		}
+	}
+	
+	/**
+	 * Action: set a text filter for the data collection.
+	 */
+	private void doSetTextFilter(final String query) {
+		DataCollection collection = mPagerAdapter.getDataCollection();
+		if (collection != null) {
+			collection.setTextFilter(new ValueFilter() {
+				@Override
+				public boolean isMatch(String value) {
+					return value.toUpperCase().contains(query.toUpperCase());
+				}
+			});
+			collection.setFilteringEnabled(true);
+			mViewPager.setAdapter(mPagerAdapter);
+			doDisplayRecordNumber(mViewPager.getCurrentItem());
 		}
 	}
 
 	/**
-	 * Action: set the filter for the data collection.
+	 * Action: add a column filter for the data collection.
 	 * 
 	 * @param entry
 	 *            the data entry (soon to be the filter)
 	 */
-	private void doSetFilter(DataEntry entry) {
+	private void doSetColumnFilter(DataEntry entry) {
 		DataCollection collection = mPagerAdapter.getDataCollection();
 		if (collection.getColumnFilter(entry.getKey()) != null) {
 			collection.putColumnFilter(entry.getKey(), null);
@@ -309,7 +352,7 @@ public class MainActivity extends FragmentActivity {
 			collection.putColumnFilter(entry.getKey(), new ValueFilter() {
 				@Override
 				public boolean isMatch(String value) {
-					return entryValue.equals(value);
+					return entryValue.toUpperCase().equals(value.toUpperCase());
 				}
 			});
 			Toast.makeText(
