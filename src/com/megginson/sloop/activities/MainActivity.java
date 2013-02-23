@@ -1,5 +1,8 @@
 package com.megginson.sloop.activities;
 
+import java.util.Locale;
+
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Context;
@@ -38,6 +41,7 @@ import com.megginson.sloop.ui.DataCollectionResult;
  * 
  * @author David Megginson
  */
+@SuppressLint("DefaultLocale")
 public class MainActivity extends FragmentActivity {
 
 	public final static String ACTION_FILTER = "com.megginson.sloop.intent.FILTER";
@@ -104,7 +108,7 @@ public class MainActivity extends FragmentActivity {
 		setContentView(R.layout.activity_main);
 
 		// Set up the text field box
-		setupFilter();
+		setupTextFilter();
 
 		// Set up the main display area
 		setupPager();
@@ -157,6 +161,9 @@ public class MainActivity extends FragmentActivity {
 		case R.id.menu_bookmark_list:
 			doLaunchBookmarkList();
 			return true;
+		case R.id.menu_search:
+			doToggleTextFilterVisibility();
+			return true;
 		case R.id.menu_bookmark_create:
 			doLaunchBookmarkCreate(mUrl);
 			return true;
@@ -171,6 +178,12 @@ public class MainActivity extends FragmentActivity {
 		}
 	}
 
+	@Override
+	public boolean onSearchRequested() {
+		doToggleTextFilterVisibility();
+		return true;
+	}
+
 	//
 	// Configuration functions for UI components.
 	//
@@ -181,10 +194,12 @@ public class MainActivity extends FragmentActivity {
 	/**
 	 * Set up the text filter field.
 	 */
-	private void setupFilter() {
-		View filterLayout = findViewById(R.id.layout_filter);
-		EditText textField = (EditText) findViewById(R.id.field_filter);
-		Button cancelButton = (Button) findViewById(R.id.button_filter_clear);
+	private void setupTextFilter() {
+		final View filterLayout = findViewById(R.id.layout_filter);
+		final EditText textField = (EditText) findViewById(R.id.field_filter);
+		final Button cancelButton = (Button) findViewById(R.id.button_filter_clear);
+
+		filterLayout.setVisibility(View.GONE);
 
 		textField
 				.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -195,6 +210,19 @@ public class MainActivity extends FragmentActivity {
 						return true;
 					}
 				});
+
+		cancelButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				doSetTextFilter(null);
+				if (textField.getText().length() == 0) {
+					filterLayout.setVisibility(View.GONE);
+					doHideKeyboard();
+				} else {
+					textField.setText(null);
+				}
+			}
+		});
 	}
 
 	/**
@@ -310,19 +338,24 @@ public class MainActivity extends FragmentActivity {
 			doSetColumnFilter(entry);
 		}
 	}
-	
+
 	/**
 	 * Action: set a text filter for the data collection.
 	 */
 	private void doSetTextFilter(final String query) {
 		DataCollection collection = mPagerAdapter.getDataCollection();
 		if (collection != null) {
-			collection.setTextFilter(new ValueFilter() {
-				@Override
-				public boolean isMatch(String value) {
-					return value.toUpperCase().contains(query.toUpperCase());
-				}
-			});
+			if (query == null) {
+				collection.setTextFilter(null);
+			} else {
+				collection.setTextFilter(new ValueFilter() {
+					@Override
+					public boolean isMatch(String value) {
+						return value.toUpperCase(Locale.getDefault()).contains(
+								query.toUpperCase(Locale.getDefault()));
+					}
+				});
+			}
 			collection.setFilteringEnabled(true);
 			mViewPager.setAdapter(mPagerAdapter);
 			doDisplayRecordNumber(mViewPager.getCurrentItem());
@@ -352,7 +385,8 @@ public class MainActivity extends FragmentActivity {
 			collection.putColumnFilter(entry.getKey(), new ValueFilter() {
 				@Override
 				public boolean isMatch(String value) {
-					return entryValue.toUpperCase().equals(value.toUpperCase());
+					return entryValue.toUpperCase().equals(
+							value.toUpperCase());
 				}
 			});
 			Toast.makeText(
@@ -382,6 +416,19 @@ public class MainActivity extends FragmentActivity {
 					}
 				});
 		builder.create().show();
+	}
+
+	/**
+	 * Action: show the text filter field.
+	 */
+	private void doToggleTextFilterVisibility() {
+		View textFilter = findViewById(R.id.layout_filter);
+		if (textFilter.getVisibility() == View.VISIBLE) {
+			textFilter.setVisibility(View.GONE);
+		} else {
+			textFilter.setVisibility(View.VISIBLE);
+			textFilter.requestFocus();
+		}
 	}
 
 	/**

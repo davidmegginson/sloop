@@ -18,7 +18,6 @@
             android:id="@+id/field_filter"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/ic_search"
             android:hint="@string/hint_text_filter"
             android:inputType="text|textNoSuggestions"
             android:paddingRight="32dp"
