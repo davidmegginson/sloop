@@ -78,6 +78,20 @@ class DataRecordImpl implements DataRecord {
 	public int describeContents() {
 		return 0;
 	}
+	
+	@Override
+	public int hashCode() {
+		return getEntries().hashCode();
+	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if (o != null && o instanceof DataRecord) {
+			DataRecord record = (DataRecord)o;
+			return (getEntries().equals(record.getEntries()));
+		}
+		return false;
+	}
 
 	/**
 	 * Serialize the record to an Android parcel.
