@@ -1,4 +1,4 @@
-package com.megginson.sloop.widgets;
+package com.megginson.sloop.ui;
 
 import android.content.Context;
 import android.view.ActionProvider;

@@ -1,10 +1,10 @@
 /**
- * Data-model classes.
+ * Sloop data model interfaces and classes.
  * 
- * The {@link com.megginson.sloop.model.impl.DataCollectionImpl} class represents a collection of entities, 
- * equivalent to a database table or CSV file.  The {@link com.megginson.sloop.model.impl.DataRecordImpl} class
+ * The {@link DataCollection} interface represents a collection of entities, 
+ * equivalent to a database table or CSV file.  The {@link DataRecordImpl} interface
  * represents a single entity in that collection (equivalent to a database row), and the 
- * {@link com.megginson.sloop.model.impl.DataEntryImpl} represents a single field within the entity.
+ * {@link DataEntryImpl} represents a single field within the entity.
  * 
  *  @author David Megginson
  */

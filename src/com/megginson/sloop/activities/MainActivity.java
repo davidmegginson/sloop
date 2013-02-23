@@ -28,10 +28,10 @@ import com.megginson.sloop.R;
 import com.megginson.sloop.model.DataCollection;
 import com.megginson.sloop.model.DataEntry;
 import com.megginson.sloop.model.ValueFilter;
+import com.megginson.sloop.ui.AddressActionProvider;
 import com.megginson.sloop.ui.DataCollectionLoader;
 import com.megginson.sloop.ui.DataCollectionPagerAdapter;
 import com.megginson.sloop.ui.DataCollectionResult;
-import com.megginson.sloop.widgets.AddressActionProvider;
 
 /**
  * Sloop's main UI activity (browse a data set).
