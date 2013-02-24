@@ -207,6 +207,7 @@ public class MainActivity extends FragmentActivity {
 					public boolean onEditorAction(TextView v, int actionId,
 							KeyEvent event) {
 						doSetTextFilter(v.getText().toString());
+						doHideKeyboard();
 						return true;
 					}
 				});
@@ -580,7 +581,9 @@ public class MainActivity extends FragmentActivity {
 		int unfilteredCount = collection.getRecords().size();
 		mSeekBar.setProgress(recordNumber);
 		mSeekBar.setMax(count - 1);
-		if (count < unfilteredCount) {
+		if (count == 0) {
+			doDisplayInfo(String.format(getString(R.string.info_records_none), unfilteredCount));
+		} else if (count < unfilteredCount) {
 			doDisplayInfo(String.format(
 					getString(R.string.info_records_filtered),
 					recordNumber + 1, count, unfilteredCount));
