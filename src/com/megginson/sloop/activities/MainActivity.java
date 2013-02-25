@@ -1,7 +1,5 @@
 package com.megginson.sloop.activities;
 
-import java.util.Locale;
-
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.LoaderManager.LoaderCallbacks;
@@ -30,7 +28,8 @@ import android.widget.Toast;
 import com.megginson.sloop.R;
 import com.megginson.sloop.model.DataCollection;
 import com.megginson.sloop.model.DataEntry;
-import com.megginson.sloop.model.ValueFilter;
+import com.megginson.sloop.model.impl.ContainsStringFilter;
+import com.megginson.sloop.model.impl.EqualsStringFilter;
 import com.megginson.sloop.ui.AddressActionProvider;
 import com.megginson.sloop.ui.DataCollectionLoader;
 import com.megginson.sloop.ui.DataCollectionPagerAdapter;
@@ -343,19 +342,13 @@ public class MainActivity extends FragmentActivity {
 	/**
 	 * Action: set a text filter for the data collection.
 	 */
-	private void doSetTextFilter(final String query) {
+	private void doSetTextFilter(String query) {
 		DataCollection collection = mPagerAdapter.getDataCollection();
 		if (collection != null) {
 			if (query == null) {
 				collection.setTextFilter(null);
 			} else {
-				collection.setTextFilter(new ValueFilter() {
-					@Override
-					public boolean isMatch(String value) {
-						return value.toUpperCase(Locale.getDefault()).contains(
-								query.toUpperCase(Locale.getDefault()));
-					}
-				});
+				collection.setTextFilter(new ContainsStringFilter(query));
 			}
 			collection.setFilteringEnabled(true);
 			mViewPager.setAdapter(mPagerAdapter);
@@ -382,14 +375,7 @@ public class MainActivity extends FragmentActivity {
 							entry.getKey()), Toast.LENGTH_SHORT).show();
 		} else {
 			collection.setFilteringEnabled(true);
-			final String entryValue = entry.getValue();
-			collection.putColumnFilter(entry.getKey(), new ValueFilter() {
-				@Override
-				public boolean isMatch(String value) {
-					return entryValue.toUpperCase().equals(
-							value.toUpperCase());
-				}
-			});
+			collection.putColumnFilter(entry.getKey(), new EqualsStringFilter(entry.getValue()));
 			Toast.makeText(
 					this,
 					String.format(getString(R.string.msg_filter_set),
