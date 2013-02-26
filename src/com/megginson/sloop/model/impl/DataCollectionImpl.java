@@ -108,9 +108,11 @@ class DataCollectionImpl implements DataCollection {
 	@Override
 	public void putColumnFilter(String name, ValueFilter filter) {
 		int index = indexOf(name);
-		mColumnFilters[index] = filter;
-		mColumnFilterFlags[index] = (filter != null);
-		mIsCacheDirty = true;
+		if (index > -1) {
+			mColumnFilters[index] = filter;
+			mColumnFilterFlags[index] = (filter != null);
+			mIsCacheDirty = true;
+		}
 	}
 
 	@Override
@@ -195,7 +197,7 @@ class DataCollectionImpl implements DataCollection {
 					return false;
 				}
 			}
-			
+
 			// If there's a text filter, it has to pass once for whole record
 			if (!foundTextMatch && mTextFilter != null) {
 				if (i < record.length && mTextFilter.isMatch(record[i])) {

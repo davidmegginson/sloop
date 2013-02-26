@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.net.URL;
+import java.net.URLDecoder;
 
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -13,6 +15,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpHead;
 import org.apache.http.impl.client.DefaultHttpClient;
 
+import com.megginson.sloop.model.DataCollection;
 import com.megginson.sloop.ui.DataCollectionLoader;
 
 import au.com.bytecode.opencsv.CSVReader;
@@ -52,23 +55,35 @@ public class DataCollectionIO {
 	 * @throws IOException
 	 *             if a general loading error occurs.
 	 */
-	public static DataCollectionImpl readCSV(String url) throws IOException {
+	public static DataCollection readCSV(String url) throws IOException {
+		DataCollection dataCollection = null;
 		Reader input = new InputStreamReader(openURL(url));
+
 		try {
-			return readCSV(input);
+			dataCollection = readCSV(input);
 		} finally {
 			input.close();
 		}
+
+		// get the fragment
+		String fragment = new URL(url).getRef();
+		if (fragment != null && fragment.length() > 0) {
+			processFragment(dataCollection, fragment);
+		}
+
+		return dataCollection;
 	}
 
 	/**
 	 * Load a data collection from a Reader.
 	 * 
-	 * @param input the Reader containing the data collection.
+	 * @param input
+	 *            the Reader containing the data collection.
 	 * @return the data collection.
-	 * @throws IOException if there is an error reading the collection.
+	 * @throws IOException
+	 *             if there is an error reading the collection.
 	 */
-	private static DataCollectionImpl readCSV(Reader input) throws IOException {
+	private static DataCollection readCSV(Reader input) throws IOException {
 		CSVReader csvReader = new CSVReader(input);
 		String[] entries;
 
@@ -117,7 +132,38 @@ public class DataCollectionIO {
 	}
 
 	/**
+	 * Process the fragment identifier and set up default filters for the data
+	 * collection.
+	 * 
+	 * @param dataCollection
+	 *            the data collection to filter.
+	 * @param fragment
+	 *            the URL fragment identifier.
+	 */
+	private static void processFragment(DataCollection dataCollection,
+			String fragment) {
+		String filterStrings[] = fragment.split("&");
+		for (String filterString : filterStrings) {
+			if (filterString.contains("=")) {
+				// FIXME error if too many parts
+				String parts[] = fragment.split("=");
+				String name = URLDecoder.decode(parts[0]);
+				String value = URLDecoder.decode(parts[1]);
+				dataCollection.putColumnFilter(name, new EqualsStringFilter(
+						value));
+			} else {
+				String pattern = URLDecoder.decode(filterString);
+				dataCollection.setTextFilter(new ContainsStringFilter(pattern));
+			}
+			dataCollection.setFilteringEnabled(true);
+		}
+	}
+
+	/**
 	 * Exception for a non-CSV URL that should cause a browser redirect.
+	 * 
+	 * The method that catches this exception should redirect to the URL at
+	 * {@link #getRedirectUrl()}.
 	 * 
 	 * @author David Megginson
 	 */
