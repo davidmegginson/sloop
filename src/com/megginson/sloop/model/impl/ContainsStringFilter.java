@@ -1,5 +1,6 @@
 package com.megginson.sloop.model.impl;
 
+import android.annotation.SuppressLint;
 import com.megginson.sloop.model.ValueFilter;
 
 /**
@@ -7,6 +8,7 @@ import com.megginson.sloop.model.ValueFilter;
  * 
  * @author David Megginson
  */
+@SuppressLint("DefaultLocale")
 public class ContainsStringFilter implements ValueFilter {
 
 	private String mValueFragment;
