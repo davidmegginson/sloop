@@ -13,15 +13,45 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpHead;
 import org.apache.http.impl.client.DefaultHttpClient;
 
+import com.megginson.sloop.ui.DataCollectionLoader;
+
 import au.com.bytecode.opencsv.CSVReader;
 
 /**
  * Static methods for creating data collections.
  * 
+ * Typical usage is as follows:
+ * 
+ * <pre>
+ * try {
+ * 	DataCollection collection = DataCollectionIO.readCSV(myUrl);
+ * } catch (RedirectException e1) {
+ * 	// redirect to e.getRedirectURL();
+ * } catch (IOException e2) {
+ * 	// handle a general loading exception
+ * }
+ * </pre>
+ * 
+ * In Android, this loading has to happen asynchronously to avoid freezing the
+ * UI: see {@link DataCollectionLoader#loadInBackground()}, which uses this
+ * class to do the actual loading on a background thread..
+ * 
  * @author David Megginson
  */
 public class DataCollectionIO {
 
+	/**
+	 * Load a data collection from a URL.
+	 * 
+	 * @param url
+	 *            the URL from which to load the data collection.
+	 * @return the data collection loaded.
+	 * @throws RedirectException
+	 *             if Sloop can't handle the content type, and needs to redirect
+	 *             to a general browser.
+	 * @throws IOException
+	 *             if a general loading error occurs.
+	 */
 	public static DataCollectionImpl readCSV(String url) throws IOException {
 		Reader input = new InputStreamReader(openURL(url));
 		try {
@@ -31,7 +61,14 @@ public class DataCollectionIO {
 		}
 	}
 
-	public static DataCollectionImpl readCSV(Reader input) throws IOException {
+	/**
+	 * Load a data collection from a Reader.
+	 * 
+	 * @param input the Reader containing the data collection.
+	 * @return the data collection.
+	 * @throws IOException if there is an error reading the collection.
+	 */
+	private static DataCollectionImpl readCSV(Reader input) throws IOException {
 		CSVReader csvReader = new CSVReader(input);
 		String[] entries;
 
