@@ -140,6 +140,7 @@ public class DataCollectionIO {
 	 * @param fragment
 	 *            the URL fragment identifier.
 	 */
+	@SuppressWarnings("deprecation")
 	private static void processFragment(DataCollection dataCollection,
 			String fragment) {
 		String filterStrings[] = fragment.split("&");
