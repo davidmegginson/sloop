@@ -19,6 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/hint_text_filter"
+            android:imeOptions="actionSearch"
             android:inputType="text|textNoSuggestions"
             android:paddingRight="32dp"
             android:singleLine="true" />
@@ -26,19 +27,18 @@
         <Button
             android:id="@+id/button_filter_clear"
             style="?android:attr/buttonStyleSmall"
-            android:layout_alignParentRight="true"
             android:layout_width="32dp"
             android:layout_height="32dp"
+            android:layout_alignParentRight="true"
             android:background="@drawable/ic_cancel_dark" />
-
     </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/main_body"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/layout_filter"
         android:layout_above="@+id/page_seek_bar"
+        android:layout_below="@+id/layout_filter"
         android:orientation="vertical" >
 
         <android.support.v4.view.ViewPager
