@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -375,7 +376,8 @@ public class MainActivity extends FragmentActivity {
 							entry.getKey()), Toast.LENGTH_SHORT).show();
 		} else {
 			collection.setFilteringEnabled(true);
-			collection.putColumnFilter(entry.getKey(), new EqualsStringFilter(entry.getValue()));
+			collection.putColumnFilter(entry.getKey(), new EqualsStringFilter(
+					entry.getValue()));
 			Toast.makeText(
 					this,
 					String.format(getString(R.string.msg_filter_set),
@@ -532,7 +534,7 @@ public class MainActivity extends FragmentActivity {
 		} else {
 			mSeekBar.setProgress(0);
 			mSeekBar.setMax(0);
-			doDisplayInfo(getString(R.string.msg_no_data));
+			doDisplayInfo(getString(R.string.msg_no_data), Color.GRAY);
 		}
 	}
 
@@ -568,15 +570,16 @@ public class MainActivity extends FragmentActivity {
 		mSeekBar.setProgress(recordNumber);
 		mSeekBar.setMax(count - 1);
 		if (count == 0) {
-			doDisplayInfo(String.format(getString(R.string.info_records_none), unfilteredCount));
+			doDisplayInfo(String.format(getString(R.string.info_records_none),
+					unfilteredCount), Color.argb(64, 255, 0, 0));
 		} else if (count < unfilteredCount) {
 			doDisplayInfo(String.format(
 					getString(R.string.info_records_filtered),
-					recordNumber + 1, count, unfilteredCount));
+					recordNumber + 1, count, unfilteredCount), Color.argb(64, 255, 255, 0));
 		} else {
 			doDisplayInfo(String.format(
 					getString(R.string.info_records_unfiltered),
-					recordNumber + 1, count));
+					recordNumber + 1, count), Color.argb(64, 0, 255, 0));
 		}
 	}
 
@@ -585,9 +588,12 @@ public class MainActivity extends FragmentActivity {
 	 * 
 	 * @param message
 	 *            The message to display.
+	 * @param backgroundColor
+	 *            the background colour for the info bar.
 	 */
-	private void doDisplayInfo(String message) {
+	private void doDisplayInfo(String message, int backgroundColor) {
 		TextView infoBar = (TextView) findViewById(R.id.info_bar);
+		infoBar.setBackgroundColor(backgroundColor);
 		infoBar.setText(message);
 	}
 
