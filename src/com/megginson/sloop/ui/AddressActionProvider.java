@@ -15,9 +15,8 @@ import com.megginson.sloop.R;
 /**
  * Collapsible URL address field for the action bar.
  * 
- * This widget is designed for editing and displaying URLs and showing progress
- * during loading. It consists of a text field, a cancel button, and a progress
- * bar.
+ * This widget is designed for editing and displaying URLs: it consists of a
+ * text field and a clear/cancel button.
  * 
  * The parent activity (owner of the options menu) uses
  * {@link #setAddressBarListener(AddressBarListener)} to be informed of major
@@ -34,21 +33,37 @@ import com.megginson.sloop.R;
  */
 public class AddressActionProvider extends ActionProvider {
 
+	/**
+	 * The URL to be displayed in the menu bar.
+	 */
 	private String mUrl;
 
-	private boolean mIsLoading = false;
-
+	/**
+	 * Listener for events.
+	 */
 	private AddressBarListener mListener;
 
 	// FIXME just until I figure out how to get it
 	private MenuItem mMenuItem;
 
+	/**
+	 * The parent context.
+	 */
 	private Context mContext;
 
+	/**
+	 * The view holding the UI items.
+	 */
 	private View mContentView;
 
+	/**
+	 * The text field holding the URL.
+	 */
 	private EditText mUrlField;
 
+	/**
+	 * The cancel button.
+	 */
 	private Button mCancelButton;
 
 	public AddressActionProvider(Context context) {
@@ -96,11 +111,6 @@ public class AddressActionProvider extends ActionProvider {
 		doUpdateStatus();
 	}
 
-	public void setIsLoading(boolean isLoading) {
-		mIsLoading = isLoading;
-		doUpdateStatus();
-	}
-
 	private void setupUrlField() {
 		mUrlField = (EditText) mContentView.findViewById(R.id.urlField);
 		mUrlField
@@ -140,15 +150,13 @@ public class AddressActionProvider extends ActionProvider {
 	 * Do a cancel action, depending on contenxt.
 	 */
 	private void doCancel() {
-		if (mIsLoading) {
-			// if loading, cancel the load
-			mListener.onLoadCancelled(mUrl);
-		} else if (mUrlField.getText() != null
+		if (mUrlField.getText() != null
 				&& mUrlField.getText().length() > 0) {
 			// if not loading but there's text, clear the field
 			mUrlField.setText(null);
 		} else {
 			// if not loading and no text, collapse
+			doUpdateStatus();
 			mMenuItem.collapseActionView();
 		}
 	}

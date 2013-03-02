@@ -69,8 +69,6 @@ public class MainActivity extends FragmentActivity {
 	 */
 	private String mUrl = null;
 
-	private boolean mIsLoading = false;
-
 	//
 	// UI components.
 	//
@@ -282,7 +280,6 @@ public class MainActivity extends FragmentActivity {
 		mAddressProvider = (AddressActionProvider) item.getActionProvider();
 		mAddressProvider.setMenuItem(item);
 		mAddressProvider.setUrl(mUrl);
-		mAddressProvider.setIsLoading(mIsLoading);
 		mAddressProvider
 				.setAddressBarListener(new AddressActionProvider.AddressBarListener() {
 					@Override
@@ -456,7 +453,6 @@ public class MainActivity extends FragmentActivity {
 			return;
 		}
 		mUrl = url;
-		mIsLoading = true;
 		Bundle args = new Bundle();
 		args.putString(PARAM_URL, url);
 		args.putBoolean(PARAM_FORCE_LOAD, forceLoad);
@@ -491,13 +487,10 @@ public class MainActivity extends FragmentActivity {
 						} else {
 							// succeeded - show the collection
 							doUpdateDataCollection(result.getDataCollection());
-							mIsLoading = false;
 							if (mAddressProvider != null) {
 								mAddressProvider.setUrl(mUrl);
-								mAddressProvider.setIsLoading(false);
 							}
 						}
-						mIsLoading = false;
 						mProgressBar.setVisibility(View.GONE);
 					}
 
@@ -509,11 +502,9 @@ public class MainActivity extends FragmentActivity {
 
 				});
 		if (mAddressProvider != null) {
-			mAddressProvider.setIsLoading(true);
 			mAddressProvider.setUrl(mUrl);
 		}
 		doHideKeyboard();
-		mIsLoading = true;
 		mProgressBar.setVisibility(View.VISIBLE);
 	}
 
