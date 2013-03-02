@@ -61,15 +61,34 @@
         android:id="@+id/page_seek_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/info_bar"
+        android:layout_above="@+id/info_bar_layout"
+        android:layout_alignParentLeft="true"
         android:background="@color/gray" />
 
-    <TextView
-        android:id="@+id/info_bar"
+    <LinearLayout
+        android:id="@+id/info_bar_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="32dp"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_marginTop="5dp" />
+        android:layout_alignParentLeft="true" >
+
+        <TextView
+            android:id="@+id/info_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1" />
+
+        <Button
+            android:id="@+id/button_filters_clear"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_weight="0"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/ic_cancel_dark"
+            android:minHeight="24dp" />
+
+    </LinearLayout>
 
 </RelativeLayout>

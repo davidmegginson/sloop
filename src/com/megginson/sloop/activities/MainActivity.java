@@ -77,6 +77,8 @@ public class MainActivity extends FragmentActivity {
 	 * The address action provider.
 	 */
 	private AddressActionProvider mAddressProvider;
+	
+	private EditText mFilterTextField;
 
 	/**
 	 * The {@link PagerAdapter} for the current data collection.
@@ -94,6 +96,12 @@ public class MainActivity extends FragmentActivity {
 	private SeekBar mSeekBar;
 
 	private ProgressBar mProgressBar;
+	
+	private View mInfoBar;
+	
+	private TextView mInfoBarText;
+	
+	private Button mFiltersClearButton;
 
 	//
 	// Activity lifecycle methods.
@@ -116,6 +124,9 @@ public class MainActivity extends FragmentActivity {
 
 		// Set up the seek bar.
 		setupSeekBar();
+		
+		// Set up the bottom info bar
+		setupInfoBar();
 
 		// What are we supposed to be doing?
 		doHandleIntent(getIntent());
@@ -194,12 +205,12 @@ public class MainActivity extends FragmentActivity {
 	 */
 	private void setupTextFilter() {
 		final View filterLayout = findViewById(R.id.layout_filter);
-		final EditText textField = (EditText) findViewById(R.id.field_filter);
+		mFilterTextField = (EditText) findViewById(R.id.field_filter);
 		final Button cancelButton = (Button) findViewById(R.id.button_filter_clear);
 
 		filterLayout.setVisibility(View.GONE);
 
-		textField
+		mFilterTextField
 				.setOnEditorActionListener(new TextView.OnEditorActionListener() {
 					@Override
 					public boolean onEditorAction(TextView v, int actionId,
@@ -214,11 +225,11 @@ public class MainActivity extends FragmentActivity {
 			@Override
 			public void onClick(View v) {
 				doSetTextFilter(null);
-				if (textField.getText().length() == 0) {
+				if (mFilterTextField.getText().length() == 0) {
 					filterLayout.setVisibility(View.GONE);
 					doHideKeyboard();
 				} else {
-					textField.setText(null);
+					mFilterTextField.setText(null);
 				}
 			}
 		});
@@ -266,6 +277,23 @@ public class MainActivity extends FragmentActivity {
 			public void onProgressChanged(SeekBar seekBar, int progress,
 					boolean fromUser) {
 				mViewPager.setCurrentItem(progress, false);
+			}
+		});
+	}
+	
+	private void setupInfoBar() {
+		mInfoBar = findViewById(R.id.info_bar_layout);
+		mInfoBarText = (TextView)findViewById(R.id.info_bar);
+		mFiltersClearButton = (Button)findViewById(R.id.button_filters_clear);
+		
+		// filter clear button is invisible until there's a filter
+		mFiltersClearButton.setVisibility(View.GONE);
+		
+		// when clicked on, clear all filters
+		mFiltersClearButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				doClearFilters();
 			}
 		});
 	}
@@ -334,6 +362,17 @@ public class MainActivity extends FragmentActivity {
 		else if (ACTION_FILTER.equals(action)) {
 			DataEntry entry = intent.getParcelableExtra(PARAM_ENTRY);
 			doSetColumnFilter(entry);
+		}
+	}
+	
+	private void doClearFilters() {
+		DataCollection collection = mPagerAdapter.getDataCollection();
+		if (collection != null) {
+			doSetTextFilter(null);
+			collection.clearFilters();
+			mFilterTextField.setText("");
+			mViewPager.setAdapter(mPagerAdapter);
+			doDisplayRecordNumber(mViewPager.getCurrentItem());
 		}
 	}
 
@@ -563,14 +602,17 @@ public class MainActivity extends FragmentActivity {
 		if (count == 0) {
 			doDisplayInfo(String.format(getString(R.string.info_records_none),
 					unfilteredCount), Color.argb(64, 255, 0, 0));
+			mFiltersClearButton.setVisibility(View.VISIBLE);
 		} else if (count < unfilteredCount) {
 			doDisplayInfo(String.format(
 					getString(R.string.info_records_filtered),
 					recordNumber + 1, count, unfilteredCount), Color.argb(64, 255, 255, 0));
+			mFiltersClearButton.setVisibility(View.VISIBLE);
 		} else {
 			doDisplayInfo(String.format(
 					getString(R.string.info_records_unfiltered),
 					recordNumber + 1, count), Color.argb(64, 0, 255, 0));
+			mFiltersClearButton.setVisibility(View.GONE);
 		}
 	}
 
@@ -583,9 +625,8 @@ public class MainActivity extends FragmentActivity {
 	 *            the background colour for the info bar.
 	 */
 	private void doDisplayInfo(String message, int backgroundColor) {
-		TextView infoBar = (TextView) findViewById(R.id.info_bar);
-		infoBar.setBackgroundColor(backgroundColor);
-		infoBar.setText(message);
+		mInfoBar.setBackgroundColor(backgroundColor);
+		mInfoBarText.setText(message);
 	}
 
 	/**

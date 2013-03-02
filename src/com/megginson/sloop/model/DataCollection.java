@@ -133,5 +133,10 @@ public interface DataCollection {
 	 * @see #getColumnFilter(String)
 	 */
 	public abstract ValueFilter getTextFilter();
+	
+	/**
+	 * Clear the text filter and all column filters, and disable filtering.
+	 */
+	public abstract void clearFilters();
 
 }

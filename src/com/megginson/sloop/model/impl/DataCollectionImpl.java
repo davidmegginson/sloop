@@ -131,6 +131,16 @@ class DataCollectionImpl implements DataCollection {
 		return mTextFilter;
 	}
 
+	@Override
+	public void clearFilters() {
+		setTextFilter(null);
+		for (int i = 0; i < mColumnFilters.length; i++) {
+			mColumnFilters[i] = null;
+			mColumnFilterFlags[i] = false;
+		}
+		setFilteringEnabled(false);
+	}
+
 	/**
 	 * Add a row to the collection as a string array.
 	 * 
