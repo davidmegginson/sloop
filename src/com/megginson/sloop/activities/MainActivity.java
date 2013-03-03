@@ -42,7 +42,7 @@ import com.megginson.sloop.ui.DataCollectionResult;
  * @author David Megginson
  */
 @SuppressLint("DefaultLocale")
-public class MainActivity extends FragmentActivity {
+public class MainActivity extends FragmentActivity{
 
 	public final static String ACTION_FILTER = "com.megginson.sloop.intent.FILTER";
 
@@ -112,9 +112,6 @@ public class MainActivity extends FragmentActivity {
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.activity_main);
-
-		// Set up the text field box
-		setupTextFilter();
 
 		// Set up the main display area
 		setupPager();
@@ -199,41 +196,6 @@ public class MainActivity extends FragmentActivity {
 	// Each of these functions sets listeners, etc. for its component. The
 	// listeners use the do*() action methods to perform actions.
 	//
-
-	/**
-	 * Set up the text filter field.
-	 */
-	private void setupTextFilter() {
-		final View filterLayout = findViewById(R.id.layout_filter);
-		mFilterTextField = (EditText) findViewById(R.id.field_filter);
-		final Button cancelButton = (Button) findViewById(R.id.button_filter_clear);
-
-		filterLayout.setVisibility(View.GONE);
-
-		mFilterTextField
-				.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-					@Override
-					public boolean onEditorAction(TextView v, int actionId,
-							KeyEvent event) {
-						doSetTextFilter(v.getText().toString());
-						doHideKeyboard();
-						return true;
-					}
-				});
-
-		cancelButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				doSetTextFilter(null);
-				if (mFilterTextField.getText().length() == 0) {
-					filterLayout.setVisibility(View.GONE);
-					doHideKeyboard();
-				} else {
-					mFilterTextField.setText(null);
-				}
-			}
-		});
-	}
 
 	/**
 	 * Set up the main ViewPager.
@@ -379,7 +341,7 @@ public class MainActivity extends FragmentActivity {
 	/**
 	 * Action: set a text filter for the data collection.
 	 */
-	private void doSetTextFilter(String query) {
+	void doSetTextFilter(String query) {
 		DataCollection collection = mPagerAdapter.getDataCollection();
 		if (collection != null) {
 			if (query == null) {
@@ -447,7 +409,7 @@ public class MainActivity extends FragmentActivity {
 	 * Action: show the text filter field.
 	 */
 	private void doToggleTextFilterVisibility() {
-		View textFilter = findViewById(R.id.layout_filter);
+		View textFilter = findViewById(R.id.fragment_text_filter);
 		if (textFilter.getVisibility() == View.VISIBLE) {
 			textFilter.setVisibility(View.GONE);
 		} else {
@@ -632,7 +594,7 @@ public class MainActivity extends FragmentActivity {
 	/**
 	 * Action: hide the soft keyboard.
 	 */
-	private void doHideKeyboard() {
+	void doHideKeyboard() {
 		InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 		imm.hideSoftInputFromWindow(mViewPager.getWindowToken(), 0);
 	}

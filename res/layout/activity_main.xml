@@ -7,38 +7,21 @@
     android:layout_margin="10dp"
     android:gravity="fill_horizontal" >
 
-    <RelativeLayout
-        android:id="@+id/layout_filter"
+    <fragment
+        android:name="com.megginson.sloop.activities.TextFilterFragment"
+        android:id="@+id/fragment_text_filter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true" >
-
-        <EditText
-            android:id="@+id/field_filter"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/hint_text_filter"
-            android:imeOptions="actionSearch"
-            android:inputType="text|textNoSuggestions"
-            android:paddingRight="32dp"
-            android:singleLine="true" />
-
-        <Button
-            android:id="@+id/button_filter_clear"
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_alignParentRight="true"
-            android:background="@drawable/ic_cancel_dark" />
-    </RelativeLayout>
+        android:layout_alignParentRight="true"
+        tools:layout="@layout/fragment_text_filter" />
 
     <RelativeLayout
         android:id="@+id/main_body"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@+id/page_seek_bar"
-        android:layout_below="@+id/layout_filter"
+        android:layout_below="@+id/fragment_text_filter"
         android:orientation="vertical" >
 
         <android.support.v4.view.ViewPager
@@ -84,11 +67,10 @@
             style="?android:attr/buttonStyleSmall"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:layout_weight="0"
             android:layout_gravity="center_vertical"
+            android:layout_weight="0"
             android:background="@drawable/ic_cancel_dark"
             android:minHeight="24dp" />
-
     </LinearLayout>
 
 </RelativeLayout>
