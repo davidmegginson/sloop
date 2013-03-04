@@ -12,14 +12,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.ProgressBar;
-import android.widget.SeekBar;
 import android.widget.Toast;
 
 import com.megginson.sloop.R;
@@ -29,7 +24,6 @@ import com.megginson.sloop.model.impl.ContainsStringFilter;
 import com.megginson.sloop.model.impl.EqualsStringFilter;
 import com.megginson.sloop.ui.AddressActionProvider;
 import com.megginson.sloop.ui.DataCollectionLoader;
-import com.megginson.sloop.ui.DataCollectionPagerAdapter;
 import com.megginson.sloop.ui.DataCollectionResult;
 
 /**
@@ -77,26 +71,11 @@ public class MainActivity extends FragmentActivity {
 	 */
 	private AddressActionProvider mAddressProvider;
 
+	private MainDisplayFragment mMainDisplay;
+
 	private TextFilterFragment mTextFilter;
 
 	private InfoBarFragment mInfoBar;
-
-	/**
-	 * The {@link PagerAdapter} for the current data collection.
-	 */
-	private DataCollectionPagerAdapter mPagerAdapter;
-
-	/**
-	 * The {@link ViewPager} that will host the data collection.
-	 */
-	private ViewPager mViewPager;
-
-	/**
-	 * The seek bar for scrolling through the collection.
-	 */
-	private SeekBar mSeekBar;
-
-	private ProgressBar mProgressBar;
 
 	//
 	// Activity lifecycle methods.
@@ -108,19 +87,13 @@ public class MainActivity extends FragmentActivity {
 
 		setContentView(R.layout.activity_main);
 
+		// grab references to the fragments
 		mTextFilter = (TextFilterFragment) getSupportFragmentManager()
 				.findFragmentById(R.id.fragment_text_filter);
+		mMainDisplay = (MainDisplayFragment) getSupportFragmentManager()
+				.findFragmentById(R.id.fragment_main_display);
 		mInfoBar = (InfoBarFragment) getSupportFragmentManager()
 				.findFragmentById(R.id.fragment_info_bar);
-
-		// Set up the main display area
-		setupPager();
-
-		// Set up the progress indicator
-		setupProgressBar();
-
-		// Set up the seek bar.
-		setupSeekBar();
 
 		// What are we supposed to be doing?
 		doHandleIntent(getIntent());
@@ -195,52 +168,6 @@ public class MainActivity extends FragmentActivity {
 	//
 
 	/**
-	 * Set up the main ViewPager.
-	 */
-	private void setupPager() {
-		mPagerAdapter = new DataCollectionPagerAdapter(
-				getSupportFragmentManager());
-
-		// Set up the ViewPager with the data collection adapter.
-		mViewPager = (ViewPager) findViewById(R.id.pager);
-		mViewPager.setAdapter(mPagerAdapter);
-		mViewPager
-				.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
-					@Override
-					public void onPageSelected(int position) {
-						doDisplayRecordNumber(position);
-					}
-				});
-	}
-
-	private void setupProgressBar() {
-		mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
-		mProgressBar.setVisibility(View.GONE);
-	}
-
-	private void setupSeekBar() {
-		mSeekBar = (SeekBar) findViewById(R.id.page_seek_bar);
-		mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-
-			@Override
-			public void onStopTrackingTouch(SeekBar seekBar) {
-				// NO OP
-			}
-
-			@Override
-			public void onStartTrackingTouch(SeekBar seekBar) {
-				// NO OP
-			}
-
-			@Override
-			public void onProgressChanged(SeekBar seekBar, int progress,
-					boolean fromUser) {
-				mViewPager.setCurrentItem(progress, false);
-			}
-		});
-	}
-
-	/**
 	 * Set up the address bar action provider.
 	 * 
 	 * @param item
@@ -308,13 +235,13 @@ public class MainActivity extends FragmentActivity {
 	}
 
 	void doClearFilters() {
-		DataCollection collection = mPagerAdapter.getDataCollection();
+		DataCollection collection = mMainDisplay.getDataCollection();
 		if (collection != null) {
 			doSetTextFilter(null);
 			collection.clearFilters();
 			mTextFilter.clear();
-			mViewPager.setAdapter(mPagerAdapter);
-			doDisplayRecordNumber(mViewPager.getCurrentItem());
+			mMainDisplay.reset();
+			doDisplayRecordNumber(mMainDisplay.getCurrentItem());
 		}
 	}
 
@@ -322,7 +249,7 @@ public class MainActivity extends FragmentActivity {
 	 * Action: set a text filter for the data collection.
 	 */
 	void doSetTextFilter(String query) {
-		DataCollection collection = mPagerAdapter.getDataCollection();
+		DataCollection collection = mMainDisplay.getDataCollection();
 		if (collection != null) {
 			if (query == null) {
 				collection.setTextFilter(null);
@@ -330,8 +257,8 @@ public class MainActivity extends FragmentActivity {
 				collection.setTextFilter(new ContainsStringFilter(query));
 			}
 			collection.setFilteringEnabled(true);
-			mViewPager.setAdapter(mPagerAdapter);
-			doDisplayRecordNumber(mViewPager.getCurrentItem());
+			mMainDisplay.reset();
+			doDisplayRecordNumber(mMainDisplay.getCurrentItem());
 		}
 	}
 
@@ -342,7 +269,7 @@ public class MainActivity extends FragmentActivity {
 	 *            the data entry (soon to be the filter)
 	 */
 	private void doSetColumnFilter(DataEntry entry) {
-		DataCollection collection = mPagerAdapter.getDataCollection();
+		DataCollection collection = mMainDisplay.getDataCollection();
 		if (collection.getColumnFilter(entry.getKey()) != null) {
 			collection.putColumnFilter(entry.getKey(), null);
 			if (!collection.hasFilters()) {
@@ -362,8 +289,8 @@ public class MainActivity extends FragmentActivity {
 							entry.getKey(), entry.getValue()),
 					Toast.LENGTH_SHORT).show();
 		}
-		mViewPager.setAdapter(mPagerAdapter);
-		doDisplayRecordNumber(mViewPager.getCurrentItem());
+		mMainDisplay.reset();
+		doDisplayRecordNumber(mMainDisplay.getCurrentItem());
 	}
 
 	/**
@@ -459,7 +386,7 @@ public class MainActivity extends FragmentActivity {
 								mAddressProvider.setUrl(mUrl);
 							}
 						}
-						mProgressBar.setVisibility(View.GONE);
+						mMainDisplay.setLoading(false);
 					}
 
 					@Override
@@ -473,7 +400,7 @@ public class MainActivity extends FragmentActivity {
 			mAddressProvider.setUrl(mUrl);
 		}
 		doHideKeyboard();
-		mProgressBar.setVisibility(View.VISIBLE);
+		mMainDisplay.setLoading(true);
 	}
 
 	/**
@@ -486,13 +413,10 @@ public class MainActivity extends FragmentActivity {
 	 *            the new data collection, or null to clear.
 	 */
 	private void doUpdateDataCollection(DataCollection dataCollection) {
-		mPagerAdapter.setDataCollection(dataCollection);
+		mMainDisplay.setDataCollection(dataCollection);
 		if (dataCollection != null) {
-			mSeekBar.setMax(mPagerAdapter.getCount() - 1);
 			doDisplayRecordNumber(0);
 		} else {
-			mSeekBar.setProgress(0);
-			mSeekBar.setMax(0);
 			mInfoBar.displayRecordCount(0, 0, 0);
 		}
 	}
@@ -522,12 +446,10 @@ public class MainActivity extends FragmentActivity {
 	 * @param recordNumber
 	 *            the record number to display (zero-based).
 	 */
-	private void doDisplayRecordNumber(int recordNumber) {
-		DataCollection collection = mPagerAdapter.getDataCollection();
+	void doDisplayRecordNumber(int recordNumber) {
+		DataCollection collection = mMainDisplay.getDataCollection();
 		int filteredTotal = collection.getFilteredRecords().size();
 		int unfilteredTotal = collection.getRecords().size();
-		mSeekBar.setProgress(recordNumber);
-		mSeekBar.setMax(filteredTotal - 1);
 		mInfoBar.displayRecordCount(recordNumber, filteredTotal,
 				unfilteredTotal);
 	}
@@ -537,7 +459,7 @@ public class MainActivity extends FragmentActivity {
 	 */
 	void doHideKeyboard() {
 		InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-		imm.hideSoftInputFromWindow(mViewPager.getWindowToken(), 0);
+		imm.hideSoftInputFromWindow(mMainDisplay.getView().getWindowToken(), 0);
 	}
 
 }
