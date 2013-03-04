@@ -8,22 +8,17 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.SeekBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.megginson.sloop.R;
@@ -78,8 +73,10 @@ public class MainActivity extends FragmentActivity{
 	 */
 	private AddressActionProvider mAddressProvider;
 	
-	private EditText mFilterTextField;
-
+	private TextFilterFragment mTextFilter;
+	
+	private InfoBarFragment mInfoBar;
+	
 	/**
 	 * The {@link PagerAdapter} for the current data collection.
 	 */
@@ -97,12 +94,6 @@ public class MainActivity extends FragmentActivity{
 
 	private ProgressBar mProgressBar;
 	
-	private View mInfoBar;
-	
-	private TextView mInfoBarText;
-	
-	private Button mFiltersClearButton;
-
 	//
 	// Activity lifecycle methods.
 	//
@@ -112,6 +103,9 @@ public class MainActivity extends FragmentActivity{
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.activity_main);
+		
+		mTextFilter = (TextFilterFragment)getSupportFragmentManager().findFragmentById(R.id.fragment_text_filter);
+		mInfoBar = (InfoBarFragment)getSupportFragmentManager().findFragmentById(R.id.fragment_info_bar);
 
 		// Set up the main display area
 		setupPager();
@@ -122,9 +116,6 @@ public class MainActivity extends FragmentActivity{
 		// Set up the seek bar.
 		setupSeekBar();
 		
-		// Set up the bottom info bar
-		setupInfoBar();
-
 		// What are we supposed to be doing?
 		doHandleIntent(getIntent());
 	}
@@ -243,23 +234,6 @@ public class MainActivity extends FragmentActivity{
 		});
 	}
 	
-	private void setupInfoBar() {
-		mInfoBar = findViewById(R.id.info_bar_layout);
-		mInfoBarText = (TextView)findViewById(R.id.info_bar);
-		mFiltersClearButton = (Button)findViewById(R.id.button_filters_clear);
-		
-		// filter clear button is invisible until there's a filter
-		mFiltersClearButton.setVisibility(View.GONE);
-		
-		// when clicked on, clear all filters
-		mFiltersClearButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				doClearFilters();
-			}
-		});
-	}
-
 	/**
 	 * Set up the address bar action provider.
 	 * 
@@ -327,12 +301,12 @@ public class MainActivity extends FragmentActivity{
 		}
 	}
 	
-	private void doClearFilters() {
+	void doClearFilters() {
 		DataCollection collection = mPagerAdapter.getDataCollection();
 		if (collection != null) {
 			doSetTextFilter(null);
 			collection.clearFilters();
-			mFilterTextField.setText("");
+			mTextFilter.clear();
 			mViewPager.setAdapter(mPagerAdapter);
 			doDisplayRecordNumber(mViewPager.getCurrentItem());
 		}
@@ -526,7 +500,7 @@ public class MainActivity extends FragmentActivity{
 		} else {
 			mSeekBar.setProgress(0);
 			mSeekBar.setMax(0);
-			doDisplayInfo(getString(R.string.msg_no_data), Color.GRAY);
+			mInfoBar.setRecordCount(0, 0, 0);
 		}
 	}
 
@@ -557,38 +531,11 @@ public class MainActivity extends FragmentActivity{
 	 */
 	private void doDisplayRecordNumber(int recordNumber) {
 		DataCollection collection = mPagerAdapter.getDataCollection();
-		int count = collection.getFilteredRecords().size();
-		int unfilteredCount = collection.getRecords().size();
+		int filteredTotal = collection.getFilteredRecords().size();
+		int unfilteredTotal = collection.getRecords().size();
 		mSeekBar.setProgress(recordNumber);
-		mSeekBar.setMax(count - 1);
-		if (count == 0) {
-			doDisplayInfo(String.format(getString(R.string.info_records_none),
-					unfilteredCount), Color.argb(64, 255, 0, 0));
-			mFiltersClearButton.setVisibility(View.VISIBLE);
-		} else if (count < unfilteredCount) {
-			doDisplayInfo(String.format(
-					getString(R.string.info_records_filtered),
-					recordNumber + 1, count, unfilteredCount), Color.argb(64, 255, 255, 0));
-			mFiltersClearButton.setVisibility(View.VISIBLE);
-		} else {
-			doDisplayInfo(String.format(
-					getString(R.string.info_records_unfiltered),
-					recordNumber + 1, count), Color.argb(64, 0, 255, 0));
-			mFiltersClearButton.setVisibility(View.GONE);
-		}
-	}
-
-	/**
-	 * Action: update text in the info bar.
-	 * 
-	 * @param message
-	 *            The message to display.
-	 * @param backgroundColor
-	 *            the background colour for the info bar.
-	 */
-	private void doDisplayInfo(String message, int backgroundColor) {
-		mInfoBar.setBackgroundColor(backgroundColor);
-		mInfoBarText.setText(message);
+		mSeekBar.setMax(filteredTotal - 1);
+		mInfoBar.setRecordCount(recordNumber, filteredTotal, unfilteredTotal);
 	}
 
 	/**

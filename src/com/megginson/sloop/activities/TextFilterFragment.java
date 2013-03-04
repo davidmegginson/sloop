@@ -32,6 +32,10 @@ public class TextFilterFragment extends Fragment {
 		setupButton();
 		return mLayout;
 	}
+	
+	public void clear(){
+		mTextField.setText(null);
+	}
 
 	private void setupTextField() {
 		mTextField = (EditText) mLayout.findViewById(R.id.field_filter);
