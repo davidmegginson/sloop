@@ -16,38 +16,14 @@
         android:layout_alignParentRight="true"
         tools:layout="@layout/fragment_text_filter" />
 
-    <RelativeLayout
-        android:id="@+id/main_body"
+    <fragment
+        android:id="@+id/fragment_main_display"
+        android:name="com.megginson.sloop.activities.MainDisplayFragment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@+id/fragment_info_bar"
         android:layout_below="@+id/fragment_text_filter"
-        android:orientation="vertical" >
-
-        <android.support.v4.view.ViewPager
-            android:id="@+id/pager"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/page_seek_bar"
-            android:layout_alignParentLeft="true" >
-        </android.support.v4.view.ViewPager>
-
-        <ProgressBar
-            android:id="@+id/progressBar"
-            style="?android:attr/progressBarStyleLarge"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true" />
-
-        <SeekBar
-            android:id="@+id/page_seek_bar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentBottom="true"
-            android:background="@color/gray" />
-    </RelativeLayout>
+        tools:layout="@layout/fragment_main_display" />
 
     <fragment
         android:id="@+id/fragment_info_bar"
