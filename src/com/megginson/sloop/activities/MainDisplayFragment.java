@@ -41,12 +41,20 @@ public class MainDisplayFragment extends Fragment {
 		setupSeekBar();
 		return mLayout;
 	}
-	
+
+	/**
+	 * Force the display to reset itself (usually after a filter change).
+	 */
 	public void reset() {
 		mViewPager.setAdapter(mPagerAdapter);
-		updateSeekBar();
 	}
-	
+
+	/**
+	 * Toggle showing the loading animation.
+	 * 
+	 * @param isLoading
+	 *            true to show the loading animation.
+	 */
 	public void setLoading(boolean isLoading) {
 		if (isLoading) {
 			mProgressBar.setVisibility(View.VISIBLE);
@@ -55,10 +63,21 @@ public class MainDisplayFragment extends Fragment {
 		}
 	}
 
+	/**
+	 * Get the underlying data collection.
+	 * 
+	 * @return the data collection, or null if none is loaded.
+	 */
 	public DataCollection getDataCollection() {
 		return mPagerAdapter.getDataCollection();
 	}
-	
+
+	/**
+	 * Set the underlying data collection.
+	 * 
+	 * @param dataCollection
+	 *            the data collection to display.
+	 */
 	public void setDataCollection(DataCollection dataCollection) {
 		mPagerAdapter.setDataCollection(dataCollection);
 		if (dataCollection != null) {
@@ -68,13 +87,28 @@ public class MainDisplayFragment extends Fragment {
 			mSeekBar.setMax(0);
 		}
 	}
-	
-	public int getCurrentItem(){
+
+	/**
+	 * Get the current item displayed.
+	 * 
+	 * @return the zero-based index of the current item.
+	 */
+	public int getCurrentItem() {
 		return mViewPager.getCurrentItem();
 	}
 
 	/**
-	 * Set up the main ViewPager.
+	 * Update the {@link SeekBar} to the current position.
+	 */
+	public void refresh() {
+		DataCollection collection = mPagerAdapter.getDataCollection();
+		int filteredTotal = collection.getFilteredRecords().size();
+		mSeekBar.setProgress(getCurrentItem());
+		mSeekBar.setMax(filteredTotal - 1);
+	}
+
+	/**
+	 * Set up the main {@link ViewPager}.
 	 */
 	private void setupPager() {
 		mPagerAdapter = new DataCollectionPagerAdapter(
@@ -92,11 +126,17 @@ public class MainDisplayFragment extends Fragment {
 				});
 	}
 
+	/**
+	 * Set up the {@link ProgressBar} loading animation (initially hidden).
+	 */
 	private void setupProgressBar() {
 		mProgressBar = (ProgressBar) mLayout.findViewById(R.id.progressBar);
 		mProgressBar.setVisibility(View.GONE);
 	}
 
+	/**
+	 * Set up the {@link SeekBar}.
+	 */
 	private void setupSeekBar() {
 		mSeekBar = (SeekBar) mLayout.findViewById(R.id.page_seek_bar);
 		mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -117,13 +157,6 @@ public class MainDisplayFragment extends Fragment {
 				mViewPager.setCurrentItem(progress, false);
 			}
 		});
-	}
-	
-	private void updateSeekBar(){
-		DataCollection collection = mPagerAdapter.getDataCollection();
-		int filteredTotal = collection.getFilteredRecords().size();
-		mSeekBar.setProgress(getCurrentItem());
-		mSeekBar.setMax(filteredTotal - 1);
 	}
 
 }

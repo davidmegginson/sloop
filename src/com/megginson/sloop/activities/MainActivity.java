@@ -450,6 +450,7 @@ public class MainActivity extends FragmentActivity {
 		DataCollection collection = mMainDisplay.getDataCollection();
 		int filteredTotal = collection.getFilteredRecords().size();
 		int unfilteredTotal = collection.getRecords().size();
+		mMainDisplay.refresh();
 		mInfoBar.displayRecordCount(recordNumber, filteredTotal,
 				unfilteredTotal);
 	}
