@@ -10,6 +10,7 @@ import android.content.Loader;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -34,10 +35,13 @@ import com.megginson.sloop.ui.DataCollectionResult;
 /**
  * Sloop's main UI activity (browse a data set).
  * 
+ * The activity consists of several components represented as {@link Fragment}
+ * objects.
+ * 
  * @author David Megginson
  */
 @SuppressLint("DefaultLocale")
-public class MainActivity extends FragmentActivity{
+public class MainActivity extends FragmentActivity {
 
 	public final static String ACTION_FILTER = "com.megginson.sloop.intent.FILTER";
 
@@ -72,11 +76,11 @@ public class MainActivity extends FragmentActivity{
 	 * The address action provider.
 	 */
 	private AddressActionProvider mAddressProvider;
-	
+
 	private TextFilterFragment mTextFilter;
-	
+
 	private InfoBarFragment mInfoBar;
-	
+
 	/**
 	 * The {@link PagerAdapter} for the current data collection.
 	 */
@@ -93,7 +97,7 @@ public class MainActivity extends FragmentActivity{
 	private SeekBar mSeekBar;
 
 	private ProgressBar mProgressBar;
-	
+
 	//
 	// Activity lifecycle methods.
 	//
@@ -103,9 +107,11 @@ public class MainActivity extends FragmentActivity{
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.activity_main);
-		
-		mTextFilter = (TextFilterFragment)getSupportFragmentManager().findFragmentById(R.id.fragment_text_filter);
-		mInfoBar = (InfoBarFragment)getSupportFragmentManager().findFragmentById(R.id.fragment_info_bar);
+
+		mTextFilter = (TextFilterFragment) getSupportFragmentManager()
+				.findFragmentById(R.id.fragment_text_filter);
+		mInfoBar = (InfoBarFragment) getSupportFragmentManager()
+				.findFragmentById(R.id.fragment_info_bar);
 
 		// Set up the main display area
 		setupPager();
@@ -115,7 +121,7 @@ public class MainActivity extends FragmentActivity{
 
 		// Set up the seek bar.
 		setupSeekBar();
-		
+
 		// What are we supposed to be doing?
 		doHandleIntent(getIntent());
 	}
@@ -159,7 +165,7 @@ public class MainActivity extends FragmentActivity{
 			doLaunchBookmarkList();
 			return true;
 		case R.id.menu_search:
-			doToggleTextFilterVisibility();
+			mTextFilter.setShown(!mTextFilter.isShown());
 			return true;
 		case R.id.menu_bookmark_create:
 			doLaunchBookmarkCreate(mUrl);
@@ -177,7 +183,7 @@ public class MainActivity extends FragmentActivity{
 
 	@Override
 	public boolean onSearchRequested() {
-		doToggleTextFilterVisibility();
+		mTextFilter.setShown(!mTextFilter.isShown());
 		return true;
 	}
 
@@ -233,7 +239,7 @@ public class MainActivity extends FragmentActivity{
 			}
 		});
 	}
-	
+
 	/**
 	 * Set up the address bar action provider.
 	 * 
@@ -300,7 +306,7 @@ public class MainActivity extends FragmentActivity{
 			doSetColumnFilter(entry);
 		}
 	}
-	
+
 	void doClearFilters() {
 		DataCollection collection = mPagerAdapter.getDataCollection();
 		if (collection != null) {
@@ -377,19 +383,6 @@ public class MainActivity extends FragmentActivity{
 					}
 				});
 		builder.create().show();
-	}
-
-	/**
-	 * Action: show the text filter field.
-	 */
-	private void doToggleTextFilterVisibility() {
-		View textFilter = findViewById(R.id.fragment_text_filter);
-		if (textFilter.getVisibility() == View.VISIBLE) {
-			textFilter.setVisibility(View.GONE);
-		} else {
-			textFilter.setVisibility(View.VISIBLE);
-			textFilter.requestFocus();
-		}
 	}
 
 	/**
@@ -500,7 +493,7 @@ public class MainActivity extends FragmentActivity{
 		} else {
 			mSeekBar.setProgress(0);
 			mSeekBar.setMax(0);
-			mInfoBar.setRecordCount(0, 0, 0);
+			mInfoBar.displayRecordCount(0, 0, 0);
 		}
 	}
 
@@ -535,7 +528,8 @@ public class MainActivity extends FragmentActivity{
 		int unfilteredTotal = collection.getRecords().size();
 		mSeekBar.setProgress(recordNumber);
 		mSeekBar.setMax(filteredTotal - 1);
-		mInfoBar.setRecordCount(recordNumber, filteredTotal, unfilteredTotal);
+		mInfoBar.displayRecordCount(recordNumber, filteredTotal,
+				unfilteredTotal);
 	}
 
 	/**
