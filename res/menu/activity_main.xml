@@ -5,7 +5,7 @@
         android:actionProviderClass="com.megginson.sloop.ui.AddressActionProvider"
         android:icon="@drawable/ic_web_site"
         android:showAsAction="ifRoom|collapseActionView"
-        android:title="Open Data Collection"/>
+        android:title="@string/menu_load"/>
     <item
         android:id="@+id/menu_reload"
         android:icon="@drawable/ic_refresh"
@@ -26,7 +26,8 @@
         android:title="@string/menu_bookmark_this"/>
     <item
         android:id="@+id/menu_help"
-        android:showAsAction="never"
+        android:icon="@drawable/ic_help"
+        android:showAsAction="ifRoom"
         android:title="@string/menu_help"/>
 
 </menu>

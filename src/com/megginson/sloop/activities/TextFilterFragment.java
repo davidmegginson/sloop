@@ -83,7 +83,7 @@ public class TextFilterFragment extends Fragment {
 					public boolean onEditorAction(TextView v, int actionId,
 							KeyEvent event) {
 						mActivity.doSetTextFilter(v.getText().toString());
-						mActivity.doHideKeyboard();
+						ActivitiesUtil.doHideKeyboard(mActivity, mTextField);
 						return true;
 					}
 				});

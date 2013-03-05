@@ -6,8 +6,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.Menu;
-import android.view.View;
-import android.widget.Button;
+import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -18,8 +17,6 @@ import com.megginson.sloop.model.Bookmark;
  * Form to create or edit a bookmark.
  * 
  * Will check the intent for "url" and "title" parameters.
- * 
- * TODO warn of cancel on back button
  * 
  * @author David Megginson
  * 
@@ -55,6 +52,20 @@ public class BookmarkEditActivity extends Activity {
 	}
 
 	@Override
+	public boolean onMenuItemSelected(int featureId, MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.menu_save:
+			doSubmitForm();
+			return true;
+		case R.id.menu_help:
+			ActivitiesUtil.doHelp(this);
+			return true;
+		default:
+			return super.onMenuItemSelected(featureId, item);
+		}
+	}
+
+	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
 			doCancel();
@@ -74,15 +85,6 @@ public class BookmarkEditActivity extends Activity {
 		// fill in the URL field, if supplied
 		mUrlField = (EditText) findViewById(R.id.field_bookmark_url);
 		mUrlField.setText(mBookmark.getUrl());
-
-		// set up the save button
-		Button saveButton = (Button) findViewById(R.id.button_bookmark_save);
-		saveButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				doSubmitForm();
-			}
-		});
 	}
 
 	/**
@@ -125,13 +127,14 @@ public class BookmarkEditActivity extends Activity {
 	 * Action: save the bookmark and exit the activity.
 	 */
 	private void doSaveAndExit() {
-		Toast.makeText(this, R.string.msg_bookmark_saved,
-				Toast.LENGTH_LONG).show();
+		Toast.makeText(this, R.string.msg_bookmark_saved, Toast.LENGTH_LONG)
+				.show();
 		SharedPreferences.Editor editor = getSharedPreferences(
 				BookmarkListActivity.PREFERENCE_GROUP_BOOKMARKS, MODE_PRIVATE)
 				.edit();
 		editor.putString(mBookmark.getUrl(), mBookmark.getTitle());
 		editor.commit();
+		ActivitiesUtil.doHideKeyboard(this, mTitleField);
 		finish();
 	}
 

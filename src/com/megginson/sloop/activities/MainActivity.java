@@ -51,8 +51,6 @@ public class MainActivity extends FragmentActivity {
 
 	public final static String DEFAULT_URL = "https://docs.google.com/spreadsheet/ccc?key=0AoDV0i2WefMXdEI2VV9Xb1I5eFpBeS1HYkw5NGNqR3c&output=csv#gid=0";
 
-	public final static String HELP_URL = "http://sloopdata.org";
-
 	//
 	// Saveable state
 	//
@@ -147,7 +145,7 @@ public class MainActivity extends FragmentActivity {
 			doLoadDataCollection(mUrl, true);
 			return true;
 		case R.id.menu_help:
-			doLaunchBrowser(HELP_URL);
+			ActivitiesUtil.doHelp(this);
 			return true;
 		default:
 			return super.onMenuItemSelected(featureId, item);
@@ -156,16 +154,10 @@ public class MainActivity extends FragmentActivity {
 
 	@Override
 	public boolean onSearchRequested() {
+		// The user has pressed the search button
 		mTextFilter.setShown(!mTextFilter.isShown());
 		return true;
 	}
-
-	//
-	// Configuration functions for UI components.
-	//
-	// Each of these functions sets listeners, etc. for its component. The
-	// listeners use the do*() action methods to perform actions.
-	//
 
 	/**
 	 * Set up the address bar action provider.
@@ -399,7 +391,7 @@ public class MainActivity extends FragmentActivity {
 		if (mAddressProvider != null) {
 			mAddressProvider.setUrl(mUrl);
 		}
-		doHideKeyboard();
+		ActivitiesUtil.doHideKeyboard(this, mInfoBar.getView());
 		mMainDisplay.setLoading(true);
 	}
 
@@ -453,14 +445,6 @@ public class MainActivity extends FragmentActivity {
 		mMainDisplay.refresh();
 		mInfoBar.displayRecordCount(recordNumber, filteredTotal,
 				unfilteredTotal);
-	}
-
-	/**
-	 * Action: hide the soft keyboard.
-	 */
-	void doHideKeyboard() {
-		InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-		imm.hideSoftInputFromWindow(mMainDisplay.getView().getWindowToken(), 0);
 	}
 
 }

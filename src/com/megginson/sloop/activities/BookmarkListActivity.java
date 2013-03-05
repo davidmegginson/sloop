@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import android.app.ListActivity;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
@@ -12,21 +12,27 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.megginson.sloop.R;
 import com.megginson.sloop.model.Bookmark;
 import com.megginson.sloop.ui.BookmarkListAdapter;
 
-public class BookmarkListActivity extends ListActivity {
+public class BookmarkListActivity extends Activity {
 
 	public final static String PREFERENCE_GROUP_BOOKMARKS = "bookmarks";
+	
+	private ListView mBookmarksView;
 
 	private List<Bookmark> mBookmarks = new ArrayList<Bookmark>();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		setContentView(R.layout.activity_bookmark_list);
+		
 		// Show the Up button in the action bar.
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -39,6 +45,17 @@ public class BookmarkListActivity extends ListActivity {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.activity_bookmark_list, menu);
 		return true;
+	}
+
+	@Override
+	public boolean onMenuItemSelected(int featureId, MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.menu_help:
+			ActivitiesUtil.doHelp(this);
+			return true;
+		default:
+			return super.onMenuItemSelected(featureId, item);
+		}
 	}
 
 	@Override
@@ -61,8 +78,9 @@ public class BookmarkListActivity extends ListActivity {
 	 * Set up the built-in list view.
 	 */
 	private void setupListView() {
-		setListAdapter(new BookmarkListAdapter(this, mBookmarks));
-		getListView().setOnItemClickListener(
+		mBookmarksView = (ListView)findViewById(R.id.bookmarks);
+		mBookmarksView.setAdapter(new BookmarkListAdapter(this, mBookmarks));
+		mBookmarksView.setOnItemClickListener(
 				new AdapterView.OnItemClickListener() {
 					@Override
 					public void onItemClick(AdapterView<?> parent, View view,
@@ -100,7 +118,7 @@ public class BookmarkListActivity extends ListActivity {
 		for (String url : preferences.keySet()) {
 			mBookmarks.add(new Bookmark(url, (String) preferences.get(url)));
 		}
-		getListView().refreshDrawableState();
+		mBookmarksView.refreshDrawableState();
 	}
 
 }
