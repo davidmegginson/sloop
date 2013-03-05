@@ -193,13 +193,19 @@ public class MainActivity extends FragmentActivity {
 
 		if (Intent.ACTION_MAIN.equals(action)) {
 			String url = intent.getStringExtra(PARAM_URL);
-			System.err.println("Intent " + url);
 			// Restore the last URL
 			if (url == null) {
 				url = getSharedPreferences(PREFERENCE_GROUP_MAIN, MODE_PRIVATE)
 						.getString(PREFERENCE_URL, null);
 				url = DEFAULT_URL;
 			}
+			if (url != null && url.length() > 0) {
+				doLoadDataCollection(url, false);
+			}
+		}
+		
+		else if (Intent.ACTION_VIEW.equals(action)) {
+			String url = intent.getData().toString();
 			if (url != null && url.length() > 0) {
 				doLoadDataCollection(url, false);
 			}

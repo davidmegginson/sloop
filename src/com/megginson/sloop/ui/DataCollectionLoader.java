@@ -90,7 +90,7 @@ public class DataCollectionLoader extends AsyncTaskLoader<DataCollectionResult> 
 				if (!mForceLoad && mUrl.equals(sLastUrl)) {
 					mDataCollection = sLastDataCollection;
 				} else {
-					mDataCollection = DataCollectionIO.readCSV(mUrl);
+					mDataCollection = DataCollectionIO.readCSV(mUrl, getContext().getContentResolver());
 				}
 			} catch (RedirectException e) {
 				return new DataCollectionResult(e.getRedirectUrl());

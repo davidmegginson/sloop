@@ -18,6 +18,8 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import com.megginson.sloop.model.DataCollection;
 import com.megginson.sloop.ui.DataCollectionLoader;
 
+import android.content.ContentResolver;
+import android.net.Uri;
 import au.com.bytecode.opencsv.CSVReader;
 
 /**
@@ -55,9 +57,9 @@ public class DataCollectionIO {
 	 * @throws IOException
 	 *             if a general loading error occurs.
 	 */
-	public static DataCollection readCSV(String url) throws IOException {
+	public static DataCollection readCSV(String url, ContentResolver contentResolver) throws IOException {
 		DataCollection dataCollection = null;
-		Reader input = new InputStreamReader(openURL(url));
+		Reader input = new InputStreamReader(openURL(url, contentResolver));
 
 		try {
 			dataCollection = readCSV(input);
@@ -66,7 +68,7 @@ public class DataCollectionIO {
 		}
 
 		// get the fragment
-		String fragment = new URL(url).getRef();
+		String fragment = Uri.parse(url).getFragment();
 		if (fragment != null && fragment.length() > 0) {
 			processFragment(dataCollection, fragment);
 		}
@@ -110,24 +112,31 @@ public class DataCollectionIO {
 	 *             if Sloop can't handle the content type, and wants a browser
 	 *             redirect.
 	 */
-	private static InputStream openURL(String url) throws IOException {
-		HttpClient client = new DefaultHttpClient();
-
-		// Check the content type
-		HttpHead headRequest = new HttpHead(url);
-		HttpResponse headResponse = client.execute(headRequest);
-		Header contentType = headResponse.getFirstHeader("Content-Type");
-
-		// Load only if it's text/csv
-		if (contentType != null
-				&& contentType.getValue().startsWith("text/csv")) {
-			HttpGet request = new HttpGet(url);
-			HttpResponse response = client.execute(request);
-			HttpEntity entity = response.getEntity();
-			return entity.getContent();
+	private static InputStream openURL(String url, ContentResolver contentResolver) throws IOException {
+		System.err.println(url);
+		Uri uriObject = Uri.parse(url);
+		if ("content".equals(uriObject.getScheme())) {
+			return contentResolver.openInputStream(uriObject);
 		} else {
-			// Ugly, but that's subclasses for ya
-			throw new DataCollectionIO().new RedirectException(url);
+
+			HttpClient client = new DefaultHttpClient();
+
+			// Check the content type
+			HttpHead headRequest = new HttpHead(url);
+			HttpResponse headResponse = client.execute(headRequest);
+			Header contentType = headResponse.getFirstHeader("Content-Type");
+
+			// Load only if it's text/csv
+			if (contentType != null
+					&& contentType.getValue().startsWith("text/csv")) {
+				HttpGet request = new HttpGet(url);
+				HttpResponse response = client.execute(request);
+				HttpEntity entity = response.getEntity();
+				return entity.getContent();
+			} else {
+				// Ugly, but that's subclasses for ya
+				throw new DataCollectionIO().new RedirectException(url);
+			}
 		}
 	}
 
