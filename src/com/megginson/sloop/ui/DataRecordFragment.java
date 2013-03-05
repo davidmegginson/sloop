@@ -12,7 +12,6 @@ import android.widget.ListView;
 import com.megginson.sloop.activities.MainActivity;
 import com.megginson.sloop.model.DataEntry;
 import com.megginson.sloop.model.DataRecord;
-import com.megginson.sloop.model.Util;
 
 /**
  * A view fragment wrapping a data record
@@ -67,25 +66,6 @@ public class DataRecordFragment extends Fragment {
 		// don't create a new instance of MainActivity
 		intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
 		intent.putExtra(MainActivity.PARAM_ENTRY, entry);
-		startActivity(intent);
-	}
-
-	/**
-	 * Send out the intent to open a URL.
-	 * 
-	 * A new {@link MainActivity} will intercept the intent first, but if it
-	 * turns out not to be a CSV resource, it will pass it on to other Android
-	 * apps (e.g. the browser).
-	 * 
-	 * TODO does this belong here?
-	 * 
-	 * @param url
-	 *            the URL to pass to {@link MainActivity}
-	 */
-	private void doOpenUrl(String url) {
-		Intent intent = new Intent(getActivity(), MainActivity.class);
-		intent.setAction(Intent.ACTION_MAIN);
-		intent.putExtra(MainActivity.PARAM_URL, url);
 		startActivity(intent);
 	}
 

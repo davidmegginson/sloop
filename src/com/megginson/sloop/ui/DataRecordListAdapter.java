@@ -13,7 +13,6 @@ import android.widget.TextView;
 import com.megginson.sloop.R;
 import com.megginson.sloop.model.DataEntry;
 import com.megginson.sloop.model.DataRecord;
-import com.megginson.sloop.model.Util;
 
 /**
  * Adapt a single {@link DataRecordImpl} for display as a list of entries.
