@@ -22,7 +22,7 @@
         android:layout_weight="13"
         android:paddingRight="10dp"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textIsSelectable="true" />
+        android:textIsSelectable="false" />
 
     <TextView
         android:id="@+id/field_value"
@@ -30,6 +30,6 @@
         android:layout_height="wrap_content"
         android:layout_weight="21"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textIsSelectable="true" />
+        android:textIsSelectable="false" />
 
 </LinearLayout>
