@@ -49,8 +49,8 @@ class ActivitiesUtil {
 	/**
 	 * Hide the soft keyboard.
 	 */
-	protected static void doHideKeyboard(Activity fromActivity, View view) {
-		InputMethodManager imm = (InputMethodManager) fromActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
+	protected static void doHideKeyboard(Context context, View view) {
+		InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
 		imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
 	}
 

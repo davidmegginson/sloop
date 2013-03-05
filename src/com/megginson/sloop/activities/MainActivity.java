@@ -20,7 +20,6 @@ import com.megginson.sloop.model.DataCollection;
 import com.megginson.sloop.model.DataEntry;
 import com.megginson.sloop.model.impl.ContainsStringFilter;
 import com.megginson.sloop.model.impl.EqualsStringFilter;
-import com.megginson.sloop.ui.AddressActionProvider;
 import com.megginson.sloop.ui.DataCollectionLoader;
 import com.megginson.sloop.ui.DataCollectionResult;
 

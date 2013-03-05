@@ -1,4 +1,4 @@
-package com.megginson.sloop.ui;
+package com.megginson.sloop.activities;
 
 import android.content.Context;
 import android.view.ActionProvider;
@@ -157,6 +157,7 @@ public class AddressActionProvider extends ActionProvider {
 		} else {
 			// if not loading and no text, collapse
 			doUpdateStatus();
+			ActivitiesUtil.doHideKeyboard(mContext, mUrlField);
 			mMenuItem.collapseActionView();
 		}
 	}
