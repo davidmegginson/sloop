@@ -18,15 +18,14 @@
     <string name="menu_bookmarks">Favoritos</string>
     <string name="menu_bookmark_this">Añadar a favoritos</string>
     <string name="menu_help">Ayuda (en inglés)</string>
+    <string name="menu_load">Cargar</string>
     <string name="menu_reload">Recargar</string>
     <string name="menu_search">Buscar</string>
-    <string name="menu_settings">Configuración</string>
     <string name="msg_bookmark_canceled">Cambio de favorito anulado.</string>
     <string name="msg_bookmark_saved">Favorito guardado</string>
     <string name="msg_filter_cleared">Filtro borrado para %1$s.</string>
     <string name="msg_filter_set">Filtrando de %1$s = %2$s.</string>
     <string name="msg_no_data">Ningún recopilación de datos cargado.</string>
-    <string name="msg_search_no_results">Ningunos resultados de búsqueda para "%1$s".</string>
     <string name="msg_web_address">Favor de ofrecir una dirección web (URL).</string>
 
 </resources>

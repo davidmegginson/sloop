@@ -164,20 +164,8 @@ public class MainActivity extends FragmentActivity {
 	 */
 	private void setupAddressProvider(MenuItem item) {
 		mAddressProvider = (AddressActionProvider) item.getActionProvider();
-		mAddressProvider.setMenuItem(item);
+		mAddressProvider.setUp(this, item);
 		mAddressProvider.setUrl(mUrl);
-		mAddressProvider
-				.setAddressBarListener(new AddressActionProvider.AddressBarListener() {
-					@Override
-					public void onLoadStarted(String url) {
-						doLoadDataCollection(url, true);
-					}
-
-					@Override
-					public void onLoadCancelled(String url) {
-
-					}
-				});
 	}
 
 	//
@@ -331,7 +319,7 @@ public class MainActivity extends FragmentActivity {
 	 * @param url
 	 *            the URL of the data collection.
 	 */
-	private void doLoadDataCollection(String url, boolean forceLoad) {
+	void doLoadDataCollection(String url, boolean forceLoad) {
 		if (url == null || url.length() == 0) {
 			doDisplayError(getString(R.string.msg_web_address));
 			return;

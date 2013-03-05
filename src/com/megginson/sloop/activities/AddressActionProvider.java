@@ -15,61 +15,52 @@ import com.megginson.sloop.R;
 /**
  * Collapsible URL address field for the action bar.
  * 
- * This widget is designed for editing and displaying URLs: it consists of a
- * text field and a clear/cancel button.
- * 
- * The parent activity (owner of the options menu) uses
- * {@link #setAddressBarListener(AddressBarListener)} to be informed of major
- * events coming out of this widget. It can also control the widget's state
- * using the {@link #setUrl(String)} method.
- * 
- * FIXME to support Android v14 (Ice Cream Sandwich), this class requires the
- * activity to pass it a reference to the {@link MenuItem} through
- * {@link #setMenuItem(MenuItem)}. See
- * http://stackoverflow.com/questions/14662384/ for more information about the
- * issue.
+ * This action provider edits and displays URLs: it consists of a text field and
+ * a clear/cancel button.
  * 
  * @author David Megginson
  */
 public class AddressActionProvider extends ActionProvider {
 
-	/**
-	 * The URL to be displayed in the menu bar.
-	 */
+	// Contextual items
+	private MainActivity mActivity;
+	private MenuItem mMenuItem;
+	private Context mContext;
+
+	// Child views
+	private View mContentView;
+	private EditText mUrlField;
+	private Button mCancelButton;
+
+	// Internal state
 	private String mUrl;
 
 	/**
-	 * Listener for events.
+	 * Standard constructor.
+	 * 
+	 * @param context
+	 *            the context for the action provider.
 	 */
-	private AddressBarListener mListener;
-
-	// FIXME just until I figure out how to get it
-	private MenuItem mMenuItem;
-
-	/**
-	 * The parent context.
-	 */
-	private Context mContext;
-
-	/**
-	 * The view holding the UI items.
-	 */
-	private View mContentView;
-
-	/**
-	 * The text field holding the URL.
-	 */
-	private EditText mUrlField;
-
-	/**
-	 * The cancel button.
-	 */
-	private Button mCancelButton;
-
 	public AddressActionProvider(Context context) {
 		super(context);
 		mContext = context;
 		System.err.println(context);
+	}
+
+	/**
+	 * Setup the action provider with information about the main activity.
+	 * 
+	 * We can't call the constructor directly, so we have to set extra arguments
+	 * here instead.
+	 * 
+	 * @param activity
+	 *            the referring activity
+	 * @param menuItem
+	 *            the menu item that owns this provider.
+	 */
+	public void setUp(MainActivity activity, MenuItem menuItem) {
+		mActivity = activity;
+		mMenuItem = menuItem;
 	}
 
 	@Override
@@ -82,52 +73,44 @@ public class AddressActionProvider extends ActionProvider {
 	}
 
 	/**
-	 * Set the parent menu item.
+	 * Set the URL for the action provider.
 	 * 
-	 * The parent activity needs to call this to set the menu item.
+	 * We can't simply use the state of the EditText view, because we need to be
+	 * able to restore the URL on a cancel.
 	 * 
-	 * FIXME this is just temporary, until we can get the MenuItem some other
-	 * way.
-	 * 
-	 * @param menuItem
-	 *            the menu item that owns this provider.
+	 * @param url
+	 *            the URL in the address bar.
 	 */
-	public void setMenuItem(MenuItem menuItem) {
-		mMenuItem = menuItem;
-	}
-
-	/**
-	 * Set a listener to receive notifications of events from this widget.
-	 * 
-	 * @param l
-	 *            The lister to receive address bar events.
-	 */
-	public void setAddressBarListener(AddressBarListener l) {
-		mListener = l;
-	}
-
 	public void setUrl(String url) {
 		mUrl = url;
 		doUpdateStatus();
 	}
 
+	/**
+	 * Set up the text field with a callback.
+	 */
 	private void setupUrlField() {
 		mUrlField = (EditText) mContentView.findViewById(R.id.urlField);
+		// Enter key submits the URL
 		mUrlField
 				.setOnEditorActionListener(new TextView.OnEditorActionListener() {
 					@Override
 					public boolean onEditorAction(TextView v, int actionId,
 							KeyEvent event) {
-						mListener.onLoadStarted(v.getText().toString());
+						mActivity.doLoadDataCollection(mUrl, true);
 						return true;
 					}
 				});
 
 	}
 
+	/**
+	 * Set up the cancel button with a callback.
+	 */
 	private void setupCancelButton() {
 		mCancelButton = (Button) mContentView
 				.findViewById(R.id.button_url_clear);
+		// Cancel button clears or closes
 		mCancelButton.setOnClickListener(new Button.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -147,27 +130,19 @@ public class AddressActionProvider extends ActionProvider {
 	}
 
 	/**
-	 * Do a cancel action, depending on contenxt.
+	 * Do a cancel action, depending on context.
+	 * 
+	 * If the field is not empty, empty it; otherwise, close the action
+	 * provider.
 	 */
 	private void doCancel() {
-		if (mUrlField.getText() != null
-				&& mUrlField.getText().length() > 0) {
-			// if not loading but there's text, clear the field
+		if (mUrlField.getText() != null && mUrlField.getText().length() > 0) {
 			mUrlField.setText(null);
 		} else {
-			// if not loading and no text, collapse
 			doUpdateStatus();
 			ActivitiesUtil.doHideKeyboard(mContext, mUrlField);
 			mMenuItem.collapseActionView();
 		}
-	}
-
-	public interface AddressBarListener {
-
-		public abstract void onLoadStarted(String url);
-
-		public abstract void onLoadCancelled(String url);
-
 	}
 
 }
