@@ -7,7 +7,6 @@
     <string name="app_name">Sloop</string>
     <string name="btn_ok">De acuerdo</string>
     <string name="btn_save_bookmark">Guardar favorito</string>
-    <string name="hint_search">Texto a buscar</string>
     <string name="hint_text_filter">Texto a buscar</string>
     <string name="hint_url">Dirección web (URL)</string>
     <string name="info_records_filtered">Registro filtrado %1$,d/%2$,d (%3$,d en total)</string>
