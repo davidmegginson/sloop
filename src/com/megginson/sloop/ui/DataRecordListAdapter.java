@@ -74,13 +74,7 @@ public class DataRecordListAdapter extends BaseAdapter {
 
 		valueView = (TextView) layout.findViewById(R.id.field_value);
 		valueView.setText(entry.getValue());
-		if (Util.isUrl(entry.getValue())) {
-			valueView.setTextColor(Color.BLUE);
-		} else {
-			// FIXME use default colour
-			valueView.setTextColor(Color.BLACK);
-		}
-		
+
 		checkView = (ImageView) layout.findViewById(R.id.image_checkbox);
 
 		if (entry.hasFilter()) {

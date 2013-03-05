@@ -47,20 +47,6 @@ public class DataRecordFragment extends Fragment {
 			}
 		});
 		
-		//
-		// Short click on an item looks for a URL to open
-		//
-		listView.setOnItemClickListener(new ListView.OnItemClickListener() {
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view,
-					int position, long id) {
-				String value = dataRecord.getEntries().get(position).getValue();
-				if (Util.isUrl(value)) {
-					doOpenUrl(value);
-				}
-			}
-		});
-		
 		return listView;
 	}
 
