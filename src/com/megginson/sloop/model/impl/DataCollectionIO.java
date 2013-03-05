@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.net.URL;
 import java.net.URLDecoder;
 
 import org.apache.http.Header;
@@ -15,12 +14,12 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpHead;
 import org.apache.http.impl.client.DefaultHttpClient;
 
-import com.megginson.sloop.model.DataCollection;
-import com.megginson.sloop.ui.DataCollectionLoader;
-
 import android.content.ContentResolver;
 import android.net.Uri;
 import au.com.bytecode.opencsv.CSVReader;
+
+import com.megginson.sloop.model.DataCollection;
+import com.megginson.sloop.ui.DataCollectionLoader;
 
 /**
  * Static methods for creating data collections.
