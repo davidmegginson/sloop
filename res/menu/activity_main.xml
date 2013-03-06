@@ -16,6 +16,10 @@
         android:icon="@drawable/ic_search"
         android:showAsAction="ifRoom|collapseActionView"
         android:title="@string/menu_search"/>
+    <item android:id="@+id/menu_share"
+        android:icon="@drawable/ic_share"
+        android:showAsAction="ifRoom"
+        android:title="@string/menu_share" />
     <item
         android:id="@+id/menu_bookmark_list"
         android:showAsAction="never"

@@ -20,6 +20,7 @@
     <string name="menu_load">Load</string>
     <string name="menu_reload">Reload</string>
     <string name="menu_search">Search</string>
+    <string name="menu_share">Share</string>
     <string name="msg_bookmark_canceled">Bookmark change canceled</string>
     <string name="msg_bookmark_saved">Bookmark saved</string>
     <string name="msg_filter_cleared">Cleared filter for %1$s.</string>

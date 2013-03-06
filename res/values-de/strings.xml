@@ -20,6 +20,7 @@
     <string name="menu_load">Laden</string>
     <string name="menu_reload">Nachladen</string>
     <string name="menu_search">Suchen</string>
+    <string name="menu_share">Teilen</string>
     <string name="msg_bookmark_canceled">Änderungen des Lesezeichens storniert</string>
     <string name="msg_bookmark_saved">Lesezeichung gespeichert</string>
     <string name="msg_filter_cleared">Filter entfernt für %1$s.</string>
