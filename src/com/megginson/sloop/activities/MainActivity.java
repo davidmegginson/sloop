@@ -135,6 +135,9 @@ public class MainActivity extends FragmentActivity {
 		case R.id.menu_search:
 			mTextFilter.setShown(!mTextFilter.isShown());
 			return true;
+		case R.id.menu_share:
+			doShareUrl(mUrl);
+			return true;
 		case R.id.menu_bookmark_create:
 			doLaunchBookmarkCreate(mUrl);
 			return true;
@@ -203,7 +206,7 @@ public class MainActivity extends FragmentActivity {
 				doLoadDataCollection(url, false);
 			}
 		}
-		
+
 		else if (Intent.ACTION_VIEW.equals(action)) {
 			String url = intent.getData().toString();
 			if (url != null && url.length() > 0) {
@@ -215,6 +218,14 @@ public class MainActivity extends FragmentActivity {
 			DataEntry entry = intent.getParcelableExtra(PARAM_ENTRY);
 			doSetColumnFilter(entry);
 		}
+	}
+
+	void doShareUrl(String url) {
+		Intent shareIntent = new Intent();
+		shareIntent.setAction(Intent.ACTION_SEND);
+		shareIntent.putExtra(Intent.EXTRA_TEXT, url);
+		shareIntent.setType("text/plain");
+		startActivity(Intent.createChooser(shareIntent, getString(R.string.menu_share)));
 	}
 
 	void doClearFilters() {
