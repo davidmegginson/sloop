@@ -1,9 +1,6 @@
 package com.megginson.sloop.ui;
 
-import java.util.Locale;
-
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -15,7 +12,6 @@ import android.widget.ListView;
 import com.megginson.sloop.activities.MainActivity;
 import com.megginson.sloop.model.DataEntry;
 import com.megginson.sloop.model.DataRecord;
-import com.megginson.sloop.model.Util;
 
 /**
  * A view fragment wrapping a data record
@@ -37,31 +33,6 @@ public class DataRecordFragment extends Fragment {
 				.getParcelable("dataRecord");
 		ListView listView = new ListView(getActivity());
 		listView.setAdapter(new DataRecordListAdapter(getActivity(), dataRecord));
-
-		//
-		// Short click on an item means assign a filter
-		// FIXME temporary kludge to make links clickable again.
-		//
-		listView.setOnItemClickListener(new ListView.OnItemClickListener() {
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view,
-					int position, long id) {
-				String value = dataRecord.getEntries().get(position).getValue();
-				if (Util.isUrl(value)) {
-					if (value.toLowerCase(Locale.US).endsWith(".csv")) {
-						Intent intent = new Intent(getActivity(),
-								MainActivity.class);
-						intent.setAction(Intent.ACTION_MAIN);
-						intent.putExtra(MainActivity.PARAM_URL, value);
-						startActivity(intent);
-					} else {
-						Intent intent = new Intent(Intent.ACTION_VIEW);
-						intent.setData(Uri.parse(value));
-						startActivity(intent);
-					}
-				}
-			}
-		});
 
 		//
 		// Long click on an item means assign a filter

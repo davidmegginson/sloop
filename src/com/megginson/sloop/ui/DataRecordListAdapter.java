@@ -1,7 +1,11 @@
 package com.megginson.sloop.ui;
 
+import java.util.Locale;
+
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +15,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.megginson.sloop.R;
+import com.megginson.sloop.activities.MainActivity;
 import com.megginson.sloop.model.DataEntry;
 import com.megginson.sloop.model.DataRecord;
 import com.megginson.sloop.model.Util;
@@ -32,7 +37,8 @@ public class DataRecordListAdapter extends BaseAdapter {
 	public DataRecordListAdapter(Context context, DataRecord dataRecord) {
 		mContext = context;
 		mDataRecord = dataRecord;
-		System.err.println("Got a data record with " + dataRecord.getEntries().size() + " entries");
+		System.err.println("Got a data record with "
+				+ dataRecord.getEntries().size() + " entries");
 	}
 
 	@Override
@@ -51,7 +57,7 @@ public class DataRecordListAdapter extends BaseAdapter {
 	}
 
 	@Override
-	public View getView(int position, View convertView, ViewGroup parent) {
+	public View getView(int position, View convertView, final ViewGroup parent) {
 		View layout;
 		ImageView checkView;
 		TextView labelView;
@@ -60,8 +66,7 @@ public class DataRecordListAdapter extends BaseAdapter {
 		// Reuse existing components if we can
 		if (convertView == null) {
 			LayoutInflater inflater = LayoutInflater.from(mContext);
-			layout = inflater.inflate(
-					R.layout.component_data_entry, null);
+			layout = inflater.inflate(R.layout.component_data_entry, null);
 		} else {
 			layout = convertView;
 		}
@@ -72,24 +77,39 @@ public class DataRecordListAdapter extends BaseAdapter {
 		labelView = (TextView) layout.findViewById(R.id.field_name);
 		labelView.setText(entry.getKey());
 
-		String value = entry.getValue();
+		final String value = entry.getValue();
 		valueView = (TextView) layout.findViewById(R.id.field_value);
 		valueView.setText(value);
-		
-		// FIXME temporary kludge to highlight URLs in blue
+
+		// FIXME temporary kludge to make links clickable
 		if (Util.isUrl(value)) {
 			valueView.setTextColor(Color.BLUE);
+			valueView.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					if (value.toLowerCase(Locale.US).endsWith(".csv")) {
+						Intent intent = new Intent(parent.getContext(),
+								MainActivity.class);
+						intent.setAction(Intent.ACTION_MAIN);
+						intent.putExtra(MainActivity.PARAM_URL, value);
+						parent.getContext().startActivity(intent);
+					} else {
+						Intent intent = new Intent(Intent.ACTION_VIEW);
+						intent.setData(Uri.parse(value));
+						parent.getContext().startActivity(intent);
+					}
+				}
+			});
 		}
-		
 
 		checkView = (ImageView) layout.findViewById(R.id.image_checkbox);
 
 		if (entry.hasFilter()) {
 			checkView.setVisibility(View.VISIBLE);
 		} else {
-			checkView.setVisibility(View.INVISIBLE);			
+			checkView.setVisibility(View.INVISIBLE);
 		}
-		
+
 		if (position % 2 == 1) {
 			layout.setBackgroundColor(Color.rgb(0xee, 0xee, 0xee));
 		} else {
