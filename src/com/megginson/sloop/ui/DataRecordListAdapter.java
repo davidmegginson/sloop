@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.megginson.sloop.R;
 import com.megginson.sloop.model.DataEntry;
 import com.megginson.sloop.model.DataRecord;
+import com.megginson.sloop.model.Util;
 
 /**
  * Adapt a single {@link DataRecordImpl} for display as a list of entries.
@@ -71,8 +72,15 @@ public class DataRecordListAdapter extends BaseAdapter {
 		labelView = (TextView) layout.findViewById(R.id.field_name);
 		labelView.setText(entry.getKey());
 
+		String value = entry.getValue();
 		valueView = (TextView) layout.findViewById(R.id.field_value);
-		valueView.setText(entry.getValue());
+		valueView.setText(value);
+		
+		// FIXME temporary kludge to highlight URLs in blue
+		if (Util.isUrl(value)) {
+			valueView.setTextColor(Color.BLUE);
+		}
+		
 
 		checkView = (ImageView) layout.findViewById(R.id.image_checkbox);
 

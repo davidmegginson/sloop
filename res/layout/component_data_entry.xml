@@ -22,8 +22,6 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/field_name"
         android:layout_toRightOf="@+id/image_checkbox"
-        android:textIsSelectable="true"
-        android:autoLink="web|email|map"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
@@ -32,7 +30,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@+id/image_checkbox"
-        android:textIsSelectable="true"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
 </RelativeLayout>
