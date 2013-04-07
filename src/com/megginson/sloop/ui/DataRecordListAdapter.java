@@ -5,7 +5,11 @@ import java.util.Locale;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.net.Uri;
+import android.text.Spannable;
+import android.text.Spanned;
+import android.text.style.ClickableSpan;
+import android.text.style.URLSpan;
+import android.text.util.Linkify;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +22,6 @@ import com.megginson.sloop.R;
 import com.megginson.sloop.activities.MainActivity;
 import com.megginson.sloop.model.DataEntry;
 import com.megginson.sloop.model.DataRecord;
-import com.megginson.sloop.model.Util;
 
 /**
  * Adapt a single {@link DataRecordImpl} for display as a list of entries.
@@ -80,27 +83,8 @@ public class DataRecordListAdapter extends BaseAdapter {
 		final String value = entry.getValue();
 		valueView = (TextView) layout.findViewById(R.id.field_value);
 		valueView.setText(value);
-
-		// FIXME temporary kludge to make links clickable
-		if (Util.isUrl(value)) {
-			valueView.setTextColor(Color.BLUE);
-			valueView.setOnClickListener(new View.OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					if (value.toLowerCase(Locale.US).endsWith(".csv")) {
-						Intent intent = new Intent(parent.getContext(),
-								MainActivity.class);
-						intent.setAction(Intent.ACTION_MAIN);
-						intent.putExtra(MainActivity.PARAM_URL, value);
-						parent.getContext().startActivity(intent);
-					} else {
-						Intent intent = new Intent(Intent.ACTION_VIEW);
-						intent.setData(Uri.parse(value));
-						parent.getContext().startActivity(intent);
-					}
-				}
-			});
-		}
+		Linkify.addLinks(valueView, Linkify.ALL);
+		stealURLClicks(valueView);
 
 		checkView = (ImageView) layout.findViewById(R.id.image_checkbox);
 
@@ -117,6 +101,54 @@ public class DataRecordListAdapter extends BaseAdapter {
 		}
 
 		return layout;
+	}
+
+	/**
+	 * Replace some URL spans in a TextView with internal links.
+	 * 
+	 * This function walks through all URLSpans in a text view, and replaces any
+	 * ending in ".csv" with internal-linking spans.
+	 * 
+	 * @param textView
+	 *            the text view to modify.
+	 */
+	private void stealURLClicks(TextView textView) {
+		Spannable text = (Spannable) textView.getText();
+		for (URLSpan span : textView.getUrls()) {
+			if (span.getURL().toLowerCase(Locale.US).contains(".csv")) {
+				int start = text.getSpanStart(span);
+				int end = text.getSpanEnd(span);
+				text.removeSpan(span);
+				text.setSpan(new SloopURLSpan(span.getURL()), start, end,
+						Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+			}
+		}
+	}
+
+	/**
+	 * Special class to replace URLSpan for an internal link.
+	 * 
+	 * When the Android libraries linkify a TextView, they provide no way to
+	 * intercept some links for internal use in the application. This class
+	 * provides an alternative span type that opens URLs in Sloop rather than
+	 * sending out a view intent.
+	 * 
+	 * @author David Megginson
+	 */
+	private class SloopURLSpan extends ClickableSpan {
+		private String mUrl;
+
+		public SloopURLSpan(String url) {
+			mUrl = url;
+		}
+
+		@Override
+		public void onClick(View widget) {
+			Intent intent = new Intent(widget.getContext(), MainActivity.class);
+			intent.setAction(Intent.ACTION_MAIN);
+			intent.putExtra(MainActivity.PARAM_URL, mUrl);
+			widget.getContext().startActivity(intent);
+		}
 	}
 
 }
