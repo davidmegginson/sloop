@@ -1,6 +1,6 @@
 package com.megginson.sloop.ui;
 
-import java.util.Locale;
+import java.util.regex.Pattern;
 
 import android.content.Context;
 import android.content.Intent;
@@ -31,10 +31,18 @@ import com.megginson.sloop.model.DataRecord;
  * @author David Megginson
  */
 public class DataRecordListAdapter extends BaseAdapter {
+	
+	/**
+	 * Regular expression (case-insensitive) for a link that Sloop can handle.
+	 */
+	public final static String SLOOP_LINK_REGEX = "^https?.*\\.csv(\\?.*)?$";
 
 	private Context mContext;
 
 	private DataRecord mDataRecord;
+	
+	// Don't make this static, in case it's not threadsafe.
+	private Pattern mLinkPattern = Pattern.compile(SLOOP_LINK_REGEX, Pattern.CASE_INSENSITIVE);
 
 	public DataRecordListAdapter(Context context, DataRecord dataRecord) {
 		mContext = context;
@@ -114,8 +122,7 @@ public class DataRecordListAdapter extends BaseAdapter {
 	private void stealURLClicks(TextView textView) {
 		Spannable text = (Spannable) textView.getText();
 		for (URLSpan span : textView.getUrls()) {
-			// FIXME use a smarter regular expression
-			if (span.getURL().toLowerCase(Locale.US).contains(".csv")) {
+			if (mLinkPattern.matcher(span.getURL()).matches()) {
 				int start = text.getSpanStart(span);
 				int end = text.getSpanEnd(span);
 				text.removeSpan(span);
