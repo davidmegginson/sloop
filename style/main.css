@@ -26,13 +26,19 @@ header {
     padding: .5ex 1em;
 }
 
+body {
+    position: relative;
+}
+
 article {
+    border-radius: 1em;
     background: #f0f0f0;
     padding: 1ex 1em;
     margin: 2ex 1em 2ex 1em;
 }
 
 nav {
+    border-radius: 1em;
     background: #f0f0f0;
     padding: 2ex 2em;
     margin: 2ex 1em;
@@ -46,6 +52,20 @@ nav ul {
 nav ul li {
     margin: 1ex 0;
     text-weight: bold;
+}
+
+footer {
+    text-align: center;
+    font-size: 90%;
+    padding: .5ex 1em;
+    color: #f0f0f0;
+    font-style: italic;
+    margin: 2ex 1em 2ex 1em;
+}
+
+footer a:link, footer a:visited {
+    color: #f0f0f0;
+    font-weight: normal;
 }
 
 figure {
