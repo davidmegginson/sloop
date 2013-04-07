@@ -30,6 +30,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="21"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textIsSelectable="true" />
+        android:textIsSelectable="true"
+        android:autoLink="web|email|map" />
 
 </LinearLayout>

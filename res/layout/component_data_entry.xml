@@ -23,7 +23,8 @@
         android:layout_below="@+id/field_name"
         android:layout_toRightOf="@+id/image_checkbox"
         android:textAppearance="?android:attr/textAppearanceMedium" 
-        android:textIsSelectable="true" />
+        android:textIsSelectable="true" 
+        android:autoLink="web|email|map"/>
 
     <TextView
         android:id="@+id/field_name"

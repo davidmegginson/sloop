@@ -9,7 +9,6 @@ import android.text.Spannable;
 import android.text.Spanned;
 import android.text.style.ClickableSpan;
 import android.text.style.URLSpan;
-import android.text.util.Linkify;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -83,7 +82,7 @@ public class DataRecordListAdapter extends BaseAdapter {
 		final String value = entry.getValue();
 		valueView = (TextView) layout.findViewById(R.id.field_value);
 		valueView.setText(value);
-		Linkify.addLinks(valueView, Linkify.ALL);
+		// replace some of the links with internal Sloop links
 		stealURLClicks(valueView);
 
 		checkView = (ImageView) layout.findViewById(R.id.image_checkbox);
@@ -115,6 +114,7 @@ public class DataRecordListAdapter extends BaseAdapter {
 	private void stealURLClicks(TextView textView) {
 		Spannable text = (Spannable) textView.getText();
 		for (URLSpan span : textView.getUrls()) {
+			// FIXME use a smarter regular expression
 			if (span.getURL().toLowerCase(Locale.US).contains(".csv")) {
 				int start = text.getSpanStart(span);
 				int end = text.getSpanEnd(span);
