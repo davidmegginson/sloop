@@ -96,6 +96,20 @@ public class BookmarkListActivity extends Activity {
 						finish();
 					}
 				});
+		mBookmarksView.setOnItemLongClickListener(
+			new AdapterView.OnItemLongClickListener() {
+				@Override
+				public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+					Bookmark bookmark = mBookmarks.get(position);
+					Intent intent = new Intent(BookmarkListActivity.this,
+											   BookmarkEditActivity.class);
+					intent.putExtra(BookmarkEditActivity.PARAM_URL, bookmark.getUrl());
+					startActivity(intent);
+					return true;
+				}
+				
+			}
+		);
 	}
 
 	//
