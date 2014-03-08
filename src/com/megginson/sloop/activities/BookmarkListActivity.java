@@ -94,14 +94,7 @@ public class BookmarkListActivity extends Activity
 				public void onItemClick(AdapterView<?> parent, View view,
 										int position, long id)
 				{
-					Bookmark bookmark = mBookmarks.get(position);
-					Intent intent = new Intent(BookmarkListActivity.this,
-											   MainActivity.class);
-					intent.setAction(Intent.ACTION_MAIN);
-					intent.putExtra(MainActivity.PARAM_URL, bookmark.getUrl());
-					Toast.makeText(getApplicationContext(),
-								   bookmark.getTitle(), Toast.LENGTH_SHORT).show();
-					startActivity(intent);
+					doOpenBookmark(position);
 				}
 			});
 		mBookmarksView.setOnItemLongClickListener(
@@ -127,6 +120,20 @@ public class BookmarkListActivity extends Activity
 	private void doNavigateUp()
 	{
 		NavUtils.navigateUpFromSameTask(this);
+	}
+	
+	/**
+	 * Action: open bookmark
+	 */
+	private void doOpenBookmark(int position) {
+		Bookmark bookmark = mBookmarks.get(position);
+		Intent intent = new Intent(BookmarkListActivity.this,
+								   MainActivity.class);
+		intent.setAction(Intent.ACTION_MAIN);
+		intent.putExtra(MainActivity.PARAM_URL, bookmark.getUrl());
+		Toast.makeText(getApplicationContext(),
+					   bookmark.getTitle(), Toast.LENGTH_SHORT).show();
+		startActivity(intent);
 	}
 
 	/**
