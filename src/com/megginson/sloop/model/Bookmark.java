@@ -30,10 +30,16 @@ public class Bookmark {
 		setTitle(bookmark.getTitle());
 	}
 
+	/**
+	 * Get the bookmark descriptive string.
+	 */
 	public String getTitle() {
 		return mTitle;
 	}
 
+	/**
+	 * Set the bookmark description string.
+	 */
 	public void setTitle(String title) {
 		if (title == null) {
 			mTitle = getUrl();

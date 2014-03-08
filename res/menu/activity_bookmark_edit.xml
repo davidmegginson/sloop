@@ -5,6 +5,10 @@
         android:icon="@drawable/ic_save"
         android:showAsAction="always"
         android:title="@string/btn_save_bookmark"/>
+	<item
+		android:id="@+id/menu_delete"
+		android:showAsAction="ifRoom"
+		android:title="@string/menu_delete"/>
     <item
         android:id="@+id/menu_help"
         android:icon="@drawable/ic_help"

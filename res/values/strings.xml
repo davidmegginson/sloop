@@ -16,6 +16,7 @@
     <string name="label_bookmark_url">Bookmark URL</string>
     <string name="menu_bookmarks">Bookmarks</string>
     <string name="menu_bookmark_this">Bookmark this dataset</string>
+	<string name="menu_delete">Delete</string>
     <string name="menu_help">Help</string>
     <string name="menu_load">Load</string>
     <string name="menu_reload">Reload</string>
