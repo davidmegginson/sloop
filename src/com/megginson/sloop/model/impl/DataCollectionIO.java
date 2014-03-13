@@ -20,6 +20,7 @@ import au.com.bytecode.opencsv.CSVReader;
 
 import com.megginson.sloop.model.DataCollection;
 import com.megginson.sloop.ui.DataCollectionLoader;
+import java.io.*;
 
 /**
  * Static methods for creating data collections.
@@ -58,7 +59,14 @@ public class DataCollectionIO {
 	 */
 	public static DataCollection readCSV(String url, ContentResolver contentResolver) throws IOException {
 		DataCollection dataCollection = null;
-		Reader input = new InputStreamReader(openURL(url, contentResolver));
+		
+		// Ugly kludge (thanks, Android!): handle a file: URL
+		Reader input;
+		if (url.startsWith("file:///")) {
+			input = new FileReader(url.substring(8));
+		} else {
+			input = new InputStreamReader(openURL(url, contentResolver));
+		}
 
 		try {
 			dataCollection = readCSV(input);

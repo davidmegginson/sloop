@@ -9,7 +9,8 @@
         android:targetSdkVersion="17" />
 
     <uses-permission android:name="android.permission.INTERNET" />
-
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+	
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
@@ -33,6 +34,15 @@
 
                 <data android:mimeType="text/csv" />
             </intent-filter>
+			<intent-filter>
+				<action android:name="android.intent.action.VIEW" />
+				<category android:name="android.intent.category.DEFAULT" />
+				<category android:name="android.intent.category.BROWSABLE" />
+				<data android:scheme="file" />
+				<data android:mimeType="*/*" />
+				<data android:pathPattern=".*\\.csv" />
+				<data android:host="*" />
+			</intent-filter>
         </activity>
         <activity
             android:name="com.megginson.sloop.activities.BookmarkListActivity"
