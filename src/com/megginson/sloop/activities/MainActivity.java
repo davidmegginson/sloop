@@ -9,12 +9,10 @@ import android.content.Loader;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
-
 import com.megginson.sloop.R;
 import com.megginson.sloop.model.DataCollection;
 import com.megginson.sloop.model.DataEntry;
@@ -32,7 +30,8 @@ import com.megginson.sloop.ui.DataCollectionResult;
  * @author David Megginson
  */
 @SuppressLint("DefaultLocale")
-public class MainActivity extends FragmentActivity {
+public class MainActivity extends FragmentActivity
+{
 
 	public final static String ACTION_FILTER = "com.megginson.sloop.intent.FILTER";
 
@@ -77,25 +76,27 @@ public class MainActivity extends FragmentActivity {
 	//
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	protected void onCreate(Bundle savedInstanceState)
+	{
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.activity_main);
 
 		// grab references to the fragments
 		mTextFilter = (TextFilterFragment) getSupportFragmentManager()
-				.findFragmentById(R.id.fragment_text_filter);
+			.findFragmentById(R.id.fragment_text_filter);
 		mMainDisplay = (MainDisplayFragment) getSupportFragmentManager()
-				.findFragmentById(R.id.fragment_main_display);
+			.findFragmentById(R.id.fragment_main_display);
 		mInfoBar = (InfoBarFragment) getSupportFragmentManager()
-				.findFragmentById(R.id.fragment_info_bar);
+			.findFragmentById(R.id.fragment_info_bar);
 
 		// What are we supposed to be doing?
 		doHandleIntent(getIntent());
 	}
 
 	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
+	public boolean onCreateOptionsMenu(Menu menu)
+	{
 		super.onCreateOptionsMenu(menu);
 
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -108,52 +109,58 @@ public class MainActivity extends FragmentActivity {
 	}
 
 	@Override
-	public void onSaveInstanceState(Bundle savedInstanceState) {
+	public void onSaveInstanceState(Bundle savedInstanceState)
+	{
 		// save the URL for the next invocation
-		if (mUrl != null) {
+		if (mUrl != null)
+		{
 			super.onSaveInstanceState(savedInstanceState);
 			savedInstanceState.putString(PARAM_URL, mUrl);
 			SharedPreferences.Editor editor = getSharedPreferences(
-					PREFERENCE_GROUP_MAIN, MODE_PRIVATE).edit();
+				PREFERENCE_GROUP_MAIN, MODE_PRIVATE).edit();
 			editor.putString(PREFERENCE_URL, mUrl);
 			editor.commit();
 		}
 	}
 
 	@Override
-	public void onNewIntent(Intent intent) {
+	public void onNewIntent(Intent intent)
+	{
 		doHandleIntent(intent);
 	}
 
 	@Override
-	public boolean onMenuItemSelected(int featureId, MenuItem item) {
+	public boolean onMenuItemSelected(int featureId, MenuItem item)
+	{
 		// Items from the main menu
-		switch (item.getItemId()) {
-		case R.id.menu_bookmark_list:
-			doLaunchBookmarkList();
-			return true;
-		case R.id.menu_search:
-			mTextFilter.setShown(!mTextFilter.isShown());
-			return true;
-		case R.id.menu_share:
-			doShareUrl(mUrl);
-			return true;
-		case R.id.menu_bookmark_create:
-			doLaunchBookmarkCreate(mUrl);
-			return true;
-		case R.id.menu_reload:
-			doLoadDataCollection(mUrl, true);
-			return true;
-		case R.id.menu_help:
-			ActivitiesUtil.doHelp(this);
-			return true;
-		default:
-			return super.onMenuItemSelected(featureId, item);
+		switch (item.getItemId())
+		{
+			case R.id.menu_bookmark_list:
+				doLaunchBookmarkList();
+				return true;
+			case R.id.menu_search:
+				mTextFilter.setShown(!mTextFilter.isShown());
+				return true;
+			case R.id.menu_share:
+				doShareUrl(mUrl);
+				return true;
+			case R.id.menu_bookmark_create:
+				doLaunchBookmarkCreate(mUrl);
+				return true;
+			case R.id.menu_reload:
+				doLoadDataCollection(mUrl, true);
+				return true;
+			case R.id.menu_help:
+				ActivitiesUtil.doHelp(this);
+				return true;
+			default:
+				return super.onMenuItemSelected(featureId, item);
 		}
 	}
 
 	@Override
-	public boolean onSearchRequested() {
+	public boolean onSearchRequested()
+	{
 		// The user has pressed the search button
 		mTextFilter.setShown(!mTextFilter.isShown());
 		return true;
@@ -165,7 +172,8 @@ public class MainActivity extends FragmentActivity {
 	 * @param item
 	 *            The menu item for the address bar action.
 	 */
-	private void setupAddressProvider(MenuItem item) {
+	private void setupAddressProvider(MenuItem item)
+	{
 		mAddressProvider = (AddressActionProvider) item.getActionProvider();
 		mAddressProvider.setUp(this, item);
 		mAddressProvider.setUrl(mUrl);
@@ -186,41 +194,50 @@ public class MainActivity extends FragmentActivity {
 	 * @param intent
 	 *            The intent passed to the activity.
 	 */
-	private void doHandleIntent(Intent intent) {
+	private void doHandleIntent(Intent intent)
+	{
 		String action = intent.getAction();
 
 		// ACTION_MAIN is the default
-		if (action == null) {
+		if (action == null)
+		{
 			action = Intent.ACTION_MAIN;
 		}
 
-		if (Intent.ACTION_MAIN.equals(action)) {
+		if (Intent.ACTION_MAIN.equals(action))
+		{
 			String url = intent.getStringExtra(PARAM_URL);
 			// Restore the last URL
-			if (url == null) {
+			if (url == null)
+			{
 				url = getSharedPreferences(PREFERENCE_GROUP_MAIN, MODE_PRIVATE)
-						.getString(PREFERENCE_URL, null);
+					.getString(PREFERENCE_URL, null);
 				url = DEFAULT_URL;
 			}
-			if (url != null && url.length() > 0) {
+			if (url != null && url.length() > 0)
+			{
 				doLoadDataCollection(url, false);
 			}
 		}
 
-		else if (Intent.ACTION_VIEW.equals(action)) {
+		else if (Intent.ACTION_VIEW.equals(action))
+		{
 			String url = intent.getData().toString();
-			if (url != null && url.length() > 0) {
+			if (url != null && url.length() > 0)
+			{
 				doLoadDataCollection(url, false);
 			}
 		}
 
-		else if (ACTION_FILTER.equals(action)) {
+		else if (ACTION_FILTER.equals(action))
+		{
 			DataEntry entry = intent.getParcelableExtra(PARAM_ENTRY);
 			doSetColumnFilter(entry);
 		}
 	}
 
-	void doShareUrl(String url) {
+	void doShareUrl(String url)
+	{
 		Intent shareIntent = new Intent();
 		shareIntent.setAction(Intent.ACTION_SEND);
 		shareIntent.putExtra(Intent.EXTRA_TEXT, url);
@@ -228,9 +245,11 @@ public class MainActivity extends FragmentActivity {
 		startActivity(Intent.createChooser(shareIntent, getString(R.string.menu_share)));
 	}
 
-	void doClearFilters() {
+	void doClearFilters()
+	{
 		DataCollection collection = mMainDisplay.getDataCollection();
-		if (collection != null) {
+		if (collection != null)
+		{
 			doSetTextFilter(null);
 			collection.clearFilters();
 			mTextFilter.clear();
@@ -242,12 +261,17 @@ public class MainActivity extends FragmentActivity {
 	/**
 	 * Action: set a text filter for the data collection.
 	 */
-	void doSetTextFilter(String query) {
+	void doSetTextFilter(String query)
+	{
 		DataCollection collection = mMainDisplay.getDataCollection();
-		if (collection != null) {
-			if (query == null) {
+		if (collection != null)
+		{
+			if (query == null)
+			{
 				collection.setTextFilter(null);
-			} else {
+			}
+			else
+			{
 				collection.setTextFilter(new ContainsStringFilter(query));
 			}
 			collection.setFilteringEnabled(true);
@@ -262,26 +286,31 @@ public class MainActivity extends FragmentActivity {
 	 * @param entry
 	 *            the data entry (soon to be the filter)
 	 */
-	private void doSetColumnFilter(DataEntry entry) {
+	private void doSetColumnFilter(DataEntry entry)
+	{
 		DataCollection collection = mMainDisplay.getDataCollection();
-		if (collection.getColumnFilter(entry.getKey()) != null) {
+		if (collection.getColumnFilter(entry.getKey()) != null)
+		{
 			collection.putColumnFilter(entry.getKey(), null);
-			if (!collection.hasFilters()) {
+			if (!collection.hasFilters())
+			{
 				collection.setFilteringEnabled(false);
 			}
 			Toast.makeText(
-					this,
-					String.format(getString(R.string.msg_filter_cleared),
-							entry.getKey()), Toast.LENGTH_SHORT).show();
-		} else {
+				this,
+				String.format(getString(R.string.msg_filter_cleared),
+							  entry.getKey()), Toast.LENGTH_SHORT).show();
+		}
+		else
+		{
 			collection.setFilteringEnabled(true);
 			collection.putColumnFilter(entry.getKey(), new EqualsStringFilter(
-					entry.getValue()));
+										   entry.getValue()));
 			Toast.makeText(
-					this,
-					String.format(getString(R.string.msg_filter_set),
-							entry.getKey(), entry.getValue()),
-					Toast.LENGTH_SHORT).show();
+				this,
+				String.format(getString(R.string.msg_filter_set),
+							  entry.getKey(), entry.getValue()),
+				Toast.LENGTH_SHORT).show();
 		}
 		mMainDisplay.reset();
 		doDisplayRecordNumber(mMainDisplay.getCurrentItem());
@@ -293,23 +322,26 @@ public class MainActivity extends FragmentActivity {
 	 * @param message
 	 *            The error message as a string.
 	 */
-	private void doDisplayError(String message) {
+	private void doDisplayError(String message)
+	{
 		AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
 		builder.setMessage(message);
 		builder.setNeutralButton(R.string.btn_ok,
-				new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						dialog.cancel();
-					}
-				});
+			new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which)
+				{
+					dialog.cancel();
+				}
+			});
 		builder.create().show();
 	}
 
 	/**
 	 * Action: launch the bookmark list activity.
 	 */
-	private void doLaunchBookmarkList() {
+	private void doLaunchBookmarkList()
+	{
 		Intent intent = new Intent(this, BookmarkListActivity.class);
 		startActivity(intent);
 	}
@@ -320,7 +352,8 @@ public class MainActivity extends FragmentActivity {
 	 * @param url
 	 *            The URL of the bookmark to be created or edited.
 	 */
-	private void doLaunchBookmarkCreate(String url) {
+	private void doLaunchBookmarkCreate(String url)
+	{
 		Intent intent = new Intent(this, BookmarkEditActivity.class);
 		intent.putExtra(BookmarkEditActivity.PARAM_URL, url);
 		startActivity(intent);
@@ -336,8 +369,10 @@ public class MainActivity extends FragmentActivity {
 	 * @param url
 	 *            the URL of the data collection.
 	 */
-	void doLoadDataCollection(String url, boolean forceLoad) {
-		if (url == null || url.length() == 0) {
+	void doLoadDataCollection(String url, boolean forceLoad)
+	{
+		if (url == null || url.length() == 0)
+		{
 			doDisplayError(getString(R.string.msg_web_address));
 			return;
 		}
@@ -346,51 +381,62 @@ public class MainActivity extends FragmentActivity {
 		args.putString(PARAM_URL, url);
 		args.putBoolean(PARAM_FORCE_LOAD, forceLoad);
 		getLoaderManager().restartLoader(0, args,
-				new LoaderCallbacks<DataCollectionResult>() {
+			new LoaderCallbacks<DataCollectionResult>() {
 
-					@Override
-					public Loader<DataCollectionResult> onCreateLoader(int id,
-							Bundle args) {
-						// only one loader for now, so ignore id
-						DataCollectionLoader loader = new DataCollectionLoader(
-								getApplicationContext());
-						if (args != null) {
-							loader.setURL(args.getString(PARAM_URL));
-							loader.setForceLoad(args
-									.getBoolean(PARAM_FORCE_LOAD));
+				@Override
+				public Loader<DataCollectionResult> onCreateLoader(int id,
+																   Bundle args)
+				{
+					// only one loader for now, so ignore id
+					DataCollectionLoader loader = new DataCollectionLoader(
+						getApplicationContext());
+					if (args != null)
+					{
+						loader.setURL(args.getString(PARAM_URL));
+						loader.setForceLoad(args
+											.getBoolean(PARAM_FORCE_LOAD));
+					}
+					return loader;
+				}
+
+				@Override
+				public void onLoadFinished(
+					Loader<DataCollectionResult> loader,
+					DataCollectionResult result)
+				{
+					if (result.hasError())
+					{
+						// if the load failed, show and error and stick
+						// around
+						doDisplayError(result.getThrowable().getMessage());
+					}
+					else if (result.getRedirectUrl() != null)
+					{
+						// if it was a non-CSV resource, launch the browser
+						doLaunchBrowser(result.getRedirectUrl());
+					}
+					else
+					{
+						// succeeded - show the collection
+						doUpdateDataCollection(result.getDataCollection());
+						if (mAddressProvider != null)
+						{
+							mAddressProvider.setUrl(mUrl);
 						}
-						return loader;
 					}
+					mMainDisplay.setLoading(false);
+				}
 
-					@Override
-					public void onLoadFinished(
-							Loader<DataCollectionResult> loader,
-							DataCollectionResult result) {
-						if (result.hasError()) {
-							// if the load failed, show and error and stick
-							// around
-							doDisplayError(result.getThrowable().getMessage());
-						} else if (result.getRedirectUrl() != null) {
-							// if it was a non-CSV resource, launch the browser
-							doLaunchBrowser(result.getRedirectUrl());
-						} else {
-							// succeeded - show the collection
-							doUpdateDataCollection(result.getDataCollection());
-							if (mAddressProvider != null) {
-								mAddressProvider.setUrl(mUrl);
-							}
-						}
-						mMainDisplay.setLoading(false);
-					}
+				@Override
+				public void onLoaderReset(
+					Loader<DataCollectionResult> loader)
+				{
+					// NO OP
+				}
 
-					@Override
-					public void onLoaderReset(
-							Loader<DataCollectionResult> loader) {
-						// NO OP
-					}
-
-				});
-		if (mAddressProvider != null) {
+			});
+		if (mAddressProvider != null)
+		{
 			mAddressProvider.setUrl(mUrl);
 		}
 		ActivitiesUtil.doHideKeyboard(this, mInfoBar.getView());
@@ -406,11 +452,15 @@ public class MainActivity extends FragmentActivity {
 	 * @param dataCollection
 	 *            the new data collection, or null to clear.
 	 */
-	private void doUpdateDataCollection(DataCollection dataCollection) {
+	private void doUpdateDataCollection(DataCollection dataCollection)
+	{
 		mMainDisplay.setDataCollection(dataCollection);
-		if (dataCollection != null) {
+		if (dataCollection != null)
+		{
 			doDisplayRecordNumber(0);
-		} else {
+		}
+		else
+		{
 			mInfoBar.displayRecordCount(0, 0, 0);
 		}
 	}
@@ -423,7 +473,8 @@ public class MainActivity extends FragmentActivity {
 	 * @param url
 	 *            The URL to launch in the browser (etc.).
 	 */
-	private void doLaunchBrowser(String url) {
+	private void doLaunchBrowser(String url)
+	{
 		Intent intent = new Intent(Intent.ACTION_VIEW);
 		intent.setData(Uri.parse(url));
 		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -440,13 +491,14 @@ public class MainActivity extends FragmentActivity {
 	 * @param recordNumber
 	 *            the record number to display (zero-based).
 	 */
-	void doDisplayRecordNumber(int recordNumber) {
+	void doDisplayRecordNumber(int recordNumber)
+	{
 		DataCollection collection = mMainDisplay.getDataCollection();
 		int filteredTotal = collection.getFilteredRecords().size();
 		int unfilteredTotal = collection.getRecords().size();
 		mMainDisplay.refresh();
 		mInfoBar.displayRecordCount(recordNumber, filteredTotal,
-				unfilteredTotal);
+									unfilteredTotal);
 	}
 
 }

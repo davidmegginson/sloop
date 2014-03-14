@@ -1,9 +1,5 @@
 package com.megginson.sloop.activities;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,10 +10,12 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
-
 import com.megginson.sloop.R;
 import com.megginson.sloop.model.Bookmark;
 import com.megginson.sloop.ui.BookmarkListAdapter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class BookmarkListActivity extends Activity
 {
@@ -102,7 +100,7 @@ public class BookmarkListActivity extends Activity
 				@Override
 				public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id)
 				{
-					doEditBookmark(position);
+					doBookmarkOptions(position);
 					return true;
 				}
 
@@ -121,11 +119,20 @@ public class BookmarkListActivity extends Activity
 	{
 		NavUtils.navigateUpFromSameTask(this);
 	}
+
+	/**
+	 * Options for a bookmark (after long press)
+	 */
+	private void doBookmarkOptions(int position)
+	{
+		doEditBookmark(position);		
+	}
 	
 	/**
 	 * Action: open bookmark
 	 */
-	private void doOpenBookmark(int position) {
+	private void doOpenBookmark(int position)
+	{
 		Bookmark bookmark = mBookmarks.get(position);
 		Intent intent = new Intent(BookmarkListActivity.this,
 								   MainActivity.class);

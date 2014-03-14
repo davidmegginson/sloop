@@ -20,7 +20,8 @@ import com.megginson.sloop.R;
  * 
  * @author David Megginson
  */
-public class AddressActionProvider extends ActionProvider {
+public class AddressActionProvider extends ActionProvider
+{
 
 	// Contextual items
 	private MainActivity mActivity;
@@ -41,7 +42,8 @@ public class AddressActionProvider extends ActionProvider {
 	 * @param context
 	 *            the context for the action provider.
 	 */
-	public AddressActionProvider(Context context) {
+	public AddressActionProvider(Context context)
+	{
 		super(context);
 		mContext = context;
 		System.err.println(context);
@@ -58,13 +60,15 @@ public class AddressActionProvider extends ActionProvider {
 	 * @param menuItem
 	 *            the menu item that owns this provider.
 	 */
-	public void setUp(MainActivity activity, MenuItem menuItem) {
+	public void setUp(MainActivity activity, MenuItem menuItem)
+	{
 		mActivity = activity;
 		mMenuItem = menuItem;
 	}
 
 	@Override
-	public View onCreateActionView() {
+	public View onCreateActionView()
+	{
 		LayoutInflater inflater = LayoutInflater.from(mContext);
 		mContentView = inflater.inflate(R.layout.widget_address_bar, null);
 		setupUrlField();
@@ -81,7 +85,8 @@ public class AddressActionProvider extends ActionProvider {
 	 * @param url
 	 *            the URL in the address bar.
 	 */
-	public void setUrl(String url) {
+	public void setUrl(String url)
+	{
 		mUrl = url;
 		doUpdateStatus();
 	}
@@ -89,42 +94,49 @@ public class AddressActionProvider extends ActionProvider {
 	/**
 	 * Set up the text field with a callback.
 	 */
-	private void setupUrlField() {
+	private void setupUrlField()
+	{
 		mUrlField = (EditText) mContentView.findViewById(R.id.urlField);
 		// Enter key submits the URL
 		mUrlField
-				.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-					@Override
-					public boolean onEditorAction(TextView v, int actionId,
-							KeyEvent event) {
-						mActivity.doLoadDataCollection(mUrl, true);
-						return true;
-					}
-				});
+			.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+				@Override
+				public boolean onEditorAction(TextView v, int actionId,
+											  KeyEvent event)
+				{
+					mUrl = mUrlField.getText().toString();
+					mActivity.doLoadDataCollection(mUrl, true);
+					return true;
+				}
+			});
 
 	}
 
 	/**
 	 * Set up the cancel button with a callback.
 	 */
-	private void setupCancelButton() {
+	private void setupCancelButton()
+	{
 		mCancelButton = (Button) mContentView
-				.findViewById(R.id.button_url_clear);
+			.findViewById(R.id.button_url_clear);
 		// Cancel button clears or closes
 		mCancelButton.setOnClickListener(new Button.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				doCancel();
-			}
-		});
+				@Override
+				public void onClick(View v)
+				{
+					doCancel();
+				}
+			});
 	}
 
 	/**
 	 * Update the loading status display.
 	 */
-	private void doUpdateStatus() {
+	private void doUpdateStatus()
+	{
 		// update the URL field
-		if (mUrlField != null) {
+		if (mUrlField != null)
+		{
 			mUrlField.setText(mUrl);
 		}
 	}
@@ -135,10 +147,14 @@ public class AddressActionProvider extends ActionProvider {
 	 * If the field is not empty, empty it; otherwise, close the action
 	 * provider.
 	 */
-	private void doCancel() {
-		if (mUrlField.getText() != null && mUrlField.getText().length() > 0) {
+	private void doCancel()
+	{
+		if (mUrlField.getText() != null && mUrlField.getText().length() > 0)
+		{
 			mUrlField.setText(null);
-		} else {
+		}
+		else
+		{
 			doUpdateStatus();
 			ActivitiesUtil.doHideKeyboard(mContext, mUrlField);
 			mMenuItem.collapseActionView();
